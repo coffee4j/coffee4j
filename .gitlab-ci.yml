@@ -1,0 +1,4 @@
+coffee4j_project_build:
+  stage: build
+  script: 
+    - mvn clean install -U
