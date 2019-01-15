@@ -181,30 +181,32 @@ public final class Combinator {
     
     private static List<IntSet> computeNegativeParameterCombinationsRecursively(int[] parameters, int[] negativeParameters, int k) {
         if (k == 0) {
-            List<IntSet> combinations = new ArrayList<>(negativeParameters.length);
-            
-            for (int parameter : negativeParameters) {
-                IntSet set = new IntOpenHashSet(1);
-                set.add(parameter);
-                
-                combinations.add(set);
-            }
-            
+            List<IntSet> combinations = new ArrayList<>(1);
+            combinations.add(new IntOpenHashSet(negativeParameters));
+
             return combinations;
-        }
-        
-        
-        final int[] nonNegativeParameters = ArrayUtil.exclude(parameters, negativeParameters);
-        final int combinationsSize = Math.min(nonNegativeParameters.length, k);
-        List<IntSet> subCombinations = computeParameterCombinationsRecursively(nonNegativeParameters, combinationsSize);
-        
-        for (IntSet set : subCombinations) {
-            for (int negativeParameter : negativeParameters) {
-                set.add(negativeParameter);
+        } else {
+            final int[] nonNegativeParameters = ArrayUtil.exclude(parameters, negativeParameters);
+            final int combinationsSize = Math.min(nonNegativeParameters.length, k);
+            List<IntSet> subCombinations = computeParameterCombinationsRecursively(nonNegativeParameters, combinationsSize);
+
+            if(subCombinations.isEmpty()) {
+                final IntSet set = new IntOpenHashSet(negativeParameters.length);
+                for (int negativeParameter : negativeParameters) {
+                    set.add(negativeParameter);
+                }
+
+                return Collections.singletonList(set);
+            } else {
+                for (IntSet set : subCombinations) {
+                    for (int negativeParameter : negativeParameters) {
+                        set.add(negativeParameter);
+                    }
+                }
             }
+
+            return subCombinations;
         }
-        
-        return subCombinations;
     }
     
     /**

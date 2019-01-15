@@ -14,7 +14,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
-class IpogWithConstraintsTest {
+class IpogAlgorithmWithConstraintsTest {
     
     @Test
     void checkWithSimpleConstraint() {
@@ -26,7 +26,7 @@ class IpogWithConstraintsTest {
         
         final ConstraintChecker checker = new ConstraintCheckerFactory(model).createHardConstraintsChecker();
         
-        final List<int[]> testSuite = new Ipog(IpogConfiguration.ipogConfiguration().model(model).checker(checker).build()).generate();
+        final List<int[]> testSuite = new IpogAlgorithm(IpogConfiguration.ipogConfiguration().model(model).checker(checker).build()).generate();
         
         assertFalse(testSuite.stream().anyMatch((int[] test) -> CombinationUtil.contains(test, new int[]{1, 1, -1, -1})));
         assertFalse(testSuite.stream().anyMatch((int[] test) -> CombinationUtil.contains(test, new int[]{-1, 1, 1, -1})));
@@ -43,7 +43,7 @@ class IpogWithConstraintsTest {
         
         final ConstraintChecker checker = new ConstraintCheckerFactory(model).createHardConstraintsChecker();
         
-        final List<int[]> testSuite = new Ipog(IpogConfiguration.ipogConfiguration().model(model).checker(checker).build()).generate();
+        final List<int[]> testSuite = new IpogAlgorithm(IpogConfiguration.ipogConfiguration().model(model).checker(checker).build()).generate();
         
         assertFalse(testSuite.stream().anyMatch((int[] test) -> CombinationUtil.contains(test, new int[]{0, -1, 1, -1})));
     }
@@ -57,7 +57,7 @@ class IpogWithConstraintsTest {
         
         final ConstraintChecker checker = new ConstraintCheckerFactory(model).createHardConstraintsChecker();
         
-        final List<int[]> testSuite = new Ipog(IpogConfiguration.ipogConfiguration().model(model).checker(checker).build()).generate();
+        final List<int[]> testSuite = new IpogAlgorithm(IpogConfiguration.ipogConfiguration().model(model).checker(checker).build()).generate();
         
         assertEquals(0, testSuite.size());
     }

@@ -7,7 +7,7 @@
     <parent>
         <artifactId>coffee4j-aggregate</artifactId>
         <groupId>de.rwth.swc.coffee4j</groupId>
-        <version>1.0.0</version>
+        <version>1.0.1</version>
     </parent>
 
     <artifactId>coffee4j-engine</artifactId>

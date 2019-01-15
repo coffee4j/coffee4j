@@ -93,9 +93,27 @@ class CombinatorTest {
         assertEquals(1, parameterCombinations.size());
         assertEquals(new IntArraySet(IntStream.range(0, 100).toArray()), parameterCombinations.get(0));
     }
-    
+
     @Test
-    void computeRightParameterCombinations() {
+    void computeCorrectParameterCombinationsForT0() {
+        List<IntSet> parameterCombinations = Combinator.computeParameterCombinations(IntStream.range(0, 4).toArray(), 0);
+
+        assertEquals(0, parameterCombinations.size());
+    }
+
+    @Test
+    void computeCorrectParameterCombinationsForT1() {
+        List<IntSet> parameterCombinations = Combinator.computeParameterCombinations(IntStream.range(0, 4).toArray(), 1);
+
+        assertEquals(4, parameterCombinations.size());
+        assertTrue(parameterCombinations.contains(new IntOpenHashSet(Arrays.asList(0))));
+        assertTrue(parameterCombinations.contains(new IntOpenHashSet(Arrays.asList(1))));
+        assertTrue(parameterCombinations.contains(new IntOpenHashSet(Arrays.asList(2))));
+        assertTrue(parameterCombinations.contains(new IntOpenHashSet(Arrays.asList(3))));
+    }
+
+    @Test
+    void computeCorrectParameterCombinationsforT2() {
         List<IntSet> parameterCombinations = Combinator.computeParameterCombinations(IntStream.range(0, 4).toArray(), 2);
         
         assertEquals(6, parameterCombinations.size());
@@ -147,7 +165,7 @@ class CombinatorTest {
     }
     
     @Test
-    void computeCombinationsForSingleNegativeParameterWithStrengthZero() {
+    void computeCorrectSingleNegativeParameterCombinationsForT0() {
         int[] negativeParameters = {0};
         
         List<IntSet> result = Combinator.computeNegativeParameterCombinations(IntStream.range(0, 4).toArray(), negativeParameters, 0);
@@ -157,7 +175,7 @@ class CombinatorTest {
     }
     
     @Test
-    void computeCombinationsForSingleNegativeParameterWithStrengthOne() {
+    void computeCorrectSingleNegativeParameterCombinationsForT1() {
         int[] negativeParameters = {0};
         
         List<IntSet> result = Combinator.computeNegativeParameterCombinations(IntStream.range(0, 4).toArray(), negativeParameters, 1);
@@ -169,7 +187,7 @@ class CombinatorTest {
     }
     
     @Test
-    void computeCombinationsForSingleNegativeParameterWithStrengthTwo() {
+    void computeCorrectSingleNegativeParameterCombinationsForT2() {
         int[] negativeParameters = {0};
         
         List<IntSet> result = Combinator.computeNegativeParameterCombinations(IntStream.range(0, 4).toArray(), negativeParameters, 2);
@@ -181,7 +199,7 @@ class CombinatorTest {
     }
     
     @Test
-    void computeCombinationsForSingleNegativeParameterWithStrengthThree() {
+    void computeCorrectSingleNegativeParameterCombinationsForT3() {
         int[] negativeParameters = {0};
         
         List<IntSet> result = Combinator.computeNegativeParameterCombinations(IntStream.range(0, 4).toArray(), negativeParameters, 3);
@@ -191,7 +209,7 @@ class CombinatorTest {
     }
     
     @Test
-    void computeCombinationsForSingleNegativeParameterWithStrengthFour() {
+    void computeCorrectSingleNegativeParameterCombinationsForT4() {
         int[] negativeParameters = {0};
         
         List<IntSet> result = Combinator.computeNegativeParameterCombinations(IntStream.range(0, 4).toArray(), negativeParameters, 4);
@@ -201,7 +219,7 @@ class CombinatorTest {
     }
     
     @Test
-    void computeCombinationsForSingleNegativeParameterWithStrengthFive() {
+    void computeCorrectSingleNegativeParameterCombinationsForT5() {
         int[] negativeParameters = {0};
         
         List<IntSet> result = Combinator.computeNegativeParameterCombinations(IntStream.range(0, 4).toArray(), negativeParameters, 5);
@@ -209,9 +227,19 @@ class CombinatorTest {
         assertEquals(1, result.size());
         assertTrue(result.contains(new IntOpenHashSet(Arrays.asList(0, 1, 2, 3))));
     }
-    
+
     @Test
-    void computeCombinationsForTwoNegativeParameters() {
+    void computeCorrectPairOfNegativeParameterCombinationsForT0() {
+        int[] negativeParameters = {0, 2};
+
+        List<IntSet> result = Combinator.computeNegativeParameterCombinations(IntStream.range(0, 5).toArray(), negativeParameters, 0);
+
+        assertEquals(1, result.size());
+        assertTrue(result.contains(new IntOpenHashSet(Arrays.asList(0, 2))));
+    }
+
+    @Test
+    void computeCorrectPairOfNegativeParameterCombinationsForT1() {
         int[] negativeParameters = {0, 2};
         
         List<IntSet> result = Combinator.computeNegativeParameterCombinations(IntStream.range(0, 5).toArray(), negativeParameters, 1);
@@ -221,7 +249,80 @@ class CombinatorTest {
         assertTrue(result.contains(new IntOpenHashSet(Arrays.asList(0, 2, 3))));
         assertTrue(result.contains(new IntOpenHashSet(Arrays.asList(0, 2, 4))));
     }
-    
+
+    @Test
+    void computeCorrectPairOfNegativeParameterCombinationsForT2() {
+        int[] negativeParameters = {0, 2};
+
+        List<IntSet> result = Combinator.computeNegativeParameterCombinations(IntStream.range(0, 5).toArray(), negativeParameters, 2);
+
+        assertEquals(3, result.size());
+        assertTrue(result.contains(new IntOpenHashSet(Arrays.asList(0, 2, 1, 3))));
+        assertTrue(result.contains(new IntOpenHashSet(Arrays.asList(0, 2, 1, 4))));
+        assertTrue(result.contains(new IntOpenHashSet(Arrays.asList(0, 2, 3, 4))));
+    }
+
+    @Test
+    void computeCorrectPairOfNegativeParameterCombinationsForT3() {
+        int[] negativeParameters = {0, 2};
+
+        List<IntSet> result = Combinator.computeNegativeParameterCombinations(IntStream.range(0, 5).toArray(), negativeParameters, 3);
+
+        assertEquals(1, result.size());
+        assertTrue(result.contains(new IntOpenHashSet(Arrays.asList(0, 2, 1, 3, 4))));
+    }
+
+    @Test
+    void computeCorrectPairOfNegativeParameterCombinationsForT4() {
+        int[] negativeParameters = {0, 2};
+
+        List<IntSet> result = Combinator.computeNegativeParameterCombinations(IntStream.range(0, 5).toArray(), negativeParameters, 4);
+
+        assertEquals(1, result.size());
+        assertTrue(result.contains(new IntOpenHashSet(Arrays.asList(0, 2, 1, 3, 4))));
+    }
+
+    @Test
+    void computeCorrectPairOfNegativeParameterCombinationsForT5() {
+        int[] negativeParameters = {0, 2};
+
+        List<IntSet> result = Combinator.computeNegativeParameterCombinations(IntStream.range(0, 5).toArray(), negativeParameters, 5);
+
+        assertEquals(1, result.size());
+        assertTrue(result.contains(new IntOpenHashSet(Arrays.asList(0, 2, 1, 3, 4))));
+    }
+
+    @Test
+    void computeCorrectExhaustiveNegativeParameterCombinationsForT0() {
+        int[] negativeParameters = {0, 1};
+
+        List<IntSet> result = Combinator.computeNegativeParameterCombinations(IntStream.range(0, 2).toArray(), negativeParameters, 0);
+
+        assertEquals(1, result.size());
+        assertTrue(result.contains(new IntOpenHashSet(Arrays.asList(0, 1))));
+    }
+
+    @Test
+    void computeCorrectExhaustiveNegativeParameterCombinationsForT1() {
+        int[] negativeParameters = {0, 1};
+
+        List<IntSet> result = Combinator.computeNegativeParameterCombinations(IntStream.range(0, 2).toArray(), negativeParameters, 1);
+
+        assertEquals(1, result.size());
+        assertTrue(result.contains(new IntOpenHashSet(Arrays.asList(0, 1))));
+    }
+
+    @Test
+    void computeCorrectExhaustiveNegativeParameterCombinationsForT2() {
+        int[] negativeParameters = {0, 1};
+
+        List<IntSet> result = Combinator.computeNegativeParameterCombinations(IntStream.range(0, 2).toArray(), negativeParameters, 2);
+
+        assertEquals(1, result.size());
+        assertTrue(result.contains(new IntOpenHashSet(Arrays.asList(0, 1))));
+    }
+
+
     @Test
     void preconditionsOfComputeSubCombinationsOfSize() {
         assertThrows(NullPointerException.class, () -> Combinator.computeSubCombinations(null, 1));
@@ -274,5 +375,4 @@ class CombinatorTest {
     private static Stream<Arguments> computeCombinations() {
         return Stream.of(arguments(new int[0], 0, Collections.emptyList()), arguments(new int[]{2, 2, 2}, 0, Collections.emptyList()), arguments(new int[]{2}, 1, Arrays.asList(new int[]{0}, new int[]{1})), arguments(new int[]{2, 2}, 3, Collections.emptyList()), arguments(new int[]{2, 2}, 1, Arrays.asList(new int[]{0, CombinationUtil.NO_VALUE}, new int[]{1, CombinationUtil.NO_VALUE}, new int[]{CombinationUtil.NO_VALUE, 0}, new int[]{CombinationUtil.NO_VALUE, 1})));
     }
-    
 }

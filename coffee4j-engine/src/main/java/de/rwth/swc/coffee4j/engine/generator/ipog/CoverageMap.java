@@ -25,7 +25,7 @@ import static de.rwth.swc.coffee4j.engine.util.CombinationUtil.containsAllParame
  * Basically, it stores the tuples of each possible ParameterCombination as a
  * bitmap with a bijective function to map to and from an index in said bitmap.
  * <p>
- * This uses the index system described in {@link Ipog}.
+ * This uses the index system described in {@link IpogAlgorithm}.
  */
 class CoverageMap {
     

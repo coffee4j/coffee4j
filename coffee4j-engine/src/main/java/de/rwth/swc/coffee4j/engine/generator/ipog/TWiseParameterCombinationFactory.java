@@ -2,6 +2,7 @@ package de.rwth.swc.coffee4j.engine.generator.ipog;
 
 import it.unimi.dsi.fastutil.ints.IntSet;
 
+import java.util.Collections;
 import java.util.List;
 
 import static de.rwth.swc.coffee4j.engine.util.Combinator.computeParameterCombinations;
@@ -17,5 +18,4 @@ public class TWiseParameterCombinationFactory implements ParameterCombinationFac
     public List<IntSet> create(int[] oldParameters, int strength) {
         return computeParameterCombinations(oldParameters, strength - 1);
     }
-    
 }

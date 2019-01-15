@@ -23,7 +23,17 @@ class CombinatorialTestModelTest {
     }
     
     private static Stream<Arguments> preconditions() {
-        return Stream.of(arguments(1, null, Collections.emptyList(), Collections.emptyList(), NullPointerException.class), arguments(0, new int[]{2}, Collections.emptyList(), Collections.emptyList(), IllegalArgumentException.class), arguments(3, new int[]{2}, Collections.emptyList(), Collections.emptyList(), IllegalArgumentException.class), arguments(1, new int[]{2, 2}, null, Collections.emptyList(), NullPointerException.class), arguments(1, new int[]{2, 2}, Collections.emptyList(), null, NullPointerException.class), arguments(1, new int[]{1, 2}, Collections.emptyList(), Collections.emptyList(), IllegalArgumentException.class), arguments(1, new int[]{2, -2}, Collections.emptyList(), Collections.emptyList(), IllegalArgumentException.class), arguments(1, new int[]{2, 2}, Collections.singletonList(new TupleList(1, new int[]{-1, 1}, Collections.singletonList(new int[]{0, 0}))), Collections.emptyList(), IllegalArgumentException.class), arguments(1, new int[]{2, 2}, Collections.singletonList(new TupleList(1, new int[]{1, 5}, Collections.singletonList(new int[]{0, 0}))), Collections.emptyList(), IllegalArgumentException.class), arguments(1, new int[]{2, 2}, Collections.emptyList(), Collections.singletonList(new TupleList(1, new int[]{1, 5}, Collections.singletonList(new int[]{0, 0}))), IllegalArgumentException.class), arguments(1, new int[]{2}, Collections.singletonList(new TupleList(1, new int[]{0}, Collections.singletonList(new int[]{0}))), Collections.singletonList(new TupleList(1, new int[]{0}, Collections.singletonList(new int[]{0}))), IllegalArgumentException.class));
+        return Stream.of(
+                arguments(1, null, Collections.emptyList(), Collections.emptyList(), NullPointerException.class),
+                arguments(3, new int[]{2}, Collections.emptyList(), Collections.emptyList(), IllegalArgumentException.class),
+                arguments(1, new int[]{2, 2}, null, Collections.emptyList(), NullPointerException.class),
+                arguments(1, new int[]{2, 2}, Collections.emptyList(), null, NullPointerException.class),
+                arguments(1, new int[]{1, 2}, Collections.emptyList(), Collections.emptyList(), IllegalArgumentException.class),
+                arguments(1, new int[]{2, -2}, Collections.emptyList(), Collections.emptyList(), IllegalArgumentException.class),
+                arguments(1, new int[]{2, 2}, Collections.singletonList(new TupleList(1, new int[]{-1, 1}, Collections.singletonList(new int[]{0, 0}))), Collections.emptyList(), IllegalArgumentException.class),
+                arguments(1, new int[]{2, 2}, Collections.singletonList(new TupleList(1, new int[]{1, 5}, Collections.singletonList(new int[]{0, 0}))), Collections.emptyList(), IllegalArgumentException.class),
+                arguments(1, new int[]{2, 2}, Collections.emptyList(), Collections.singletonList(new TupleList(1, new int[]{1, 5}, Collections.singletonList(new int[]{0, 0}))), IllegalArgumentException.class),
+                arguments(1, new int[]{2}, Collections.singletonList(new TupleList(1, new int[]{0}, Collections.singletonList(new int[]{0}))), Collections.singletonList(new TupleList(1, new int[]{0}, Collections.singletonList(new int[]{0}))), IllegalArgumentException.class));
     }
     
     @Test
@@ -60,5 +70,4 @@ class CombinatorialTestModelTest {
         assertEquals(forbiddenTupleLists, model.getForbiddenTupleLists());
         assertEquals(Collections.emptyList(), model.getErrorTupleLists());
     }
-    
 }

@@ -1,6 +1,6 @@
 package de.rwth.swc.coffee4j.model.manager;
 
-import de.rwth.swc.coffee4j.engine.generator.ipog.IpogTestInputGroupGenerator;
+import de.rwth.swc.coffee4j.engine.generator.ipog.Ipog;
 import de.rwth.swc.coffee4j.model.Combination;
 import de.rwth.swc.coffee4j.model.InputParameterModel;
 import de.rwth.swc.coffee4j.model.Parameter;
@@ -16,7 +16,7 @@ class DemoTest {
     
     @Test
     void exampleTest() {
-        final CombinatorialTestExecutionManager executor = new CombinatorialTestExecutionManager(consumerManagerConfiguration().executionReporter(new PrintStreamExecutionReporter()).generator(new IpogTestInputGroupGenerator()).characterizationAlgorithmFactory(ben()).build(), this::testFunction, InputParameterModel.inputParameterModel("exampleTest").strength(2).parameters(Parameter.parameter("param1").values(0, 1, 2), Parameter.parameter("param2").values("0", "1", "2"), Parameter.parameter("param3").values(0, 1, 2), Parameter.parameter("param4").values(0, 1, 2)).errorConstraint(constrain("param1", "param3").by((Integer firstValue, Integer thirdValue) -> firstValue == 0 && thirdValue != 1)).build());
+        final CombinatorialTestExecutionManager executor = new CombinatorialTestExecutionManager(consumerManagerConfiguration().executionReporter(new PrintStreamExecutionReporter()).generator(new Ipog()).characterizationAlgorithmFactory(ben()).build(), this::testFunction, InputParameterModel.inputParameterModel("exampleTest").strength(2).parameters(Parameter.parameter("param1").values(0, 1, 2), Parameter.parameter("param2").values("0", "1", "2"), Parameter.parameter("param3").values(0, 1, 2), Parameter.parameter("param4").values(0, 1, 2)).errorConstraint(constrain("param1", "param3").by((Integer firstValue, Integer thirdValue) -> firstValue == 0 && thirdValue != 1)).build());
         executor.execute();
     }
     

@@ -5,7 +5,7 @@ import de.rwth.swc.coffee4j.engine.InputParameterModel;
 import de.rwth.swc.coffee4j.engine.TestResult;
 import de.rwth.swc.coffee4j.engine.constraint.ConstraintChecker;
 import de.rwth.swc.coffee4j.engine.constraint.NoConstraintChecker;
-import de.rwth.swc.coffee4j.engine.generator.ipog.Ipog;
+import de.rwth.swc.coffee4j.engine.generator.ipog.IpogAlgorithm;
 import de.rwth.swc.coffee4j.engine.generator.ipog.IpogConfiguration;
 import de.rwth.swc.coffee4j.engine.generator.ipog.ParameterCombinationFactory;
 import de.rwth.swc.coffee4j.engine.generator.ipog.TWiseParameterCombinationFactory;
@@ -35,7 +35,7 @@ public interface FaultCharacterizationAlgorithmTest {
         final ParameterCombinationFactory factory = new TWiseParameterCombinationFactory();
         final FaultCharacterizationAlgorithm faultCharacterizationAlgorithm = provideAlgorithm(new FaultCharacterizationConfiguration(model, checker, new StandardOutputReporter()));
         
-        List<int[]> testInputs = new Ipog(IpogConfiguration.ipogConfiguration().model(model).checker(checker).factory(factory).build()).generate();
+        List<int[]> testInputs = new IpogAlgorithm(IpogConfiguration.ipogConfiguration().model(model).checker(checker).factory(factory).build()).generate();
         while (!testInputs.isEmpty()) {
             testInputs = faultCharacterizationAlgorithm.computeNextTestInputs(mapToResults(testInputs, failureInducingCombinations));
         }

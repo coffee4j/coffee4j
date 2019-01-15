@@ -30,7 +30,7 @@ public final class InputParameterModel {
     /**
      * Creates a new model with no constraints.
      *
-     * @param strength   the testing strength. Must be at least one and at most the number of parameters
+     * @param strength   the testing strength. Must be equal to or greater than one and at most the number of parameters
      * @param name       the name of the model. Should be human readable. Must not be {@code null}
      * @param parameters all parameters of the model. Must not be, nor contain {@code null} and must not be empty.
      *                   Must not contain parameters with duplicate names
@@ -42,7 +42,7 @@ public final class InputParameterModel {
     /**
      * Creates a new model with all given configuration arguments.
      *
-     * @param strength             the testing strength. Must be at least one and at most the number of parameters
+     * @param strength             the testing strength. Must be equal to or greater than one and at most the number of parameters
      * @param name                 the name of the model. Should be human readable. Must not be {@code null}
      * @param parameters           all parameters of the model. Must not be, nor contain {@code null} and must not be empty.
      * @param forbiddenConstraints all constraints which may never be violated as test inputs won't work then
@@ -56,7 +56,7 @@ public final class InputParameterModel {
         Preconditions.notNull(parameters);
         Preconditions.notNull(forbiddenConstraints);
         Preconditions.notNull(errorConstraints);
-        Preconditions.check(strength > 0);
+        Preconditions.check(strength >= 0);
         Preconditions.check(strength <= parameters.size());
         Preconditions.check(!parameters.contains(null));
         Preconditions.check(!forbiddenConstraints.contains(null));

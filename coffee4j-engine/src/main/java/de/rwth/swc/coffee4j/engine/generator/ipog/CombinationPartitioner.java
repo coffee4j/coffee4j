@@ -20,11 +20,11 @@ import static de.rwth.swc.coffee4j.engine.util.IntArrayWrapper.wrap;
 
 /**
  * Class to partition given combinations according to one parameter.
- * This is used to make the search for fitting combinations in the {@link Ipog}
+ * This is used to make the search for fitting combinations in the {@link IpogAlgorithm}
  * algorithm more efficient as only some potentially matching combinations
  * have to be searched for a match.
  * <p>
- * In all methods the indexing schema described in {@link Ipog} is used.
+ * In all methods the indexing schema described in {@link IpogAlgorithm} is used.
  */
 class CombinationPartitioner {
     

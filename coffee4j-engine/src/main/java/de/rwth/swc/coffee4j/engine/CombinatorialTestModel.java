@@ -27,7 +27,7 @@ public final class CombinatorialTestModel implements InputParameterModel {
     /**
      * Defines a new model without any constraints.
      *
-     * @param strength       the desired testing strength. Must be at least one and at most the number of parameters
+     * @param strength       the desired testing strength. Must be equal to or greater than one and at most the number of parameters
      * @param parameterSizes the sizes of all parameters. [2, 3, 5] means the first parameter has 2 values, the second
      *                       one 3 and the last one 5. All parameters need to have at least two values. Must not be
      *                       {@code null}
@@ -39,7 +39,7 @@ public final class CombinatorialTestModel implements InputParameterModel {
     /**
      * Defines a new model with just forbidden constraints but no error constraints.
      *
-     * @param strength            the desired testing strength. Must be at least one and at most the number of parameters
+     * @param strength            the desired testing strength. Must be equal to or greater than one and at most the number of parameters
      * @param parameterSizes      the sizes of all parameters. [2, 3, 5] means the first parameter has 2 values, the second
      *                            one 3 and the last one 5. All parameters need to have at least two values. Must not be
      *                            {@code null}
@@ -51,7 +51,7 @@ public final class CombinatorialTestModel implements InputParameterModel {
     }
     
     /**
-     * @param strength            the desired testing strength. Must be at least one and at most the number of parameters
+     * @param strength            the desired testing strength. Must be equal to or greater than one and at most the number of parameters
      * @param parameterSizes      the sizes of all parameters. [2, 3, 5] means the first parameter has 2 values, the second
      *                            one 3 and the last one 5. All parameters need to have at least two values. Must not be
      *                            {@code null}
@@ -63,7 +63,7 @@ public final class CombinatorialTestModel implements InputParameterModel {
      */
     public CombinatorialTestModel(int strength, int[] parameterSizes, Collection<TupleList> forbiddenTupleLists, Collection<TupleList> errorTupleLists) {
         Preconditions.notNull(parameterSizes);
-        Preconditions.check(strength > 0);
+        Preconditions.check(strength >= 0);
         Preconditions.check(strength <= parameterSizes.length);
         Preconditions.notNull(forbiddenTupleLists);
         Preconditions.notNull(errorTupleLists);

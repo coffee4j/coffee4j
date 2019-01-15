@@ -5,6 +5,7 @@ import de.rwth.swc.coffee4j.engine.generator.ipog.ParameterCombinationFactory;
 import de.rwth.swc.coffee4j.engine.util.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntSet;
 
+import java.util.Collections;
 import java.util.List;
 
 import static de.rwth.swc.coffee4j.engine.util.Combinator.computeNegativeParameterCombinations;
@@ -19,7 +20,6 @@ class NegativeTWiseParameterCombinationFactory implements ParameterCombinationFa
     
     @Override
     public List<IntSet> create(int[] oldParameters, int strength) {
-        return computeNegativeParameterCombinations(oldParameters, negativeParameters, strength);
+        return computeNegativeParameterCombinations(oldParameters, negativeParameters, strength - 1);
     }
-    
 }

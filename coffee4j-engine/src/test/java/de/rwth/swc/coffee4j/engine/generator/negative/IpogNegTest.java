@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class HardNegativeTWiseGeneratorTest {
+class IpogNegTest {
     
     @Test
     void onlyErrorTuplesAppear() {
@@ -30,7 +30,7 @@ class HardNegativeTWiseGeneratorTest {
         
         final CombinatorialTestModel model = new CombinatorialTestModel(2, new int[]{2, 2, 2, 2}, Collections.emptyList(), errorTupleLists);
         
-        final TestInputGroupGenerator generator = new HardNegativeTWiseGenerator();
+        final TestInputGroupGenerator generator = new IpogNeg();
         final List<TestInputGroup> testInputGroups = generator.generate(model, new StandardOutputReporter()).stream().map(Supplier::get).collect(Collectors.toList());
         assertEquals(2, testInputGroups.size());
         
@@ -53,7 +53,7 @@ class HardNegativeTWiseGeneratorTest {
         
         final CombinatorialTestModel model = new CombinatorialTestModel(2, new int[]{2, 2, 2, 2}, Collections.emptyList(), errorTupleLists);
         
-        final TestInputGroupGenerator generator = new HardNegativeTWiseGenerator();
+        final TestInputGroupGenerator generator = new IpogNeg();
         final List<TestInputGroup> testInputGroups = generator.generate(model, new StandardOutputReporter()).stream().map(Supplier::get).collect(Collectors.toList());
         assertEquals(2, testInputGroups.size());
         
@@ -76,7 +76,7 @@ class HardNegativeTWiseGeneratorTest {
         
         final CombinatorialTestModel model = new CombinatorialTestModel(2, new int[]{2, 3, 3}, Collections.emptyList(), errorTupleLists);
         
-        final TestInputGroupGenerator generator = new HardNegativeTWiseGenerator();
+        final TestInputGroupGenerator generator = new IpogNeg();
         final List<TestInputGroup> testInputGroups = generator.generate(model, new StandardOutputReporter()).stream().map(Supplier::get).collect(Collectors.toList());
         assertEquals(2, testInputGroups.size());
         
@@ -98,7 +98,7 @@ class HardNegativeTWiseGeneratorTest {
         
         final CombinatorialTestModel model = new CombinatorialTestModel(2, new int[]{2, 2, 2, 2}, Collections.emptyList(), errorTupleLists);
         
-        final TestInputGroupGenerator generator = new HardNegativeTWiseGenerator();
+        final TestInputGroupGenerator generator = new IpogNeg();
         final List<TestInputGroup> testInputGroups = generator.generate(model, new StandardOutputReporter()).stream().map(Supplier::get).collect(Collectors.toList());
         assertEquals(2, testInputGroups.size());
         

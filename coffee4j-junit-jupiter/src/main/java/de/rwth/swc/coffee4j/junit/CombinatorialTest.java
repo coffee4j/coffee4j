@@ -1,6 +1,6 @@
 package de.rwth.swc.coffee4j.junit;
 
-import de.rwth.swc.coffee4j.engine.generator.ipog.IpogTestInputGroupGenerator;
+import de.rwth.swc.coffee4j.engine.generator.ipog.Ipog;
 import de.rwth.swc.coffee4j.engine.report.ArgumentConverter;
 import de.rwth.swc.coffee4j.junit.provider.configuration.ConfigurationFromMethod;
 import de.rwth.swc.coffee4j.junit.provider.configuration.ConfigurationProvider;
@@ -39,7 +39,7 @@ import java.lang.annotation.Target;
  * alternatively it is also possible to use custom configurations such as the
  * {@link ConfigurationFromMethod}. All configurable aspects have
  * sensible default. If only a {@link InputParameterModel} is specified, the combinatorial
- * test will be executed with a {@link IpogTestInputGroupGenerator},
+ * test will be executed with a {@link Ipog},
  * no fault characterization and execution reporter, and some default
  * {@link ArgumentConverter} such as
  * {@link ParameterArgumentConverter}

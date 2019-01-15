@@ -1,7 +1,7 @@
 package de.rwth.swc.coffee4j.junit.provider.configuration.generator;
 
 import de.rwth.swc.coffee4j.engine.generator.TestInputGroupGenerator;
-import de.rwth.swc.coffee4j.engine.generator.ipog.IpogTestInputGroupGenerator;
+import de.rwth.swc.coffee4j.engine.generator.ipog.Ipog;
 import de.rwth.swc.coffee4j.junit.provider.Loader;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.params.support.AnnotationConsumerInitializer;
@@ -21,11 +21,11 @@ import static org.junit.platform.commons.util.AnnotationUtils.findRepeatableAnno
  * discovered using the {@link GeneratorSource} repeatable annotations. As such, multiple {@link TestInputGroupGenerator}
  * provided by each {@link GeneratorSource} are aggregated into one single list in this loader.
  * <p>
- * If no {@link GeneratorSource} is registered, the default of one {@link IpogTestInputGroupGenerator} is loaded.
+ * If no {@link GeneratorSource} is registered, the default of one {@link Ipog} is loaded.
  */
 public class GeneratorLoader implements Loader<List<TestInputGroupGenerator>> {
     
-    private static final TestInputGroupGenerator DEFAULT_GENERATOR = new IpogTestInputGroupGenerator();
+    private static final TestInputGroupGenerator DEFAULT_GENERATOR = new Ipog();
     
     @Override
     public List<TestInputGroupGenerator> load(ExtensionContext extensionContext) {

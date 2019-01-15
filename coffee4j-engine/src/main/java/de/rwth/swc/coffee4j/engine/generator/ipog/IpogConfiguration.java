@@ -12,7 +12,7 @@ import java.util.Objects;
 import java.util.function.Supplier;
 
 /**
- * A class combining all information needed to construct a new instance of the {@link Ipog} algorithm. This class is
+ * A class combining all information needed to construct a new instance of the {@link IpogAlgorithm} algorithm. This class is
  * used instead of a constructor with all parameters to reduce API incompatibility issues when addition more arguments
  * and for a general nicer way of constructing the algorithm since constructor with many parameters are not easy to
  * read in code.
@@ -161,7 +161,7 @@ public class IpogConfiguration {
         }
         
         /**
-         * @return a new complete configuration which can be used to construct an instance of {@link Ipog}
+         * @return a new complete configuration which can be used to construct an instance of {@link IpogAlgorithm}
          * @throws NullPointerException if any parameter has been set to {@code null} or if the model has not been set
          */
         public IpogConfiguration build() {
