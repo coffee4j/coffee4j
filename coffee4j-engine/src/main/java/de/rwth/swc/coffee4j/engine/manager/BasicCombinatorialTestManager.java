@@ -5,6 +5,8 @@ import de.rwth.swc.coffee4j.engine.characterization.FaultCharacterizationAlgorit
 import de.rwth.swc.coffee4j.engine.characterization.FaultCharacterizationConfiguration;
 import de.rwth.swc.coffee4j.engine.CombinatorialTestModel;
 import de.rwth.swc.coffee4j.engine.TestResult;
+import de.rwth.swc.coffee4j.engine.constraint.diagnosis.BasicConstraintDiagnosisManager;
+import de.rwth.swc.coffee4j.engine.constraint.diagnosis.InternalConflict;
 import de.rwth.swc.coffee4j.engine.generator.TestInputGroup;
 import de.rwth.swc.coffee4j.engine.generator.TestInputGroupGenerator;
 import de.rwth.swc.coffee4j.engine.report.GenerationReporter;
@@ -54,7 +56,14 @@ public class BasicCombinatorialTestManager implements CombinatorialTestManager {
         this.configuration = Preconditions.notNull(configuration);
         this.model = Preconditions.notNull(model);
     }
-    
+
+    @Override
+    public List<InternalConflict> checkConstraintsForConflicts() {
+        final BasicConstraintDiagnosisManager diagnoseManager = new BasicConstraintDiagnosisManager(model);
+
+        return diagnoseManager.checkForConflicts();
+    }
+
     /**
      * Generates all test input groups given by the supplied {@link TestInputGroupGenerator}s. All test inputs are then
      * returned. During the generation, the method
@@ -66,13 +75,25 @@ public class BasicCombinatorialTestManager implements CombinatorialTestManager {
      */
     @Override
     public List<int[]> generateInitialTests() {
-        return configuration.getGenerators().stream().map(this::generateManagers).flatMap(Collection::stream).map(this::registerManager).map(SingleGroupGenerationManager::generateInitialTests).flatMap(Collection::stream).collect(Collectors.toList());
+        return configuration.getGenerators().stream()
+                .map(this::generateManagers)
+                .flatMap(Collection::stream)
+                .map(this::registerManager)
+                .map(SingleGroupGenerationManager::generateInitialTests)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
     }
     
     private Set<SingleGroupGenerationManager> generateManagers(TestInputGroupGenerator generator) {
         final GenerationReporter generationReporter = configuration.getGenerationReporter().orElse(NO_OP_REPORTER);
         
-        return generator.generate(model, generationReporter).stream().map(testInputGroupSupplier -> new SingleGroupGenerationManager(testInputGroupSupplier, generator, configuration.getFaultCharacterizationAlgorithmFactory().orElse(null), generationReporter)).collect(Collectors.toSet());
+        return generator.generate(model, generationReporter).stream()
+                .map(testInputGroupSupplier -> new SingleGroupGenerationManager(
+                        testInputGroupSupplier,
+                        generator,
+                        configuration.getFaultCharacterizationAlgorithmFactory().orElse(null),
+                        generationReporter))
+                .collect(Collectors.toSet());
     }
     
     private SingleGroupGenerationManager registerManager(SingleGroupGenerationManager manager) {
@@ -189,7 +210,5 @@ public class BasicCombinatorialTestManager implements CombinatorialTestManager {
                 reporter.faultCharacterizationStarted(testInputGroup, faultCharacterizationAlgorithm);
             }
         }
-        
     }
-    
 }

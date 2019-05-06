@@ -94,5 +94,4 @@ public class PrintStreamExecutionReporter implements ExecutionReporter {
     public void report(ReportLevel level, Report report) {
         printStream.println("Report with level " + level + ": " + report);
     }
-    
 }

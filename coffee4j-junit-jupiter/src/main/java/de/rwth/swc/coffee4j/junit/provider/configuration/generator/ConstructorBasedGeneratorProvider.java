@@ -8,7 +8,7 @@ import org.junit.platform.commons.JUnitException;
 import java.util.ArrayList;
 import java.util.List;
 
-class ConstructorBasedProvider implements GeneratorProvider, AnnotationConsumer<Generator> {
+class ConstructorBasedGeneratorProvider implements GeneratorProvider, AnnotationConsumer<Generator> {
     
     private Class<? extends TestInputGroupGenerator>[] generatorClasses;
     

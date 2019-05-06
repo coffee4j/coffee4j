@@ -22,5 +22,4 @@ public interface IndexBasedConstraintConverter {
      * @return the converted constraints in the same order as the given constraints
      */
     List<TupleList> convert(List<Constraint> constraints, List<Parameter> parameters);
-    
 }

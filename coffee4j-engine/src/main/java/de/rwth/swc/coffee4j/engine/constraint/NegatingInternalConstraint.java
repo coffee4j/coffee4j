@@ -4,14 +4,14 @@ import de.rwth.swc.coffee4j.engine.InputParameterModel;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;
 
-class NegatingInternalConstraint extends InternalConstraint {
+public class NegatingInternalConstraint extends InternalConstraint {
     
-    NegatingInternalConstraint(InternalConstraint internalConstraint) {
+    public NegatingInternalConstraint(InternalConstraint internalConstraint) {
         super(internalConstraint);
     }
     
     @Override
-    protected Constraint apply(final InputParameterModel inputParameterModel, final Model model) {
+    public Constraint apply(final InputParameterModel inputParameterModel, final Model model) {
         return super.apply(inputParameterModel, model).getOpposite();
     }
 }

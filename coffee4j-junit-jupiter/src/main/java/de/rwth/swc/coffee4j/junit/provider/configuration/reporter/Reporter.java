@@ -9,7 +9,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This is a {@link ReporterSource} using the {@link ConstructorBasedProvider} to create new instances of a
+ * This is a {@link ReporterSource} using the {@link ConstructorBasedReporterProvider} to create new instances of a
  * {@link ExecutionReporter} via a no-args, or one-arg constructor. Since reporters are allowed,
  * just return multiple classes in the {@link #value()} method to register more reporters, or use any other
  * {@link ReporterSource} since {@link ReporterSource} is a repeatable annotation.
@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-@ReporterSource(ConstructorBasedProvider.class)
+@ReporterSource(ConstructorBasedReporterProvider.class)
 public @interface Reporter {
     
     /**

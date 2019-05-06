@@ -26,7 +26,9 @@ public class CombinatorialTestExecutionManager {
     private final Queue<Combination> executionQueue = new LinkedList<>();
     
     private final CombinatorialTestConsumerManager generator;
-    
+
+    private final CombinatorialTestConsumerManagerConfiguration configuration;
+
     /**
      * Creates a new manager with the given configuration, executor and model.
      *
@@ -38,14 +40,17 @@ public class CombinatorialTestExecutionManager {
      * @param model         the model which defines all parameters and constraints for a combinatorial test. This part
      *                      is generally not reusable. Must not be {@code null}
      */
-    public CombinatorialTestExecutionManager(CombinatorialTestConsumerManagerConfiguration configuration, TestInputExecutor executor, InputParameterModel model) {
+    public CombinatorialTestExecutionManager(CombinatorialTestConsumerManagerConfiguration configuration,
+                                             TestInputExecutor executor,
+                                             InputParameterModel model) {
         Preconditions.notNull(configuration);
         Preconditions.notNull(executor);
         Preconditions.notNull(model);
         
         executionReporters = new ArrayList<>(configuration.getExecutionReporters());
         this.executor = executor;
-        
+        this.configuration = configuration;
+
         generator = new CombinatorialTestConsumerManager(configuration, executionQueue::add, model);
     }
     
@@ -54,6 +59,13 @@ public class CombinatorialTestExecutionManager {
      * {@link TestInputExecutor} supplied in the constructor.
      */
     public void execute() {
+        if(!diagnoseConstraints()) {
+            if(configuration.getConstraintDiagnosisConfiguration().shouldSkip()) {
+                System.out.println("Error: conflicts among constraints detected");
+                return;
+            }
+        }
+
         generator.generateInitialTests();
         
         Combination testInput;
@@ -64,7 +76,15 @@ public class CombinatorialTestExecutionManager {
             generator.generateAdditionalTestInputsWithResult(testInput, result);
         }
     }
-    
+
+    private boolean diagnoseConstraints() {
+        if(configuration.getConstraintDiagnosisConfiguration().isEnabled()) {
+            return generator.checkConstraintsForConflicts();
+        }
+
+        return true;
+    }
+
     private void testInputExecutionStarted(Combination testInput) {
         for (ExecutionReporter reporter : executionReporters) {
             reporter.testInputExecutionStarted(testInput);
@@ -85,5 +105,4 @@ public class CombinatorialTestExecutionManager {
             return TestResult.failure(e);
         }
     }
-    
 }

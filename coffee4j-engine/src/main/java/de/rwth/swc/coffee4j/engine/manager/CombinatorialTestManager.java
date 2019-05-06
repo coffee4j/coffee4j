@@ -1,6 +1,7 @@
 package de.rwth.swc.coffee4j.engine.manager;
 
 import de.rwth.swc.coffee4j.engine.TestResult;
+import de.rwth.swc.coffee4j.engine.constraint.diagnosis.InternalConflict;
 
 import java.util.List;
 
@@ -9,7 +10,9 @@ import java.util.List;
  * fault characterization).
  */
 public interface CombinatorialTestManager {
-    
+
+    List<InternalConflict> checkConstraintsForConflicts();
+
     /**
      * Generates all initial test inputs for execution. This should generate at least one test input if dynamic generation
      * via {@link #generateAdditionalTestInputsWithResult(int[], TestResult)} should be used, as most front-ends won't

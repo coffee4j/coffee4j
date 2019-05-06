@@ -1,4 +1,4 @@
-package de.rwth.swc.coffee4j.junit.provider.configuration.algorithm;
+package de.rwth.swc.coffee4j.junit.provider.configuration.characterization;
 
 import de.rwth.swc.coffee4j.engine.characterization.FaultCharacterizationAlgorithm;
 import de.rwth.swc.coffee4j.engine.characterization.FaultCharacterizationAlgorithmFactory;
@@ -9,13 +9,13 @@ import org.junit.platform.commons.JUnitException;
 
 import java.lang.reflect.Constructor;
 
-class ConstructorBasedProvider implements CharacterizationAlgorithmFactoryProvider, AnnotationConsumer<CharacterizationAlgorithm> {
+class ConstructorBasedFaultCharacterizationProvider implements FaultCharacterizationAlgorithmFactoryProvider, AnnotationConsumer<EnableFaultCharacterization> {
     
     private Class<? extends FaultCharacterizationAlgorithm> algorithmClass;
     
     @Override
-    public void accept(CharacterizationAlgorithm characterizationAlgorithm) {
-        algorithmClass = characterizationAlgorithm.value();
+    public void accept(EnableFaultCharacterization enableFaultCharacterization) {
+        algorithmClass = enableFaultCharacterization.value();
     }
     
     @Override

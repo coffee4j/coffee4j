@@ -30,5 +30,4 @@ public @interface GeneratorSource {
      * have a no-args constructor
      */
     Class<? extends GeneratorProvider> value();
-    
 }

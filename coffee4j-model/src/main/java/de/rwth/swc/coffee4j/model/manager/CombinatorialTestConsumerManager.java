@@ -1,16 +1,25 @@
 package de.rwth.swc.coffee4j.model.manager;
 
 import de.rwth.swc.coffee4j.engine.TestResult;
+import de.rwth.swc.coffee4j.engine.constraint.diagnosis.InternalConflict;
+import de.rwth.swc.coffee4j.engine.constraint.diagnosis.InternalConflictingConstraintsException;
 import de.rwth.swc.coffee4j.engine.manager.CombinatorialTestConfiguration;
 import de.rwth.swc.coffee4j.engine.manager.CombinatorialTestManager;
+import de.rwth.swc.coffee4j.engine.util.CombinationUtil;
 import de.rwth.swc.coffee4j.engine.util.Preconditions;
 import de.rwth.swc.coffee4j.model.Combination;
 import de.rwth.swc.coffee4j.model.InputParameterModel;
+import de.rwth.swc.coffee4j.model.constraints.Constraint;
 import de.rwth.swc.coffee4j.model.converter.ModelConverter;
 import de.rwth.swc.coffee4j.model.converter.ModelConverterFactory;
+import de.rwth.swc.coffee4j.model.report.ExecutionReporter;
 import de.rwth.swc.coffee4j.model.report.ModelBasedArgumentConverter;
+import de.rwth.swc.coffee4j.model.report.PrintStreamExecutionReporter;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 /**
  * A manager for converting test inputs using a {@link ModelConverter} and putting them into a provided consumer.
@@ -39,7 +48,9 @@ public class CombinatorialTestConsumerManager {
      * @param model             the model which defines all parameters and constraints for a combinatorial test. This part
      *                          is generally not reusable. Must not be {@code null}
      */
-    public CombinatorialTestConsumerManager(CombinatorialTestConsumerManagerConfiguration configuration, Consumer<Combination> testInputConsumer, InputParameterModel model) {
+    public CombinatorialTestConsumerManager(CombinatorialTestConsumerManagerConfiguration configuration,
+                                            Consumer<Combination> testInputConsumer,
+                                            InputParameterModel model) {
         Preconditions.notNull(configuration);
         Preconditions.notNull(testInputConsumer);
         Preconditions.notNull(model);
@@ -47,20 +58,108 @@ public class CombinatorialTestConsumerManager {
         this.testInputConsumer = testInputConsumer;
         modelConverter = configuration.getModelConverterFactory().create(model);
         
-        final ModelBasedArgumentConverter argumentConverterManager = new DelegatingModelBasedArgumentConverter(configuration.getArgumentConverters());
+        final ModelBasedArgumentConverter argumentConverterManager =
+                new DelegatingModelBasedArgumentConverter(configuration.getArgumentConverters());
         argumentConverterManager.initialize(modelConverter);
-        final ExecutionReporterToGenerationReporterAdapter reporterManager = new ExecutionReporterToGenerationReporterAdapter(new DelegatingExecutionReporter(configuration.getExecutionReporters()), argumentConverterManager, modelConverter);
-        new DelegatingExecutionReporter(configuration.getExecutionReporters());
-        final CombinatorialTestConfiguration managerConfiguration = new CombinatorialTestConfiguration(configuration.getCharacterizationAlgorithmFactory().orElse(null), configuration.getGenerators(), reporterManager);
-        generator = configuration.getManagerFactory().apply(managerConfiguration, modelConverter.getConvertedModel());
+
+        final ExecutionReporterToGenerationReporterAdapter reporterManager =
+                new ExecutionReporterToGenerationReporterAdapter(
+                        buildDelegatingOrDefaultExecutionReporter(configuration.getExecutionReporters()),
+                        argumentConverterManager,
+                        modelConverter);
+
+        final CombinatorialTestConfiguration managerConfiguration =
+                new CombinatorialTestConfiguration(
+                        configuration.getCharacterizationAlgorithmFactory().orElse(null),
+                        configuration.getGenerators(),
+                        reporterManager);
+
+        generator = configuration.getManagerFactory()
+                .apply(managerConfiguration, modelConverter.getConvertedModel());
     }
-    
+
+    private ExecutionReporter buildDelegatingOrDefaultExecutionReporter(List<ExecutionReporter> executionReporters) {
+        if(executionReporters.isEmpty()) {
+            return new PrintStreamExecutionReporter();
+        } else {
+            return new DelegatingExecutionReporter(executionReporters);
+        }
+    }
+
+    /**
+     * Checks for conflicts among error-constraints, converts them and reports them to System.out.
+     * @return true if not conflicts were detected
+     *         false if conflicts were detected
+     * TODO: integrate reporting of conflicts into Reporter component
+     */
+    public boolean checkConstraintsForConflicts() {
+        List<InternalConflict> internalConflicts = generator.checkConstraintsForConflicts();
+
+        if(internalConflicts.isEmpty()) {
+            return true;
+        }
+
+        System.out.println("ERROR: Conflicts among constraints detected!");
+        System.out.println("--------------------------------------------");
+        System.out.println();
+
+        for(InternalConflict internalConflict : internalConflicts) {
+            reportInternalConflict(internalConflict);
+        }
+
+        return false;
+    }
+
     /**
      * Generates the initial test inputs, converts them and propagates them to the consumer given in the constructor.
      */
     public synchronized void generateInitialTests() {
-        generator.generateInitialTests().stream().map(modelConverter::convertCombination).forEach(testInputConsumer);
+        generator.generateInitialTests()
+                .stream()
+                .map(modelConverter::convertCombination)
+                .forEach(testInputConsumer);
     }
+
+    private void reportInternalConflict(InternalConflict internalConflict) {
+        final int [] tuple = convertTupleFromDualRepresentation(internalConflict.getParameters(), internalConflict.getValues());
+        final Combination combination = modelConverter.convertCombination(tuple);
+
+        final Constraint sourceConstraint = modelConverter.convertConstraint(internalConflict.getSourceTupleList());
+
+        final Constraint[] targetConstraints = Arrays.stream(internalConflict.getTargetTupleLists())
+                .map(modelConverter::convertConstraint)
+                .toArray(Constraint[]::new);
+
+        System.out.println("For error-constraint \n\t" + sourceConstraint + ",\n\t" + combination + "\nis missing.");
+
+        if(targetConstraints.length == 1 && targetConstraints[0] == sourceConstraint) {
+            System.out.println("The error-constraint itself seems to be incorrect.");
+        } else if(targetConstraints.length > 0) {
+            System.out.println("The interaction with \n\t"
+                    + Arrays.stream(targetConstraints).map(Constraint::toString).collect(Collectors.joining(",\n\t"))
+                    + "\nis causing the absence.");
+        } else {
+            System.out.println("But, a minimal conflict could not be identified.");
+        }
+
+        System.out.println("Please repair the constraints and re-run the tests.");
+        System.out.println();
+    }
+
+    private int[] convertTupleFromDualRepresentation(int[] parameters, int[] values) {
+        final int[] convertedTuple = new int[modelConverter.getConvertedModel().getParameterSizes().length];
+        Arrays.fill(convertedTuple, CombinationUtil.NO_VALUE);
+
+        for(int i = 0; i < parameters.length; i++) {
+            int parameter = parameters[i];
+            int value = values[i];
+
+            convertedTuple[parameter] = value;
+        }
+
+        return convertedTuple;
+    }
+
     
     /**
      * Generates additional test inputs based on a new test result. All returned test inputs are converted and then
@@ -75,5 +174,4 @@ public class CombinatorialTestConsumerManager {
         
         generator.generateAdditionalTestInputsWithResult(modelConverter.convertCombination(testInput), testResult).stream().map(modelConverter::convertCombination).forEach(testInputConsumer);
     }
-    
 }

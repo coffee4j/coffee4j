@@ -11,11 +11,19 @@ import java.util.List;
  * the function.
  */
 public class Constraint {
-    
+
+    private final String name;
+
     private final List<String> parameterNames;
     
     private final ConstraintFunction constraintFunction;
-    
+
+    private final ConstraintStatus constraintStatus;
+
+    public Constraint(String name, List<String> parameterNames, ConstraintFunction constraintFunction) {
+        this(name, parameterNames, constraintFunction, ConstraintStatus.UNKNOWN);
+    }
+
     /**
      * Creates a new constraint. It is most efficient if only the parameters really involved and not additional ones
      * are given.
@@ -24,16 +32,24 @@ public class Constraint {
      * @param constraintFunction the function by which the values for the parameters are constrained.
      *                           Must not be {@code null}
      */
-    public Constraint(List<String> parameterNames, ConstraintFunction constraintFunction) {
+    public Constraint(String name, List<String> parameterNames, ConstraintFunction constraintFunction, ConstraintStatus constraintStatus) {
+        Preconditions.notNull(name);
         Preconditions.notNull(parameterNames);
         Preconditions.notNull(constraintFunction);
+        Preconditions.notNull(constraintStatus);
         Preconditions.check(!parameterNames.isEmpty());
         Preconditions.check(!parameterNames.contains(null));
-        
+
+        this.name = name;
         this.parameterNames = parameterNames;
         this.constraintFunction = constraintFunction;
+        this.constraintStatus = constraintStatus;
     }
-    
+
+    public String getName() {
+        return name;
+    }
+
     /**
      * @return the names of all involved parameters
      */
@@ -47,12 +63,15 @@ public class Constraint {
     public ConstraintFunction getConstraintFunction() {
         return constraintFunction;
     }
-    
+
+    public ConstraintStatus getConstraintStatus() {
+        return constraintStatus;
+    }
+
     @Override
     public String toString() {
-        return "Constraint {parameterNames=(" + String.join(", ", parameterNames) + ")}";
+        return "Constraint {name=" + name + ", parameterNames=(" + String.join(", ", parameterNames) + ")}";
     }
-    
 }
 
 

@@ -1,4 +1,4 @@
-package de.rwth.swc.coffee4j.junit.provider.configuration.algorithm;
+package de.rwth.swc.coffee4j.junit.provider.configuration.characterization;
 
 import de.rwth.swc.coffee4j.engine.characterization.FaultCharacterizationAlgorithm;
 import de.rwth.swc.coffee4j.engine.characterization.FaultCharacterizationAlgorithmFactory;
@@ -10,7 +10,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This is a {@link CharacterizationAlgorithmFactorySource} which uses the {@link ConstructorBasedProvider} to create
+ * This is a {@link FaultCharacterizationAlgorithmFactorySource} which uses the {@link ConstructorBasedFaultCharacterizationProvider} to create
  * new instances of a {@link FaultCharacterizationAlgorithmFactory} by instantiation
  * the respective {@link FaultCharacterizationAlgorithm} class via constructor accepting exactly one
  * {@link FaultCharacterizationConfiguration}.
@@ -20,13 +20,12 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-@CharacterizationAlgorithmFactorySource(ConstructorBasedProvider.class)
-public @interface CharacterizationAlgorithm {
+@FaultCharacterizationAlgorithmFactorySource(ConstructorBasedFaultCharacterizationProvider.class)
+public @interface EnableFaultCharacterization {
     
     /**
      * @return the class of a {@link FaultCharacterizationAlgorithm} which has a constructor with just one
      * {@link FaultCharacterizationConfiguration} parameter
      */
     Class<? extends FaultCharacterizationAlgorithm> value();
-    
 }

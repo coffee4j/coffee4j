@@ -75,7 +75,7 @@ public class IndexBasedModelConverter implements ModelConverter {
     }
     
     private void convertTuplesLists(IndexBasedConstraintConverter constraintsConverter) {
-        final List<Constraint> allConstraints = new ArrayList<>(model.getForbiddenConstraints());
+        final List<Constraint> allConstraints = new ArrayList<>(model.getExclusionConstraints());
         allConstraints.addAll(model.getErrorConstraints());
         
         final List<TupleList> correspondingTupleLists = constraintsConverter.convert(allConstraints, model.getParameters());
@@ -92,7 +92,7 @@ public class IndexBasedModelConverter implements ModelConverter {
     private CombinatorialTestModel createConvertedModel() {
         int[] parameterSizes = IntStream.range(0, model.size()).map(parameterId -> model.getParameters().get(parameterId).size()).toArray();
         
-        return new CombinatorialTestModel(model.getStrength(), parameterSizes, model.getForbiddenConstraints().stream().map(constraintToTuplesListMap::get).collect(Collectors.toList()), model.getErrorConstraints().stream().map(constraintToTuplesListMap::get).collect(Collectors.toList()));
+        return new CombinatorialTestModel(model.getStrength(), parameterSizes, model.getExclusionConstraints().stream().map(constraintToTuplesListMap::get).collect(Collectors.toList()), model.getErrorConstraints().stream().map(constraintToTuplesListMap::get).collect(Collectors.toList()));
     }
     
     @Override

@@ -22,7 +22,7 @@ public final class CombinatorialTestConfiguration {
     private final List<TestInputGroupGenerator> generators;
     
     private final GenerationReporter generationReporter;
-    
+
     /**
      * Creates a new configuration with the given arguments.
      *
@@ -33,7 +33,9 @@ public final class CombinatorialTestConfiguration {
      * @param generationReporter                    the generation reporter for notification of important events in a combinatorial test.
      *                                              Can be {@code null}
      */
-    public CombinatorialTestConfiguration(FaultCharacterizationAlgorithmFactory faultCharacterizationAlgorithmFactory, Collection<TestInputGroupGenerator> generators, GenerationReporter generationReporter) {
+    public CombinatorialTestConfiguration(FaultCharacterizationAlgorithmFactory faultCharacterizationAlgorithmFactory,
+                                          Collection<TestInputGroupGenerator> generators,
+                                          GenerationReporter generationReporter) {
         Preconditions.notNull(generators);
         Preconditions.check(!generators.contains(null));
         
@@ -62,28 +64,28 @@ public final class CombinatorialTestConfiguration {
     public Optional<GenerationReporter> getGenerationReporter() {
         return Optional.ofNullable(generationReporter);
     }
-    
+
     @Override
-    public boolean equals(Object object) {
-        if (this == object) {
-            return true;
-        }
-        if (object == null || getClass() != object.getClass()) {
-            return false;
-        }
-        
-        final CombinatorialTestConfiguration other = (CombinatorialTestConfiguration) object;
-        return Objects.equals(generationReporter, other.generationReporter) && Objects.equals(faultCharacterizationAlgorithmFactory, other.faultCharacterizationAlgorithmFactory) && Objects.equals(generators, other.generators);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CombinatorialTestConfiguration that = (CombinatorialTestConfiguration) o;
+        return  Objects.equals(faultCharacterizationAlgorithmFactory, that.faultCharacterizationAlgorithmFactory) &&
+                Objects.equals(generators, that.generators) &&
+                Objects.equals(generationReporter, that.generationReporter);
     }
-    
+
     @Override
     public int hashCode() {
-        return Objects.hash(generationReporter, faultCharacterizationAlgorithmFactory, generators);
+        return Objects.hash(faultCharacterizationAlgorithmFactory, generators, generationReporter);
     }
-    
+
     @Override
     public String toString() {
-        return "CombinatorialTestConfiguration{" + "faultCharacterizationAlgorithmFactory=" + faultCharacterizationAlgorithmFactory + ", generators=" + generators + ", generationReporter=" + generationReporter + '}';
+        return "CombinatorialTestConfiguration{" +
+                "faultCharacterizationAlgorithmFactory=" + faultCharacterizationAlgorithmFactory +
+                ", generators=" + generators +
+                ", generationReporter=" + generationReporter +
+                '}';
     }
-    
 }

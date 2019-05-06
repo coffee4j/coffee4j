@@ -1,6 +1,7 @@
 package de.rwth.swc.coffee4j.engine.manager;
 
 import de.rwth.swc.coffee4j.engine.TestResult;
+import de.rwth.swc.coffee4j.engine.constraint.diagnosis.InternalConflict;
 import de.rwth.swc.coffee4j.engine.util.IntArrayWrapper;
 import de.rwth.swc.coffee4j.engine.util.Preconditions;
 
@@ -30,7 +31,12 @@ public class CachingDelegatingCombinatorialTestManager implements CombinatorialT
         this.cache = Preconditions.notNull(cache);
         this.generator = Preconditions.notNull(generator);
     }
-    
+
+    @Override
+    public List<InternalConflict> checkConstraintsForConflicts() {
+        return generator.checkConstraintsForConflicts();
+    }
+
     @Override
     public synchronized List<int[]> generateInitialTests() {
         return computeTestInputsWithUnknownResults(generator.generateInitialTests());
@@ -62,5 +68,4 @@ public class CachingDelegatingCombinatorialTestManager implements CombinatorialT
         
         return computeTestInputsWithUnknownResults(generator.generateAdditionalTestInputsWithResult(testInput, testResult));
     }
-    
 }

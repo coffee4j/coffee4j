@@ -57,6 +57,9 @@ class CombinatorialTestExtension implements TestTemplateInvocationContextProvide
         final TestInputIterator iterator = new TestInputIterator();
         final InputParameterModel model = new ModelLoader().load(extensionContext);
         final CombinatorialTestConsumerManager manager = new CombinatorialTestConsumerManager(configuration, iterator::add, model);
+
+        diagnoseConstraints(configuration, manager);
+
         manager.generateInitialTests();
         
         getStore(extensionContext).put(CombinatorialTestExecutionCallback.REPORTERS_KEY, configuration.getExecutionReporters());
@@ -69,7 +72,17 @@ class CombinatorialTestExtension implements TestTemplateInvocationContextProvide
         return StreamSupport.stream(Spliterators.spliteratorUnknownSize(iterator, Spliterator.ORDERED), false)
                 .map(testInput -> createInvocationContext(nameFormatter, methodContext, testInput));
     }
-    
+
+    private void diagnoseConstraints(CombinatorialTestConsumerManagerConfiguration configuration, CombinatorialTestConsumerManager manager) {
+        if(configuration.getConstraintDiagnosisConfiguration().isEnabled()) {
+            final boolean isConflictFree = manager.checkConstraintsForConflicts();
+
+            if(configuration.getConstraintDiagnosisConfiguration().shouldSkip()) {
+                Preconditions.condition(isConflictFree, "Error: conflicts among constraints detected");
+            }
+        }
+    }
+
     private CombinatorialTestNameFormatter createNameFormatter(Method testMethod) {
         final CombinatorialTest combinatorialTest = findAnnotation(testMethod, CombinatorialTest.class).orElseThrow(() -> new JUnitException("Illegal state: could not find combinatorial test annotation"));
         final String name = Preconditions.notBlank(combinatorialTest.name().trim(), () -> "Configuration error: @" + CombinatorialTest.class.getSimpleName() + " on method " + testMethod.getName() + " must be declared with a non-empty name.");
@@ -79,5 +92,4 @@ class CombinatorialTestExtension implements TestTemplateInvocationContextProvide
     private TestTemplateInvocationContext createInvocationContext(CombinatorialTestNameFormatter nameFormatter, CombinatorialTestMethodContext methodContext, Combination testInput) {
         return new CombinatorialTestInvocationContext(nameFormatter, methodContext, testInput);
     }
-    
 }

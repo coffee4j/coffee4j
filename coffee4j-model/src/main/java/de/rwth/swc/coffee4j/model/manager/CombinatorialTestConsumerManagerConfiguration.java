@@ -13,6 +13,7 @@ import de.rwth.swc.coffee4j.engine.util.Preconditions;
 import de.rwth.swc.coffee4j.model.converter.IndexBasedModelConverter;
 import de.rwth.swc.coffee4j.model.converter.ModelConverter;
 import de.rwth.swc.coffee4j.model.converter.ModelConverterFactory;
+import de.rwth.swc.coffee4j.model.diagnosis.ConstraintDiagnosisConfiguration;
 import de.rwth.swc.coffee4j.model.report.ExecutionReporter;
 
 import java.util.ArrayList;
@@ -35,7 +36,9 @@ public final class CombinatorialTestConsumerManagerConfiguration {
     private final CombinatorialTestManagerFactory managerFactory;
     
     private final ModelConverterFactory modelConverterFactory;
-    
+
+    private final ConstraintDiagnosisConfiguration constraintDiagnosisConfiguration;
+
     private final FaultCharacterizationAlgorithmFactory characterizationAlgorithmFactory;
     
     private final List<TestInputGroupGenerator> generators;
@@ -47,6 +50,7 @@ public final class CombinatorialTestConsumerManagerConfiguration {
     private CombinatorialTestConsumerManagerConfiguration(Builder builder) {
         managerFactory = builder.managerFactory;
         modelConverterFactory = Preconditions.notNull(builder.modelConverterFactory);
+        constraintDiagnosisConfiguration = builder.constraintDiagnosisConfiguration;
         characterizationAlgorithmFactory = builder.characterizationAlgorithmFactory;
         generators = builder.generators;
         executionReporters = builder.executionReporters;
@@ -66,7 +70,11 @@ public final class CombinatorialTestConsumerManagerConfiguration {
     public ModelConverterFactory getModelConverterFactory() {
         return modelConverterFactory;
     }
-    
+
+    public ConstraintDiagnosisConfiguration getConstraintDiagnosisConfiguration()  {
+        return constraintDiagnosisConfiguration;
+    }
+
     /**
      * @return an optional containing the factory for creating new characterization algorithms if one is configured,
      * otherwise and empty {@link Optional} is returned
@@ -95,30 +103,39 @@ public final class CombinatorialTestConsumerManagerConfiguration {
     public List<ArgumentConverter> getArgumentConverters() {
         return argumentConverters;
     }
-    
+
     @Override
-    public boolean equals(Object object) {
-        if (this == object) {
-            return true;
-        }
-        if (object == null || getClass() != object.getClass()) {
-            return false;
-        }
-        
-        final CombinatorialTestConsumerManagerConfiguration other = (CombinatorialTestConsumerManagerConfiguration) object;
-        return Objects.equals(managerFactory, other.managerFactory) && Objects.equals(executionReporters, other.executionReporters) && Objects.equals(argumentConverters, other.argumentConverters) && Objects.equals(generators, other.generators) && Objects.equals(characterizationAlgorithmFactory, other.characterizationAlgorithmFactory) && Objects.equals(modelConverterFactory, other.modelConverterFactory);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        CombinatorialTestConsumerManagerConfiguration that = (CombinatorialTestConsumerManagerConfiguration) o;
+        return Objects.equals(managerFactory, that.managerFactory) &&
+                Objects.equals(modelConverterFactory, that.modelConverterFactory) &&
+                Objects.equals(constraintDiagnosisConfiguration, that.constraintDiagnosisConfiguration) &&
+                Objects.equals(characterizationAlgorithmFactory, that.characterizationAlgorithmFactory) &&
+                Objects.equals(generators, that.generators) &&
+                Objects.equals(executionReporters, that.executionReporters) &&
+                Objects.equals(argumentConverters, that.argumentConverters);
     }
-    
+
     @Override
     public int hashCode() {
-        return Objects.hash(managerFactory, executionReporters, argumentConverters, generators, characterizationAlgorithmFactory, modelConverterFactory);
+        return Objects.hash(managerFactory, modelConverterFactory, constraintDiagnosisConfiguration, characterizationAlgorithmFactory, generators, executionReporters, argumentConverters);
     }
-    
+
     @Override
     public String toString() {
-        return "CombinatorialTestConsumerManagerConfiguration{" + "managerFactory=" + managerFactory + ", modelConverterFactory=" + modelConverterFactory + ", characterizationAlgorithmFactory=" + characterizationAlgorithmFactory + ", generators=" + generators + ", executionReporters=" + executionReporters + ", argumentConverters=" + argumentConverters + '}';
+        return "CombinatorialTestConsumerManagerConfiguration{" +
+                "managerFactory=" + managerFactory +
+                ", modelConverterFactory=" + modelConverterFactory +
+                ", constraintDiagnosisConfiguration=" + constraintDiagnosisConfiguration +
+                ", characterizationAlgorithmFactory=" + characterizationAlgorithmFactory +
+                ", generators=" + generators +
+                ", executionReporters=" + executionReporters +
+                ", argumentConverters=" + argumentConverters +
+                '}';
     }
-    
+
     public static Builder consumerManagerConfiguration() {
         return new Builder();
     }
@@ -133,7 +150,9 @@ public final class CombinatorialTestConsumerManagerConfiguration {
         private ModelConverterFactory modelConverterFactory = IndexBasedModelConverter::new;
         
         private FaultCharacterizationAlgorithmFactory characterizationAlgorithmFactory;
-        
+
+        private ConstraintDiagnosisConfiguration constraintDiagnosisConfiguration;
+
         private final List<TestInputGroupGenerator> generators = new ArrayList<>();
         
         private final List<ExecutionReporter> executionReporters = new ArrayList<>();
@@ -152,7 +171,7 @@ public final class CombinatorialTestConsumerManagerConfiguration {
          */
         public Builder managerFactory(CombinatorialTestManagerFactory managerFactory) {
             this.managerFactory = managerFactory;
-            
+
             return this;
         }
         
@@ -179,12 +198,19 @@ public final class CombinatorialTestConsumerManagerConfiguration {
          *                                         {@link #build()} to indicate that no fault characterization is used
          * @return this
          */
-        public Builder characterizationAlgorithmFactory(FaultCharacterizationAlgorithmFactory characterizationAlgorithmFactory) {
+        public Builder faultCharacterizationAlgorithmFactory(FaultCharacterizationAlgorithmFactory characterizationAlgorithmFactory) {
             this.characterizationAlgorithmFactory = characterizationAlgorithmFactory;
             
             return this;
         }
-        
+
+
+        public Builder setConstraintDiagnosisConfiguration(ConstraintDiagnosisConfiguration constraintDiagnosisEnabled) {
+            this.constraintDiagnosisConfiguration = constraintDiagnosisEnabled;
+
+            return this;
+        }
+
         /**
          * Adds one execution reporter to listen to important events during combinatorial test execution.
          *
@@ -325,7 +351,5 @@ public final class CombinatorialTestConsumerManagerConfiguration {
         public CombinatorialTestConsumerManagerConfiguration build() {
             return new CombinatorialTestConsumerManagerConfiguration(this);
         }
-        
     }
-    
 }

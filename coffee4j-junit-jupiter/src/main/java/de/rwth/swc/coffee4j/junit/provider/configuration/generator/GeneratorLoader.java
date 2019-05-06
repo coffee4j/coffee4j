@@ -35,5 +35,4 @@ public class GeneratorLoader implements Loader<List<TestInputGroupGenerator>> {
         
         return generators.isEmpty() ? Collections.singletonList(DEFAULT_GENERATOR) : generators;
     }
-    
 }

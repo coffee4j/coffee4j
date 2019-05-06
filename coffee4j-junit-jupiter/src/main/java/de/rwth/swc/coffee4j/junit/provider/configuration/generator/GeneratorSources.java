@@ -16,5 +16,4 @@ import java.lang.annotation.Target;
 public @interface GeneratorSources {
     
     GeneratorSource[] value();
-    
 }

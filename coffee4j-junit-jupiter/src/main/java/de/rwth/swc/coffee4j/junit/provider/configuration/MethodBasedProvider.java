@@ -37,5 +37,4 @@ class MethodBasedProvider implements ConfigurationProvider, AnnotationConsumer<C
             throw new JUnitException("The given method must either return a " + CombinatorialTestConsumerManagerConfiguration.class.getName() + " or a " + CombinatorialTestConsumerManagerConfiguration.Builder.class.getName() + ". Instead a " + object.getClass().getName() + " was returned");
         }
     }
-    
 }

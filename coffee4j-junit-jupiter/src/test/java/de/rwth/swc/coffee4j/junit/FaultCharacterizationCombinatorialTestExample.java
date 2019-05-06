@@ -1,8 +1,7 @@
 package de.rwth.swc.coffee4j.junit;
 
 import de.rwth.swc.coffee4j.engine.characterization.ben.Ben;
-import de.rwth.swc.coffee4j.junit.CombinatorialTest;
-import de.rwth.swc.coffee4j.junit.provider.configuration.algorithm.CharacterizationAlgorithm;
+import de.rwth.swc.coffee4j.junit.provider.configuration.characterization.EnableFaultCharacterization;
 import de.rwth.swc.coffee4j.junit.provider.configuration.reporter.Reporter;
 import de.rwth.swc.coffee4j.junit.provider.model.ModelFromMethod;
 import de.rwth.swc.coffee4j.model.InputParameterModel;
@@ -22,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 class FaultCharacterizationCombinatorialTestExample {
     
     @CombinatorialTest
-    @CharacterizationAlgorithm(Ben.class)
+    @EnableFaultCharacterization(Ben.class)
     @ModelFromMethod("model")
     @Reporter(PrintStreamExecutionReporter.class)
     void combinatorialTest(int param1, String param2, int param3, boolean param4, int param5, float param6) {
@@ -31,7 +30,7 @@ class FaultCharacterizationCombinatorialTestExample {
     }
     
     private static InputParameterModel.Builder model() {
-        return inputParameterModel("test model").strength(3).parameters(parameter("param1").values(1, 2, 3), parameter("param2").values("one  ", "two  ", "three"), parameter("param3").values(1, 2, 3), parameter("param4").values(true, false), parameter("param5").values(1, 2, 3), parameter("param6").values(1.1f, 2.2f, 3.3f)).forbiddenConstraint(constrain("param1", "param2", "param4").by((Integer firstValue, String secondValue, Boolean fourthValue) -> !(firstValue == 1 && "one  ".equals(secondValue) && fourthValue)));
+        return inputParameterModel("test model").strength(3).parameters(parameter("param1").values(1, 2, 3), parameter("param2").values("one  ", "two  ", "three"), parameter("param3").values(1, 2, 3), parameter("param4").values(true, false), parameter("param5").values(1, 2, 3), parameter("param6").values(1.1f, 2.2f, 3.3f)).exclusionConstraint(constrain("param1", "param2", "param4").by((Integer firstValue, String secondValue, Boolean fourthValue) -> !(firstValue == 1 && "one  ".equals(secondValue) && fourthValue)));
     }
     
 }

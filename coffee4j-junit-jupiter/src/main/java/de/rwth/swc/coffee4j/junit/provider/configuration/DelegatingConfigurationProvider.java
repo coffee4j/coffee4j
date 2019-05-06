@@ -5,9 +5,10 @@ import de.rwth.swc.coffee4j.engine.generator.TestInputGroupGenerator;
 import de.rwth.swc.coffee4j.engine.report.ArgumentConverter;
 import de.rwth.swc.coffee4j.junit.CombinatorialTest;
 import de.rwth.swc.coffee4j.junit.provider.configuration.converter.ConverterLoader;
+import de.rwth.swc.coffee4j.junit.provider.configuration.diagnosis.ConstraintDiagnosisLoader;
 import de.rwth.swc.coffee4j.junit.provider.configuration.reporter.ReporterLoader;
 import de.rwth.swc.coffee4j.model.report.ExecutionReporter;
-import de.rwth.swc.coffee4j.junit.provider.configuration.algorithm.CharacterizationAlgorithmLoader;
+import de.rwth.swc.coffee4j.junit.provider.configuration.characterization.FaultCharacterizationAlgorithmLoader;
 import de.rwth.swc.coffee4j.junit.provider.configuration.generator.GeneratorLoader;
 import de.rwth.swc.coffee4j.model.manager.CombinatorialTestConsumerManagerConfiguration;
 import org.junit.jupiter.api.extension.ExtensionContext;
@@ -18,7 +19,7 @@ import static de.rwth.swc.coffee4j.model.manager.CombinatorialTestConsumerManage
  * Provides a new {@link CombinatorialTestConsumerManagerConfiguration} based on further providers and sources
  * which can be registered using annotations. Specifically, this provider lets you configure any
  * {@link GeneratorLoader} for loader all {@link TestInputGroupGenerator},
- * {@link CharacterizationAlgorithmLoader} to load a
+ * {@link FaultCharacterizationAlgorithmLoader} to load a
  * <p>
  * {@link FaultCharacterizationAlgorithmFactory},
  * {@link ConverterLoader} to add {@link ArgumentConverter} to the default ones,
@@ -29,7 +30,12 @@ public class DelegatingConfigurationProvider implements ConfigurationProvider {
     
     @Override
     public CombinatorialTestConsumerManagerConfiguration provide(ExtensionContext extensionContext) {
-        return consumerManagerConfiguration().generators(new GeneratorLoader().load(extensionContext)).executionReporters(new ReporterLoader().load(extensionContext)).characterizationAlgorithmFactory(new CharacterizationAlgorithmLoader().load(extensionContext)).argumentConverters(new ConverterLoader().load(extensionContext)).build();
+        return consumerManagerConfiguration()
+                .generators(new GeneratorLoader().load(extensionContext))
+                .executionReporters(new ReporterLoader().load(extensionContext))
+                .faultCharacterizationAlgorithmFactory(new FaultCharacterizationAlgorithmLoader().load(extensionContext))
+                .setConstraintDiagnosisConfiguration(new ConstraintDiagnosisLoader().load(extensionContext))
+                .argumentConverters(new ConverterLoader().load(extensionContext))
+                .build();
     }
-    
 }

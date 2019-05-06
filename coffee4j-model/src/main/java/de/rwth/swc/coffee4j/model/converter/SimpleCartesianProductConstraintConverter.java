@@ -6,6 +6,7 @@ import de.rwth.swc.coffee4j.engine.util.Preconditions;
 import de.rwth.swc.coffee4j.model.Parameter;
 import de.rwth.swc.coffee4j.model.constraints.Constraint;
 import de.rwth.swc.coffee4j.model.constraints.ConstraintFunction;
+import de.rwth.swc.coffee4j.model.constraints.ConstraintStatus;
 import it.unimi.dsi.fastutil.ints.Int2IntMap;
 import it.unimi.dsi.fastutil.ints.Int2IntOpenHashMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -89,7 +90,7 @@ public class SimpleCartesianProductConstraintConverter implements IndexBasedCons
             }
         }
         
-        return new TupleList(id, relevantParameters, tuples);
+        return new TupleList(id, relevantParameters, tuples, constraint.getConstraintStatus().equals(ConstraintStatus.CORRECT));
     }
     
     private Int2IntMap computeSizeMap(Int2ObjectMap<Parameter> idToParameterMap, int[] relevantKeys) {
@@ -113,5 +114,4 @@ public class SimpleCartesianProductConstraintConverter implements IndexBasedCons
         
         return arguments;
     }
-    
 }

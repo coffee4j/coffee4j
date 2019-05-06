@@ -25,7 +25,15 @@ public class ReporterLoader implements Loader<List<ExecutionReporter>> {
     public List<ExecutionReporter> load(ExtensionContext extensionContext) {
         final Method testMethod = extensionContext.getRequiredTestMethod();
         
-        return findRepeatableAnnotations(testMethod, ReporterSource.class).stream().map(ReporterSource::value).map(ReflectionUtils::newInstance).map(provider -> AnnotationConsumerInitializer.initialize(testMethod, provider)).map(provider -> provider.provide(extensionContext)).filter(Objects::nonNull).flatMap(Collection::stream).filter(Objects::nonNull).collect(Collectors.toList());
+        return findRepeatableAnnotations(testMethod, ReporterSource.class)
+                .stream()
+                .map(ReporterSource::value)
+                .map(ReflectionUtils::newInstance)
+                .map(provider -> AnnotationConsumerInitializer.initialize(testMethod, provider))
+                .map(provider -> provider.provide(extensionContext))
+                .filter(Objects::nonNull)
+                .flatMap(Collection::stream)
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
-    
 }

@@ -14,13 +14,13 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
-class InternalConstraintConverter {
-    
-    List<InternalConstraint> convertErrorTuples(final CombinatorialTestModel model) {
+public class InternalConstraintConverter {
+
+    public List<InternalConstraint> convertErrorTuples(final CombinatorialTestModel model) {
         return convertAll(model.getErrorTupleLists());
     }
     
-    List<InternalConstraint> convertForbiddenTuples(final CombinatorialTestModel model) {
+    public List<InternalConstraint> convertForbiddenTuples(final CombinatorialTestModel model) {
         return convertAll(model.getForbiddenTupleLists());
     }
     
@@ -43,7 +43,7 @@ class InternalConstraintConverter {
     private InternalConstraint convertTuplesList(final TupleList tupleList) {
         final BiFunction<InputParameterModel, Model, Constraint> constraint = (InputParameterModel ipm, Model model) -> or(model, createConstraints(tupleList, model)).getOpposite();
         
-        return new InternalConstraint(tupleList.getId(), constraint);
+        return new InternalConstraint(tupleList.getId(), constraint, tupleList.isMarkedAsCorrect());
     }
     
     private Constraint or(Model model, Constraint[] constraints) {

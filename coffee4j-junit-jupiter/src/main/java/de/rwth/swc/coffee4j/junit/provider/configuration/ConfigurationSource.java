@@ -30,5 +30,4 @@ public @interface ConfigurationSource {
      * @return the {@link ConfigurationProvider} class
      */
     Class<? extends ConfigurationProvider> value();
-    
 }

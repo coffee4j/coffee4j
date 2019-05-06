@@ -15,11 +15,11 @@ class ConstraintBuilderTest {
     @Test
     void parameterNamesCannotContainNull() {
         assertThrows(IllegalArgumentException.class, () -> constrain(null));
-        assertThrows(IllegalArgumentException.class, () -> constrain("first", null));
-        assertThrows(IllegalArgumentException.class, () -> constrain("first", "second", null));
-        assertThrows(IllegalArgumentException.class, () -> constrain("first", "second", "third", null));
-        assertThrows(IllegalArgumentException.class, () -> constrain("first", "second", "third", "fourth", null));
-        assertThrows(IllegalArgumentException.class, () -> constrain("first", "second", "third", "fourth", "fifth", null));
+        assertThrows(IllegalArgumentException.class, () -> constrain("first", (String) null));
+        assertThrows(IllegalArgumentException.class, () -> constrain("first", "second", (String) null));
+        assertThrows(IllegalArgumentException.class, () -> constrain("first", "second", "third", (String) null));
+        assertThrows(IllegalArgumentException.class, () -> constrain("first", "second", "third", "fourth", (String) null));
+        assertThrows(IllegalArgumentException.class, () -> constrain("first", "second", "third", "fourth", "fifth", (String) null));
     }
     
     @Test

@@ -10,7 +10,7 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 
-class ConstructorBasedProvider implements ReporterProvider, AnnotationConsumer<Reporter> {
+class ConstructorBasedReporterProvider implements ReporterProvider, AnnotationConsumer<Reporter> {
     
     private Class<? extends ExecutionReporter>[] reporterClasses;
     

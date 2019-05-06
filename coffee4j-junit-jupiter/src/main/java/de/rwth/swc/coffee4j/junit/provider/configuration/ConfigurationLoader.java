@@ -26,8 +26,15 @@ public class ConfigurationLoader implements Loader<CombinatorialTestConsumerMana
     public CombinatorialTestConsumerManagerConfiguration load(ExtensionContext extensionContext) {
         final Method testMethod = extensionContext.getRequiredTestMethod();
         
-        final Optional<ConfigurationProvider> configurationProvider = findAnnotation(testMethod, ConfigurationSource.class).map(ConfigurationSource::value).map(ReflectionUtils::newInstance).map(provider -> AnnotationConsumerInitializer.initialize(testMethod, provider));
-        final CombinatorialTestConsumerManagerConfiguration configuration = configurationProvider.orElseGet(DelegatingConfigurationProvider::new).provide(extensionContext);
+        final Optional<ConfigurationProvider> configurationProvider =
+                findAnnotation(testMethod, ConfigurationSource.class)
+                        .map(ConfigurationSource::value)
+                        .map(ReflectionUtils::newInstance)
+                        .map(provider -> AnnotationConsumerInitializer.initialize(testMethod, provider));
+
+        final CombinatorialTestConsumerManagerConfiguration configuration = configurationProvider
+                .orElseGet(DelegatingConfigurationProvider::new)
+                .provide(extensionContext);
         
         if (configuration == null) {
             throw new JUnitException("A configuration has to be provided for a combinatorial test");
@@ -35,5 +42,4 @@ public class ConfigurationLoader implements Loader<CombinatorialTestConsumerMana
         
         return configuration;
     }
-    
 }

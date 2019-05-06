@@ -43,8 +43,8 @@ public abstract class ModelBasedConstraintChecker implements ConstraintChecker {
         
         return constraints;
     }
-    
-    static void addAssignmentConstraint(int parameter, int value, Model model, List<Constraint> constraints) {
+
+    public static void addAssignmentConstraint(int parameter, int value, Model model, List<Constraint> constraints) {
         if (value != -1) {
             final Optional<Variable> candidate = ChocoSolverUtil.findVariable(model, parameter);
             
@@ -84,5 +84,4 @@ public abstract class ModelBasedConstraintChecker implements ConstraintChecker {
         
         return ChocoSolverUtil.runChocoSolver(model, constraintsList);
     }
-    
 }

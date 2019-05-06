@@ -39,7 +39,7 @@ class IndexBasedModelConverterTest {
     }
     
     private static Stream<Arguments> parameterModelAndConstraintsConversion() {
-        return Stream.of(Arguments.arguments(InputParameterModel.inputParameterModel("name").strength(1).parameters(Parameter.parameter("param").values(0, 1))), Arguments.arguments(InputParameterModel.inputParameterModel("name").strength(2).parameters(Parameter.parameter("param1").values(0, 1), Parameter.parameter("param2").values("one", "two", "three"), Parameter.parameter("param3").values(1.1, 2.2, 3.3, 4.4))), Arguments.arguments(InputParameterModel.inputParameterModel("name").strength(1).parameter(Parameter.parameter("param").values(0, 1, 2)).errorConstraint(constrain("param").by((Integer param) -> param != 1)).forbiddenConstraint(constrain("param").by((Integer param) -> param != 0))), Arguments.arguments(InputParameterModel.inputParameterModel("name").strength(1).parameters(Parameter.parameter("param1").values(0, 1), Parameter.parameter("param2").values(0, 1, 2), Parameter.parameter("param3").values(0, 2, 3)).errorConstraint(constrain("param2", "param3").by((Integer param2, Integer param3) -> !param2.equals(param3))).forbiddenConstraint(constrain("param1", "param3").by((Integer param1, Integer param2) -> !param1.equals(param2)))));
+        return Stream.of(Arguments.arguments(InputParameterModel.inputParameterModel("name").strength(1).parameters(Parameter.parameter("param").values(0, 1))), Arguments.arguments(InputParameterModel.inputParameterModel("name").strength(2).parameters(Parameter.parameter("param1").values(0, 1), Parameter.parameter("param2").values("one", "two", "three"), Parameter.parameter("param3").values(1.1, 2.2, 3.3, 4.4))), Arguments.arguments(InputParameterModel.inputParameterModel("name").strength(1).parameter(Parameter.parameter("param").values(0, 1, 2)).errorConstraint(constrain("param").by((Integer param) -> param != 1)).exclusionConstraint(constrain("param").by((Integer param) -> param != 0))), Arguments.arguments(InputParameterModel.inputParameterModel("name").strength(1).parameters(Parameter.parameter("param1").values(0, 1), Parameter.parameter("param2").values(0, 1, 2), Parameter.parameter("param3").values(0, 2, 3)).errorConstraint(constrain("param2", "param3").by((Integer param2, Integer param3) -> !param2.equals(param3))).exclusionConstraint(constrain("param1", "param3").by((Integer param1, Integer param2) -> !param1.equals(param2)))));
     }
     
     private void verifyAllParameterConversions(InputParameterModel model, ModelConverter converter) {
@@ -57,7 +57,7 @@ class IndexBasedModelConverterTest {
     }
     
     private void verifyAllConstraintsConvertedCorrectly(InputParameterModel model, ModelConverter converter) {
-        final List<Constraint> allConstraints = new ArrayList<>(model.getForbiddenConstraints());
+        final List<Constraint> allConstraints = new ArrayList<>(model.getExclusionConstraints());
         allConstraints.addAll(model.getErrorConstraints());
         
         for (Constraint constraint : allConstraints) {

@@ -23,7 +23,12 @@ public final class TupleList {
     private final int id;
     private final int[] involvedParameters;
     private final List<int[]> tuples;
-    
+    private final boolean markedAsCorrect;
+
+    public TupleList(final int id, final int[] involvedParameters, final Collection<int[]> tuples) {
+        this(id, involvedParameters, tuples, false);
+    }
+
     /**
      * Creates a new tuple list out of a given id, the involved parameters, and a collection of tuples which should
      * not be allowed. The tuples should be in the format specified by {@link TupleList}.
@@ -32,17 +37,18 @@ public final class TupleList {
      * @param involvedParameters the indices of all involved parameters
      * @param tuples             all tuples which are not allowed
      */
-    public TupleList(final int id, final int[] involvedParameters, final Collection<int[]> tuples) {
+    public TupleList(final int id, final int[] involvedParameters, final Collection<int[]> tuples, boolean markedAsCorrect) {
         Preconditions.check(id > 0, "id must be greater than zero");
         Preconditions.notNull(involvedParameters);
         Preconditions.check(involvedParameters.length > 0, "involved parameters must not be empty");
         Preconditions.notNull(tuples);
         Preconditions.check(!tuples.isEmpty(), "list of tuples must not be empty");
         checkTupleSize(involvedParameters, tuples);
-        
+
         this.id = id;
         this.involvedParameters = Arrays.copyOf(involvedParameters, involvedParameters.length);
         this.tuples = new ArrayList<>(tuples);
+        this.markedAsCorrect = markedAsCorrect;
     }
     
     private static void checkTupleSize(int[] identifier, Collection<int[]> forbiddenTuples) {
@@ -71,27 +77,36 @@ public final class TupleList {
     public List<int[]> getTuples() {
         return Collections.unmodifiableList(tuples);
     }
-    
-    @Override
-    public boolean equals(Object object) {
-        if (this == object) {
-            return true;
-        }
-        if (object == null || getClass() != object.getClass()) {
-            return false;
-        }
-        
-        TupleList other = (TupleList) object;
-        return id == other.id;
+
+    public boolean isMarkedAsCorrect() {
+        return markedAsCorrect;
     }
-    
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        TupleList tupleList = (TupleList) o;
+        return id == tupleList.id &&
+                markedAsCorrect == tupleList.markedAsCorrect &&
+                Arrays.equals(involvedParameters, tupleList.involvedParameters) &&
+                Objects.equals(tuples, tupleList.tuples);
+    }
+
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        int result = Objects.hash(id, tuples, markedAsCorrect);
+        result = 31 * result + Arrays.hashCode(involvedParameters);
+        return result;
     }
-    
+
     @Override
     public String toString() {
-        return "TupleList{" + "id=" + id + ", identifier=" + Arrays.toString(involvedParameters) + ", tuples=" + tuples.stream().map(Arrays::toString).collect(Collectors.toList()) + '}';
+        return "TupleList{" +
+                "id=" + id +
+                ", involvedParameters=" + Arrays.toString(involvedParameters) +
+                ", tuples=" + tuples +
+                ", markedAsCorrect=" + markedAsCorrect +
+                '}';
     }
 }

@@ -24,7 +24,7 @@ public final class InputParameterModel {
     
     private final List<Parameter> parameters;
     
-    private final List<Constraint> forbiddenConstraints;
+    private final List<Constraint> exclusionConstraints;
     private final List<Constraint> errorConstraints;
     
     /**
@@ -45,28 +45,28 @@ public final class InputParameterModel {
      * @param strength             the testing strength. Must be equal to or greater than one and at most the number of parameters
      * @param name                 the name of the model. Should be human readable. Must not be {@code null}
      * @param parameters           all parameters of the model. Must not be, nor contain {@code null} and must not be empty.
-     * @param forbiddenConstraints all constraints which may never be violated as test inputs won't work then
+     * @param exclusionConstraints all constraints which may never be violated as test inputs won't work then
      *                             May not be, nor contain {@code null}
      * @param errorConstraints     all constraints which may be violated but will cause the system to throw an exception.
      *                             *                  All in all describes input which should not be allowed.
      *                             May not be, nor contain {@code null}
      */
-    public InputParameterModel(int strength, String name, List<Parameter> parameters, Collection<Constraint> forbiddenConstraints, Collection<Constraint> errorConstraints) {
+    public InputParameterModel(int strength, String name, List<Parameter> parameters, Collection<Constraint> exclusionConstraints, Collection<Constraint> errorConstraints) {
         Preconditions.notNull(name);
         Preconditions.notNull(parameters);
-        Preconditions.notNull(forbiddenConstraints);
+        Preconditions.notNull(exclusionConstraints);
         Preconditions.notNull(errorConstraints);
         Preconditions.check(strength >= 0);
         Preconditions.check(strength <= parameters.size());
         Preconditions.check(!parameters.contains(null));
-        Preconditions.check(!forbiddenConstraints.contains(null));
+        Preconditions.check(!exclusionConstraints.contains(null));
         Preconditions.check(!errorConstraints.contains(null));
         checkParameterDoesNotContainDuplicateName(parameters);
         
         this.strength = strength;
         this.name = name;
         this.parameters = new ArrayList<>(parameters);
-        this.forbiddenConstraints = new ArrayList<>(forbiddenConstraints);
+        this.exclusionConstraints = new ArrayList<>(exclusionConstraints);
         this.errorConstraints = new ArrayList<>(errorConstraints);
     }
     
@@ -107,8 +107,8 @@ public final class InputParameterModel {
      * @return a copy of the list of all forbidden constraints. Test inputs may never violate those constraints as they
      * define combinations which are not possible testable (like testing safari on windows is not possible)
      */
-    public List<Constraint> getForbiddenConstraints() {
-        return Collections.unmodifiableList(forbiddenConstraints);
+    public List<Constraint> getExclusionConstraints() {
+        return Collections.unmodifiableList(exclusionConstraints);
     }
     
     /**
@@ -137,17 +137,17 @@ public final class InputParameterModel {
         }
         
         final InputParameterModel model = (InputParameterModel) o;
-        return strength == model.strength && Objects.equals(name, model.name) && Objects.equals(parameters, model.parameters) && Objects.equals(forbiddenConstraints, model.forbiddenConstraints) && Objects.equals(errorConstraints, model.errorConstraints);
+        return strength == model.strength && Objects.equals(name, model.name) && Objects.equals(parameters, model.parameters) && Objects.equals(exclusionConstraints, model.exclusionConstraints) && Objects.equals(errorConstraints, model.errorConstraints);
     }
     
     @Override
     public int hashCode() {
-        return Objects.hash(strength, name, parameters, forbiddenConstraints, errorConstraints);
+        return Objects.hash(strength, name, parameters, exclusionConstraints, errorConstraints);
     }
     
     @Override
     public String toString() {
-        return "InputParameterModel{" + "strength=" + strength + ", name='" + name + '\'' + ", parameters=" + parameters + ", forbiddenConstraints=" + forbiddenConstraints + ", errorConstraints=" + errorConstraints + '}';
+        return "InputParameterModel{" + "strength=" + strength + ", name='" + name + '\'' + ", parameters=" + parameters + ", exclusionConstraints=" + exclusionConstraints + ", errorConstraints=" + errorConstraints + '}';
     }
     
     public static Builder inputParameterModel(String name) {
@@ -166,7 +166,7 @@ public final class InputParameterModel {
         
         private final List<Parameter> parameters = new ArrayList<>();
         
-        private final List<Constraint> forbiddenConstraints = new ArrayList<>();
+        private final List<Constraint> exclusionConstraints = new ArrayList<>();
         private final List<Constraint> errorConstraints = new ArrayList<>();
         
         private Builder(String name) {
@@ -261,13 +261,13 @@ public final class InputParameterModel {
         /**
          * Adds a forbidden constraint to the model.
          *
-         * @param forbiddenConstraint the forbidden constraint to be added. Must not be {@code null}
+         * @param exclusionConstraint the forbidden constraint to be added. Must not be {@code null}
          * @return this
          */
-        public Builder forbiddenConstraint(Constraint forbiddenConstraint) {
-            Preconditions.notNull(forbiddenConstraint);
+        public Builder exclusionConstraint(Constraint exclusionConstraint) {
+            Preconditions.notNull(exclusionConstraint);
             
-            forbiddenConstraints.add(forbiddenConstraint);
+            exclusionConstraints.add(exclusionConstraint);
             
             return this;
         }
@@ -275,14 +275,14 @@ public final class InputParameterModel {
         /**
          * Adds all forbidden constraints to the model.
          *
-         * @param forbiddenConstraints the forbidden constraints to be added. Must not be, nor contain {@code null}
+         * @param exclusionConstraints the forbidden constraints to be added. Must not be, nor contain {@code null}
          * @return this
          */
-        public Builder forbiddenConstraints(Constraint... forbiddenConstraints) {
-            Preconditions.notNull(forbiddenConstraints);
+        public Builder exclusionConstraints(Constraint... exclusionConstraints) {
+            Preconditions.notNull(exclusionConstraints);
             
-            for (Constraint constraint : forbiddenConstraints) {
-                forbiddenConstraint(constraint);
+            for (Constraint constraint : exclusionConstraints) {
+                exclusionConstraint(constraint);
             }
             
             return this;
@@ -324,9 +324,7 @@ public final class InputParameterModel {
          * @return the constructed model
          */
         public InputParameterModel build() {
-            return new InputParameterModel(strength, name, parameters, forbiddenConstraints, errorConstraints);
+            return new InputParameterModel(strength, name, parameters, exclusionConstraints, errorConstraints);
         }
-        
     }
-    
 }

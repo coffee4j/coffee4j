@@ -44,5 +44,4 @@ public class Ipog implements TestInputGroupGenerator {
             return new TestInputGroup(DISPLAY_NAME, testInputs, faultCharacterizationConfiguration);
         });
     }
-    
 }

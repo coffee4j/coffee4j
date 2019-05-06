@@ -8,14 +8,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * This is a {@link ConverterSource} using the {@link ConstructorBasedProvider} to create new instances of a
+ * This is a {@link ConverterSource} using the {@link ConstructorBasedConverterProvider} to create new instances of a
  * {@link ArgumentConverter} via a no-args constructor. Since multiple converters are allowed,
  * just return multiple classes in the {@link #value()} method to register more converters, or use any other
  * {@link ConverterSource} since {@link ConverterSource} is a repeatable annotation.
  */
 @Target({ElementType.ANNOTATION_TYPE, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
-@ConverterSource(ConstructorBasedProvider.class)
+@ConverterSource(ConstructorBasedConverterProvider.class)
 public @interface Converter {
     
     /**
