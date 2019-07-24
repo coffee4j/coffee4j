@@ -13,7 +13,7 @@ import de.rwth.swc.coffee4j.engine.util.Preconditions;
 import de.rwth.swc.coffee4j.model.converter.IndexBasedModelConverter;
 import de.rwth.swc.coffee4j.model.converter.ModelConverter;
 import de.rwth.swc.coffee4j.model.converter.ModelConverterFactory;
-import de.rwth.swc.coffee4j.model.diagnosis.ConstraintDiagnosisConfiguration;
+import de.rwth.swc.coffee4j.engine.conflict.ConflictDetectionConfiguration;
 import de.rwth.swc.coffee4j.model.report.ExecutionReporter;
 
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ import java.util.Optional;
 /**
  * The complete reusable part of the configuration for a combinatorial test input. This means that multiple combinatorial
  * tests can be executed with the same {@link CombinatorialTestConsumerManagerConfiguration}, as generally only
- * the model changes.
+ * the testModel changes.
  * Includes a factory for creating a {@link CombinatorialTestManager},
  * {@link ModelConverter},
  * {@link FaultCharacterizationAlgorithm}s, generators for initial test inputs,
@@ -37,7 +37,7 @@ public final class CombinatorialTestConsumerManagerConfiguration {
     
     private final ModelConverterFactory modelConverterFactory;
 
-    private final ConstraintDiagnosisConfiguration constraintDiagnosisConfiguration;
+    private final ConflictDetectionConfiguration conflictDetectionConfiguration;
 
     private final FaultCharacterizationAlgorithmFactory characterizationAlgorithmFactory;
     
@@ -50,7 +50,7 @@ public final class CombinatorialTestConsumerManagerConfiguration {
     private CombinatorialTestConsumerManagerConfiguration(Builder builder) {
         managerFactory = builder.managerFactory;
         modelConverterFactory = Preconditions.notNull(builder.modelConverterFactory);
-        constraintDiagnosisConfiguration = builder.constraintDiagnosisConfiguration;
+        conflictDetectionConfiguration = builder.conflictDetectionConfiguration;
         characterizationAlgorithmFactory = builder.characterizationAlgorithmFactory;
         generators = builder.generators;
         executionReporters = builder.executionReporters;
@@ -65,14 +65,14 @@ public final class CombinatorialTestConsumerManagerConfiguration {
     }
     
     /**
-     * @return the factory used to create a new manager for an input parameter model
+     * @return the factory used to create a new manager for an input parameter testModel
      */
     public ModelConverterFactory getModelConverterFactory() {
         return modelConverterFactory;
     }
 
-    public ConstraintDiagnosisConfiguration getConstraintDiagnosisConfiguration()  {
-        return constraintDiagnosisConfiguration;
+    public ConflictDetectionConfiguration getConflictDetectionConfiguration()  {
+        return conflictDetectionConfiguration;
     }
 
     /**
@@ -111,7 +111,7 @@ public final class CombinatorialTestConsumerManagerConfiguration {
         CombinatorialTestConsumerManagerConfiguration that = (CombinatorialTestConsumerManagerConfiguration) o;
         return Objects.equals(managerFactory, that.managerFactory) &&
                 Objects.equals(modelConverterFactory, that.modelConverterFactory) &&
-                Objects.equals(constraintDiagnosisConfiguration, that.constraintDiagnosisConfiguration) &&
+                Objects.equals(conflictDetectionConfiguration, that.conflictDetectionConfiguration) &&
                 Objects.equals(characterizationAlgorithmFactory, that.characterizationAlgorithmFactory) &&
                 Objects.equals(generators, that.generators) &&
                 Objects.equals(executionReporters, that.executionReporters) &&
@@ -120,7 +120,7 @@ public final class CombinatorialTestConsumerManagerConfiguration {
 
     @Override
     public int hashCode() {
-        return Objects.hash(managerFactory, modelConverterFactory, constraintDiagnosisConfiguration, characterizationAlgorithmFactory, generators, executionReporters, argumentConverters);
+        return Objects.hash(managerFactory, modelConverterFactory, conflictDetectionConfiguration, characterizationAlgorithmFactory, generators, executionReporters, argumentConverters);
     }
 
     @Override
@@ -128,7 +128,7 @@ public final class CombinatorialTestConsumerManagerConfiguration {
         return "CombinatorialTestConsumerManagerConfiguration{" +
                 "managerFactory=" + managerFactory +
                 ", modelConverterFactory=" + modelConverterFactory +
-                ", constraintDiagnosisConfiguration=" + constraintDiagnosisConfiguration +
+                ", conflictDetectionConfiguration=" + conflictDetectionConfiguration +
                 ", characterizationAlgorithmFactory=" + characterizationAlgorithmFactory +
                 ", generators=" + generators +
                 ", executionReporters=" + executionReporters +
@@ -151,7 +151,7 @@ public final class CombinatorialTestConsumerManagerConfiguration {
         
         private FaultCharacterizationAlgorithmFactory characterizationAlgorithmFactory;
 
-        private ConstraintDiagnosisConfiguration constraintDiagnosisConfiguration;
+        private ConflictDetectionConfiguration conflictDetectionConfiguration;
 
         private final List<TestInputGroupGenerator> generators = new ArrayList<>();
         
@@ -205,8 +205,8 @@ public final class CombinatorialTestConsumerManagerConfiguration {
         }
 
 
-        public Builder setConstraintDiagnosisConfiguration(ConstraintDiagnosisConfiguration constraintDiagnosisEnabled) {
-            this.constraintDiagnosisConfiguration = constraintDiagnosisEnabled;
+        public Builder setConflictDetectionConfiguration(ConflictDetectionConfiguration constraintDiagnosisEnabled) {
+            this.conflictDetectionConfiguration = constraintDiagnosisEnabled;
 
             return this;
         }
@@ -255,7 +255,7 @@ public final class CombinatorialTestConsumerManagerConfiguration {
         }
         
         /**
-         * Adds the argument converter to convert report arguments from engine to model representations.
+         * Adds the argument converter to convert report arguments from engine to testModel representations.
          *
          * @param argumentConverter the converter to be added. Must not be {@code null}
          * @return this
@@ -267,7 +267,7 @@ public final class CombinatorialTestConsumerManagerConfiguration {
         }
         
         /**
-         * Adds the argument converters to convert report arguments from engine to model representations.
+         * Adds the argument converters to convert report arguments from engine to testModel representations.
          *
          * @param arguementConverters the converters to be added. Must not be, nor contain {@code null}
          * @return this
@@ -283,7 +283,7 @@ public final class CombinatorialTestConsumerManagerConfiguration {
         }
         
         /**
-         * Adds the argument converters to convert report arguments from engine to model representations.
+         * Adds the argument converters to convert report arguments from engine to testModel representations.
          *
          * @param argumentConverters the converters to be added. Must not be, nor contain {@code null}
          * @return this

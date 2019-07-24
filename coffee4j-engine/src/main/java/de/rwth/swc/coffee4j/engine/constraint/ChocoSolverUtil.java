@@ -8,14 +8,17 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-class ChocoSolverUtil {
+public class ChocoSolverUtil {
+
     private ChocoSolverUtil() {
     }
     
-    static Optional<Variable> findVariable(final Model model, int parameter) {
+    static public Optional<Variable> findVariable(final Model model, int parameter) {
         final String key = String.valueOf(parameter);
         
-        return Arrays.stream(model.getVars()).filter(variable -> variable.getName().equals(key)).findFirst();
+        return Arrays.stream(model.getVars())
+                .filter(variable -> variable.getName().equals(key))
+                .findFirst();
     }
     
     static boolean runChocoSolver(Model model, List<Constraint> temporaryConstraints) {

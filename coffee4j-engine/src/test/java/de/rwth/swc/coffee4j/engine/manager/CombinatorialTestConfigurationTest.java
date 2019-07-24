@@ -1,6 +1,7 @@
 package de.rwth.swc.coffee4j.engine.manager;
 
 import de.rwth.swc.coffee4j.engine.characterization.FaultCharacterizationAlgorithmFactory;
+import de.rwth.swc.coffee4j.engine.conflict.ConflictDetectionConfiguration;
 import de.rwth.swc.coffee4j.engine.generator.TestInputGroupGenerator;
 import de.rwth.swc.coffee4j.engine.report.GenerationReporter;
 import org.junit.jupiter.api.Assertions;
@@ -9,6 +10,7 @@ import org.mockito.Mockito;
 
 import java.util.Collections;
 
+import static de.rwth.swc.coffee4j.engine.conflict.ConflictDetectionConfiguration.disable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -23,13 +25,13 @@ class CombinatorialTestConfigurationTest {
     
     @Test
     void preconditions() {
-        assertThrows(NullPointerException.class, () -> new CombinatorialTestConfiguration(FACTORY, null, REPORTER));
-        assertThrows(IllegalArgumentException.class, () -> new CombinatorialTestConfiguration(FACTORY, Collections.singletonList(null), REPORTER));
+        assertThrows(NullPointerException.class, () -> new CombinatorialTestConfiguration(FACTORY, disable(), null, REPORTER));
+        assertThrows(IllegalArgumentException.class, () -> new CombinatorialTestConfiguration(FACTORY, disable(), Collections.singletonList(null), REPORTER));
     }
     
     @Test
     void optionalNotPresentIfFactoryNull() {
-        final CombinatorialTestConfiguration configuration = new CombinatorialTestConfiguration(null, Collections.singletonList(GENERATOR), REPORTER);
+        final CombinatorialTestConfiguration configuration = new CombinatorialTestConfiguration(null, disable(), Collections.singletonList(GENERATOR), REPORTER);
         
         assertFalse(configuration.getFaultCharacterizationAlgorithmFactory().isPresent());
         assertEquals(Collections.singletonList(GENERATOR), configuration.getGenerators());
@@ -38,7 +40,7 @@ class CombinatorialTestConfigurationTest {
     
     @Test
     void optionalNotPresentIfReporterNull() {
-        final CombinatorialTestConfiguration configuration = new CombinatorialTestConfiguration(FACTORY, Collections.singletonList(GENERATOR), null);
+        final CombinatorialTestConfiguration configuration = new CombinatorialTestConfiguration(FACTORY, disable(), Collections.singletonList(GENERATOR), null);
         
         assertFalse(configuration.getGenerationReporter().isPresent());
         assertEquals(Collections.singletonList(GENERATOR), configuration.getGenerators());

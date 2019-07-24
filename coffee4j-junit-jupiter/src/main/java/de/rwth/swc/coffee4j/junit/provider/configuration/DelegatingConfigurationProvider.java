@@ -5,7 +5,7 @@ import de.rwth.swc.coffee4j.engine.generator.TestInputGroupGenerator;
 import de.rwth.swc.coffee4j.engine.report.ArgumentConverter;
 import de.rwth.swc.coffee4j.junit.CombinatorialTest;
 import de.rwth.swc.coffee4j.junit.provider.configuration.converter.ConverterLoader;
-import de.rwth.swc.coffee4j.junit.provider.configuration.diagnosis.ConstraintDiagnosisLoader;
+import de.rwth.swc.coffee4j.junit.provider.configuration.diagnosis.ConflictDetectionConfigurationLoader;
 import de.rwth.swc.coffee4j.junit.provider.configuration.reporter.ReporterLoader;
 import de.rwth.swc.coffee4j.model.report.ExecutionReporter;
 import de.rwth.swc.coffee4j.junit.provider.configuration.characterization.FaultCharacterizationAlgorithmLoader;
@@ -34,7 +34,7 @@ public class DelegatingConfigurationProvider implements ConfigurationProvider {
                 .generators(new GeneratorLoader().load(extensionContext))
                 .executionReporters(new ReporterLoader().load(extensionContext))
                 .faultCharacterizationAlgorithmFactory(new FaultCharacterizationAlgorithmLoader().load(extensionContext))
-                .setConstraintDiagnosisConfiguration(new ConstraintDiagnosisLoader().load(extensionContext))
+                .setConflictDetectionConfiguration(new ConflictDetectionConfigurationLoader().load(extensionContext))
                 .argumentConverters(new ConverterLoader().load(extensionContext))
                 .build();
     }

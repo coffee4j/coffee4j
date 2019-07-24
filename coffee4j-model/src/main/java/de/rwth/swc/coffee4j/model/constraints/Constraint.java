@@ -12,7 +12,9 @@ import java.util.List;
  */
 public class Constraint {
 
-    private final String name;
+    public static final String ANONYMOUS_CONSTRAINT = "";
+
+    private String name;
 
     private final List<String> parameterNames;
     
@@ -27,12 +29,16 @@ public class Constraint {
     /**
      * Creates a new constraint. It is most efficient if only the parameters really involved and not additional ones
      * are given.
-     *
+     * @param name               a name to improve readability without further semantics
      * @param parameterNames     the names of all involved parameters. Must not be, or contain {@code null}, or be empty
      * @param constraintFunction the function by which the values for the parameters are constrained.
      *                           Must not be {@code null}
+     * @param constraintStatus   status is either Unknown or Correct which is related to conflict detection
      */
-    public Constraint(String name, List<String> parameterNames, ConstraintFunction constraintFunction, ConstraintStatus constraintStatus) {
+    public Constraint(String name,
+                      List<String> parameterNames,
+                      ConstraintFunction constraintFunction,
+                      ConstraintStatus constraintStatus) {
         Preconditions.notNull(name);
         Preconditions.notNull(parameterNames);
         Preconditions.notNull(constraintFunction);
@@ -44,6 +50,10 @@ public class Constraint {
         this.parameterNames = parameterNames;
         this.constraintFunction = constraintFunction;
         this.constraintStatus = constraintStatus;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getName() {

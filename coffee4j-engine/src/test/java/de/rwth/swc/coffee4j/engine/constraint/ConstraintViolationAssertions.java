@@ -1,6 +1,6 @@
 package de.rwth.swc.coffee4j.engine.constraint;
 
-import de.rwth.swc.coffee4j.engine.CombinatorialTestModel;
+import de.rwth.swc.coffee4j.engine.TestModel;
 import de.rwth.swc.coffee4j.engine.util.Preconditions;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.variables.IntVar;
@@ -15,9 +15,9 @@ public class ConstraintViolationAssertions {
     private ConstraintViolationAssertions() {
     }
     
-    public static void assertExactNumberOfErrorConstraintViolations(CombinatorialTestModel ipm, int[] tuple, int expectedNumberOfViolations) {
+    public static void assertExactNumberOfErrorConstraintViolations(TestModel ipm, int[] tuple, int expectedNumberOfViolations) {
         InternalConstraintConverter converter = new InternalConstraintConverter();
-        List<InternalConstraint> errorConstraints = converter.convertErrorTuples(ipm);
+        List<InternalConstraint> errorConstraints = converter.convertAll(ipm.getErrorTupleLists());
         
         long actualNumberOfViolations = errorConstraints.stream().filter(errorConstraint -> isConstraintViolation(ipm, tuple, errorConstraint)).count();
         
@@ -26,9 +26,9 @@ public class ConstraintViolationAssertions {
         }
     }
     
-    public static void assertAtMostNumberOfErrorConstraintViolations(CombinatorialTestModel ipm, int[] tuple, int expectedNumberOfViolations) {
+    public static void assertAtMostNumberOfErrorConstraintViolations(TestModel ipm, int[] tuple, int expectedNumberOfViolations) {
         InternalConstraintConverter converter = new InternalConstraintConverter();
-        List<InternalConstraint> errorConstraints = converter.convertErrorTuples(ipm);
+        List<InternalConstraint> errorConstraints = converter.convertAll(ipm.getErrorTupleLists());
         
         long actualNumberOfViolations = errorConstraints.stream().filter(errorConstraint -> isConstraintViolation(ipm, tuple, errorConstraint)).count();
         
@@ -37,9 +37,9 @@ public class ConstraintViolationAssertions {
         }
     }
     
-    public static void assertNoExclusionConstraintViolations(CombinatorialTestModel ipm, int[] tuple) {
+    public static void assertNoExclusionConstraintViolations(TestModel ipm, int[] tuple) {
         InternalConstraintConverter converter = new InternalConstraintConverter();
-        List<InternalConstraint> exclusionConstraints = converter.convertForbiddenTuples(ipm);
+        List<InternalConstraint> exclusionConstraints = converter.convertAll(ipm.getForbiddenTupleLists());
         
         for (InternalConstraint constraint : exclusionConstraints) {
             if (isConstraintViolation(ipm, tuple, constraint)) {
@@ -48,7 +48,7 @@ public class ConstraintViolationAssertions {
         }
     }
     
-    private static boolean isConstraintViolation(CombinatorialTestModel ipm, int[] tuple, InternalConstraint constraint) {
+    private static boolean isConstraintViolation(TestModel ipm, int[] tuple, InternalConstraint constraint) {
         Preconditions.check(ipm.getNumberOfParameters() == tuple.length);
         
         final Model model = new Model();
@@ -66,7 +66,7 @@ public class ConstraintViolationAssertions {
             }
         }
         
-        constraint.post(ipm, model);
+        constraint.apply(model).post();
         
         return !model.getSolver().solve();
     }

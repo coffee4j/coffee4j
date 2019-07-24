@@ -1,7 +1,8 @@
 package de.rwth.swc.coffee4j.engine.manager;
 
 import de.rwth.swc.coffee4j.engine.TestResult;
-import de.rwth.swc.coffee4j.engine.constraint.diagnosis.InternalConflict;
+import de.rwth.swc.coffee4j.engine.conflict.DiagnosisHittingSet;
+import de.rwth.swc.coffee4j.engine.conflict.MissingInvalidTuple;
 
 import java.util.List;
 
@@ -11,7 +12,8 @@ import java.util.List;
  */
 public interface CombinatorialTestManager {
 
-    List<InternalConflict> checkConstraintsForConflicts();
+    List<MissingInvalidTuple> checkConstraintsForConflicts();
+    List<DiagnosisHittingSet> computeMinimalDiagnosisHittingSets(List<MissingInvalidTuple> missingInvalidTuples);
 
     /**
      * Generates all initial test inputs for execution. This should generate at least one test input if dynamic generation
@@ -33,5 +35,4 @@ public interface CombinatorialTestManager {
      * necessarily have to return any test inputs for each call
      */
     List<int[]> generateAdditionalTestInputsWithResult(int[] testInput, TestResult testResult);
-    
 }

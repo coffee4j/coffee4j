@@ -6,7 +6,7 @@ import org.junit.jupiter.api.extension.ExtensionContext;
  * A general interface used to mark a provider for a resource. They are most likely used together with source
  * definitions form annotations. For example, {@link de.rwth.swc.coffee4j.junit.provider.model.ModelFromMethod} defines
  * the name of a method from which a {@link de.rwth.swc.coffee4j.model.InputParameterModel} is loaded and
- * {@link de.rwth.swc.coffee4j.junit.provider.model.MethodBasedProvider} then loads the model from this method.
+ * {@link de.rwth.swc.coffee4j.junit.provider.model.MethodBasedProvider} then loads the testModel from this method.
  *
  * @param <T> the type provided by the method
  */

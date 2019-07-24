@@ -1,12 +1,11 @@
 package de.rwth.swc.coffee4j.engine.manager;
 
+import de.rwth.swc.coffee4j.engine.TestModel;
 import de.rwth.swc.coffee4j.engine.characterization.FaultCharacterizationAlgorithm;
 import de.rwth.swc.coffee4j.engine.characterization.FaultCharacterizationAlgorithmFactory;
 import de.rwth.swc.coffee4j.engine.characterization.FaultCharacterizationConfiguration;
-import de.rwth.swc.coffee4j.engine.CombinatorialTestModel;
 import de.rwth.swc.coffee4j.engine.TestResult;
-import de.rwth.swc.coffee4j.engine.constraint.diagnosis.BasicConstraintDiagnosisManager;
-import de.rwth.swc.coffee4j.engine.constraint.diagnosis.InternalConflict;
+import de.rwth.swc.coffee4j.engine.conflict.*;
 import de.rwth.swc.coffee4j.engine.generator.TestInputGroup;
 import de.rwth.swc.coffee4j.engine.generator.TestInputGroupGenerator;
 import de.rwth.swc.coffee4j.engine.report.GenerationReporter;
@@ -48,20 +47,33 @@ public class BasicCombinatorialTestManager implements CombinatorialTestManager {
     
     private final CombinatorialTestConfiguration configuration;
     
-    private final CombinatorialTestModel model;
+    private final TestModel model;
     
     private final List<SingleGroupGenerationManager> managers = new ArrayList<>();
     
-    public BasicCombinatorialTestManager(CombinatorialTestConfiguration configuration, CombinatorialTestModel model) {
+    public BasicCombinatorialTestManager(CombinatorialTestConfiguration configuration,
+                                         TestModel model) {
         this.configuration = Preconditions.notNull(configuration);
         this.model = Preconditions.notNull(model);
     }
 
     @Override
-    public List<InternalConflict> checkConstraintsForConflicts() {
-        final BasicConstraintDiagnosisManager diagnoseManager = new BasicConstraintDiagnosisManager(model);
+    public List<MissingInvalidTuple> checkConstraintsForConflicts() {
+        final ConflictDetectionManager conflictDetectionManager = new ConflictDetectionManager(
+                configuration.getConflictDetectionConfiguration(),
+                model);
 
-        return diagnoseManager.checkForConflicts();
+        return conflictDetectionManager.detectMissingInvalidTuples();
+    }
+
+    @Override
+    public List<DiagnosisHittingSet> computeMinimalDiagnosisHittingSets(List<MissingInvalidTuple> missingInvalidTuples) {
+        Preconditions.notNull(missingInvalidTuples);
+        Preconditions.check(configuration.getConflictDetectionConfiguration().isConflictDiagnosisEnabled());
+
+        final ReduceBasedDiagnosisHittingSetBuilder builder = new ReduceBasedDiagnosisHittingSetBuilder(model);
+
+        return builder.computeMinimalDiagnosisHittingSets(missingInvalidTuples);
     }
 
     /**

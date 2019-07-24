@@ -1,6 +1,7 @@
 package de.rwth.swc.coffee4j.engine.manager;
 
 import de.rwth.swc.coffee4j.engine.characterization.FaultCharacterizationAlgorithmFactory;
+import de.rwth.swc.coffee4j.engine.conflict.ConflictDetectionConfiguration;
 import de.rwth.swc.coffee4j.engine.generator.TestInputGroupGenerator;
 import de.rwth.swc.coffee4j.engine.report.GenerationReporter;
 import de.rwth.swc.coffee4j.engine.util.Preconditions;
@@ -13,14 +14,16 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * All configuration needed for an {@link CombinatorialTestManager} to generate test inputs for a given model.
+ * All configuration needed for an {@link CombinatorialTestManager} to generate test inputs for a given testModel.
  */
 public final class CombinatorialTestConfiguration {
     
     private final FaultCharacterizationAlgorithmFactory faultCharacterizationAlgorithmFactory;
     
     private final List<TestInputGroupGenerator> generators;
-    
+
+    private final ConflictDetectionConfiguration conflictDetectionConfiguration;
+
     private final GenerationReporter generationReporter;
 
     /**
@@ -34,12 +37,15 @@ public final class CombinatorialTestConfiguration {
      *                                              Can be {@code null}
      */
     public CombinatorialTestConfiguration(FaultCharacterizationAlgorithmFactory faultCharacterizationAlgorithmFactory,
+                                          ConflictDetectionConfiguration conflictDetectionConfiguration,
                                           Collection<TestInputGroupGenerator> generators,
                                           GenerationReporter generationReporter) {
+        Preconditions.notNull(conflictDetectionConfiguration);
         Preconditions.notNull(generators);
         Preconditions.check(!generators.contains(null));
         
         this.faultCharacterizationAlgorithmFactory = faultCharacterizationAlgorithmFactory;
+        this.conflictDetectionConfiguration = conflictDetectionConfiguration;
         this.generators = new ArrayList<>(generators);
         this.generationReporter = generationReporter;
     }
@@ -50,7 +56,11 @@ public final class CombinatorialTestConfiguration {
     public Optional<FaultCharacterizationAlgorithmFactory> getFaultCharacterizationAlgorithmFactory() {
         return Optional.ofNullable(faultCharacterizationAlgorithmFactory);
     }
-    
+
+    public ConflictDetectionConfiguration getConflictDetectionConfiguration() {
+        return conflictDetectionConfiguration;
+    }
+
     /**
      * @return an unmodifiable list of all generates which should be used
      */
@@ -70,14 +80,15 @@ public final class CombinatorialTestConfiguration {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CombinatorialTestConfiguration that = (CombinatorialTestConfiguration) o;
-        return  Objects.equals(faultCharacterizationAlgorithmFactory, that.faultCharacterizationAlgorithmFactory) &&
-                Objects.equals(generators, that.generators) &&
-                Objects.equals(generationReporter, that.generationReporter);
+        return Objects.equals(faultCharacterizationAlgorithmFactory, that.faultCharacterizationAlgorithmFactory) &&
+                generators.equals(that.generators) &&
+                conflictDetectionConfiguration.equals(that.conflictDetectionConfiguration) &&
+                generationReporter.equals(that.generationReporter);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(faultCharacterizationAlgorithmFactory, generators, generationReporter);
+        return Objects.hash(faultCharacterizationAlgorithmFactory, generators, conflictDetectionConfiguration, generationReporter);
     }
 
     @Override
@@ -85,6 +96,7 @@ public final class CombinatorialTestConfiguration {
         return "CombinatorialTestConfiguration{" +
                 "faultCharacterizationAlgorithmFactory=" + faultCharacterizationAlgorithmFactory +
                 ", generators=" + generators +
+                ", conflictDetectionConfiguration=" + conflictDetectionConfiguration +
                 ", generationReporter=" + generationReporter +
                 '}';
     }

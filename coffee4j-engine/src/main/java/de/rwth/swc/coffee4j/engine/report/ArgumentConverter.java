@@ -2,8 +2,8 @@ package de.rwth.swc.coffee4j.engine.report;
 
 /**
  * Defines an interface which can be used to convert arguments to different representation forms.
- * Internally, this is used to convert engine representations to model representations (which I should not have written
- * here since engine does not know about model, but meh...).
+ * Internally, this is used to convert engine representations to testModel representations (which I should not have written
+ * here since engine does not know about testModel, but meh...).
  */
 public interface ArgumentConverter {
     

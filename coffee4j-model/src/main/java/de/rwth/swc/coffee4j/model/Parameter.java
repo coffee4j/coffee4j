@@ -11,8 +11,8 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Represents a parameter form an input parameter model for combinatorial testing. As such it has a descriptive and
- * unique name (at least unique inside its input parameter model), and a list of arbitrary many values.
+ * Represents a parameter form an input parameter testModel for combinatorial testing. As such it has a descriptive and
+ * unique name (at least unique inside its input parameter testModel), and a list of arbitrary many values.
  */
 public final class Parameter {
     
@@ -22,7 +22,7 @@ public final class Parameter {
     /**
      * Creates a new parameter with the given name and values.
      *
-     * @param name   the parameters name. Should be unique inside its input parameter model. Must not be {@code null}
+     * @param name   the parameters name. Should be unique inside its input parameter testModel. Must not be {@code null}
      * @param values the values of the parameter. Must not be, nor contain {@code null}, and there need to be at least
      *               two value. Additionally, each value id may only appear once
      */
@@ -51,7 +51,7 @@ public final class Parameter {
     }
     
     /**
-     * @return the name of the parameter. Should be unique inside its input parameter model
+     * @return the name of the parameter. Should be unique inside its input parameter testModel
      */
     public String getName() {
         return name;

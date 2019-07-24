@@ -30,14 +30,14 @@ public class CombinatorialTestExecutionManager {
     private final CombinatorialTestConsumerManagerConfiguration configuration;
 
     /**
-     * Creates a new manager with the given configuration, executor and model.
+     * Creates a new manager with the given configuration, executor and testModel.
      *
      * @param configuration all needed configuration for a combinatorial test. This is the part which can be reused
      *                      *                      across different tests. Must not be {@code null}
-     * @param executor      can execute any test inputs possible with the supplied model. If the system under test does not
+     * @param executor      can execute any test inputs possible with the supplied testModel. If the system under test does not
      *                      behave correctly for a given combination, any exception should be thrown.
      *                      This part is generally not reusable. Must not be {@code null}
-     * @param model         the model which defines all parameters and constraints for a combinatorial test. This part
+     * @param model         the testModel which defines all parameters and constraints for a combinatorial test. This part
      *                      is generally not reusable. Must not be {@code null}
      */
     public CombinatorialTestExecutionManager(CombinatorialTestConsumerManagerConfiguration configuration,
@@ -60,7 +60,7 @@ public class CombinatorialTestExecutionManager {
      */
     public void execute() {
         if(!diagnoseConstraints()) {
-            if(configuration.getConstraintDiagnosisConfiguration().shouldSkip()) {
+            if(configuration.getConflictDetectionConfiguration().shouldAbort()) {
                 System.out.println("Error: conflicts among constraints detected");
                 return;
             }
@@ -78,7 +78,7 @@ public class CombinatorialTestExecutionManager {
     }
 
     private boolean diagnoseConstraints() {
-        if(configuration.getConstraintDiagnosisConfiguration().isEnabled()) {
+        if(configuration.getConflictDetectionConfiguration().isConflictDetectionEnabled()) {
             return generator.checkConstraintsForConflicts();
         }
 

@@ -3,11 +3,6 @@ package de.rwth.swc.coffee4j.engine.constraint;
 public class NoConstraintChecker implements ConstraintChecker {
     
     @Override
-    public boolean isSatisfiable() {
-        return true;
-    }
-    
-    @Override
     public boolean isValid(int[] combination) {
         return true;
     }

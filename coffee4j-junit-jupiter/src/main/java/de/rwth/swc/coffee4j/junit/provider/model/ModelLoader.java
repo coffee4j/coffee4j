@@ -13,7 +13,7 @@ import java.lang.reflect.Method;
 import static org.junit.platform.commons.util.AnnotationUtils.findAnnotation;
 
 /**
- * Class for loading the defined model for a {@link CombinatorialTest}.
+ * Class for loading the defined testModel for a {@link CombinatorialTest}.
  * Exactly one annotation of {@link ModelSource} is needed for this to find. Since {@link ModelSource} is inherited,
  * any inheriting annotation such as {@link ModelFromMethod} can also be found by this loader.
  */
@@ -26,7 +26,7 @@ public class ModelLoader implements Loader<InputParameterModel> {
         final InputParameterModel model = findAnnotation(testMethod, ModelSource.class).map(ModelSource::value).map(ReflectionUtils::newInstance).map(provider -> AnnotationConsumerInitializer.initialize(testMethod, provider)).map(provider -> provider.provide(extensionContext)).orElse(null);
         
         if (model == null) {
-            throw new JUnitException("A model has to be provided for a combinatorial test");
+            throw new JUnitException("A testModel has to be provided for a combinatorial test");
         }
         
         return model;

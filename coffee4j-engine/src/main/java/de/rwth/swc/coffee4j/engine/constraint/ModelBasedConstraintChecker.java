@@ -17,14 +17,7 @@ public abstract class ModelBasedConstraintChecker implements ConstraintChecker {
     ModelBasedConstraintChecker(Model model) {
         this.model = Preconditions.notNull(model);
     }
-    
-    @Override
-    public boolean isSatisfiable() {
-        model.getSolver().reset();
-        
-        return model.getSolver().solve();
-    }
-    
+
     @Override
     public boolean isValid(final int[] combination) {
         final List<Constraint> constraintsList = createAssignmentConstraints(combination, model);
@@ -44,7 +37,7 @@ public abstract class ModelBasedConstraintChecker implements ConstraintChecker {
         return constraints;
     }
 
-    public static void addAssignmentConstraint(int parameter, int value, Model model, List<Constraint> constraints) {
+    private static void addAssignmentConstraint(int parameter, int value, Model model, List<Constraint> constraints) {
         if (value != -1) {
             final Optional<Variable> candidate = ChocoSolverUtil.findVariable(model, parameter);
             

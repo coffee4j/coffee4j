@@ -1,7 +1,8 @@
 package de.rwth.swc.coffee4j.engine.manager;
 
 import de.rwth.swc.coffee4j.engine.TestResult;
-import de.rwth.swc.coffee4j.engine.constraint.diagnosis.InternalConflict;
+import de.rwth.swc.coffee4j.engine.conflict.DiagnosisHittingSet;
+import de.rwth.swc.coffee4j.engine.conflict.MissingInvalidTuple;
 import de.rwth.swc.coffee4j.engine.util.IntArrayWrapper;
 import de.rwth.swc.coffee4j.engine.util.Preconditions;
 
@@ -33,8 +34,13 @@ public class CachingDelegatingCombinatorialTestManager implements CombinatorialT
     }
 
     @Override
-    public List<InternalConflict> checkConstraintsForConflicts() {
+    public List<MissingInvalidTuple> checkConstraintsForConflicts() {
         return generator.checkConstraintsForConflicts();
+    }
+
+    @Override
+    public List<DiagnosisHittingSet> computeMinimalDiagnosisHittingSets(List<MissingInvalidTuple> missingInvalidTuples) {
+        return generator.computeMinimalDiagnosisHittingSets(missingInvalidTuples);
     }
 
     @Override

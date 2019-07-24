@@ -11,10 +11,12 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 
+import static de.rwth.swc.coffee4j.model.constraints.Constraint.ANONYMOUS_CONSTRAINT;
+
 /**
- * An representation of a input parameter model for combinatorial testing. Consists of a testing strength,
+ * An representation of a input parameter testModel for combinatorial testing. Consists of a testing strength,
  * readable name for identification, parameter, and forbidden and error constraints.
- * This model defines all important aspects of one combinatorial test.
+ * This testModel defines all important aspects of one combinatorial test.
  */
 public final class InputParameterModel {
     
@@ -28,11 +30,11 @@ public final class InputParameterModel {
     private final List<Constraint> errorConstraints;
     
     /**
-     * Creates a new model with no constraints.
+     * Creates a new testModel with no constraints.
      *
      * @param strength   the testing strength. Must be equal to or greater than one and at most the number of parameters
-     * @param name       the name of the model. Should be human readable. Must not be {@code null}
-     * @param parameters all parameters of the model. Must not be, nor contain {@code null} and must not be empty.
+     * @param name       the name of the testModel. Should be human readable. Must not be {@code null}
+     * @param parameters all parameters of the testModel. Must not be, nor contain {@code null} and must not be empty.
      *                   Must not contain parameters with duplicate names
      */
     public InputParameterModel(int strength, String name, List<Parameter> parameters) {
@@ -40,11 +42,11 @@ public final class InputParameterModel {
     }
     
     /**
-     * Creates a new model with all given configuration arguments.
+     * Creates a new testModel with all given configuration arguments.
      *
      * @param strength             the testing strength. Must be equal to or greater than one and at most the number of parameters
-     * @param name                 the name of the model. Should be human readable. Must not be {@code null}
-     * @param parameters           all parameters of the model. Must not be, nor contain {@code null} and must not be empty.
+     * @param name                 the name of the testModel. Should be human readable. Must not be {@code null}
+     * @param parameters           all parameters of the testModel. Must not be, nor contain {@code null} and must not be empty.
      * @param exclusionConstraints all constraints which may never be violated as test inputs won't work then
      *                             May not be, nor contain {@code null}
      * @param errorConstraints     all constraints which may be violated but will cause the system to throw an exception.
@@ -62,14 +64,33 @@ public final class InputParameterModel {
         Preconditions.check(!exclusionConstraints.contains(null));
         Preconditions.check(!errorConstraints.contains(null));
         checkParameterDoesNotContainDuplicateName(parameters);
-        
+
+        countAnonymousConstraints(exclusionConstraints, errorConstraints);
+
         this.strength = strength;
         this.name = name;
         this.parameters = new ArrayList<>(parameters);
         this.exclusionConstraints = new ArrayList<>(exclusionConstraints);
         this.errorConstraints = new ArrayList<>(errorConstraints);
     }
-    
+
+    private void countAnonymousConstraints(Collection<Constraint> exclusionConstraints,
+                                           Collection<Constraint> errorConstraints) {
+        int count = 0;
+
+        for(Constraint constraint : exclusionConstraints) {
+            if(constraint.getName().equals(ANONYMOUS_CONSTRAINT)) {
+                constraint.setName("unknown-" + ++count);
+            }
+        }
+
+        for(Constraint constraint : errorConstraints) {
+            if(constraint.getName().equals(ANONYMOUS_CONSTRAINT)) {
+                constraint.setName("unknown-" + ++count);
+            }
+        }
+    }
+
     private static void checkParameterDoesNotContainDuplicateName(List<Parameter> parameters) {
         final Set<String> parameterNames = new HashSet<>();
         
@@ -90,14 +111,14 @@ public final class InputParameterModel {
     }
     
     /**
-     * @return the descriptive name of the model
+     * @return the descriptive name of the testModel
      */
     public String getName() {
         return name;
     }
     
     /**
-     * @return a copy of the list of all parameters of this model
+     * @return a copy of the list of all parameters of this testModel
      */
     public List<Parameter> getParameters() {
         return Collections.unmodifiableList(parameters);
@@ -188,7 +209,7 @@ public final class InputParameterModel {
         /**
          * Sets the name. This may not be {@code null} when {@link #build()} is called.
          *
-         * @param name a descriptive name for the model
+         * @param name a descriptive name for the testModel
          * @return this
          */
         public Builder name(String name) {
@@ -198,7 +219,7 @@ public final class InputParameterModel {
         }
         
         /**
-         * Adds a parameter to the model.
+         * Adds a parameter to the testModel.
          *
          * @param parameter the parameter. Must not be {@code null}
          * @return this
@@ -212,7 +233,7 @@ public final class InputParameterModel {
         }
         
         /**
-         * Adds the parameter builders to the model by building them. This is a convenience method as now the user
+         * Adds the parameter builders to the testModel by building them. This is a convenience method as now the user
          * does not have to call {@link Parameter.Builder#build()} himself, therefore creating more readable code.
          *
          * @param parameter the parameter to be build. Must not be {@code null}
@@ -227,7 +248,7 @@ public final class InputParameterModel {
         }
         
         /**
-         * Adds all parameters to the model.
+         * Adds all parameters to the testModel.
          *
          * @param parameters all parameters to be added. Must not be, nor contain {@code null}
          * @return this
@@ -243,7 +264,7 @@ public final class InputParameterModel {
         }
         
         /**
-         * Builds all given builders and adds the result parameters to the model.
+         * Builds all given builders and adds the result parameters to the testModel.
          *
          * @param parameters the parameters to be added. Must not be, nor contain {@code null}
          * @return this
@@ -259,7 +280,7 @@ public final class InputParameterModel {
         }
         
         /**
-         * Adds a forbidden constraint to the model.
+         * Adds a forbidden constraint to the testModel.
          *
          * @param exclusionConstraint the forbidden constraint to be added. Must not be {@code null}
          * @return this
@@ -273,7 +294,7 @@ public final class InputParameterModel {
         }
         
         /**
-         * Adds all forbidden constraints to the model.
+         * Adds all forbidden constraints to the testModel.
          *
          * @param exclusionConstraints the forbidden constraints to be added. Must not be, nor contain {@code null}
          * @return this
@@ -289,7 +310,7 @@ public final class InputParameterModel {
         }
         
         /**
-         * Adds a error constraint to the model.
+         * Adds a error constraint to the testModel.
          *
          * @param errorConstraint the error constraint to be added. Must not be {@code null}
          * @return this
@@ -303,7 +324,7 @@ public final class InputParameterModel {
         }
         
         /**
-         * Adds all error constraints to the model.
+         * Adds all error constraints to the testModel.
          *
          * @param errorConstraints the error constraints to be added. Must not be, nor contain {@code null}
          * @return this
@@ -319,9 +340,9 @@ public final class InputParameterModel {
         }
         
         /**
-         * Builds the model. Add least one parameter needs to have been added by now.
+         * Builds the testModel. Add least one parameter needs to have been added by now.
          *
-         * @return the constructed model
+         * @return the constructed testModel
          */
         public InputParameterModel build() {
             return new InputParameterModel(strength, name, parameters, exclusionConstraints, errorConstraints);

@@ -1,19 +1,23 @@
 package de.rwth.swc.coffee4j.engine.constraint;
 
-import de.rwth.swc.coffee4j.engine.InputParameterModel;
 import de.rwth.swc.coffee4j.engine.util.Preconditions;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;
 
-import java.util.function.BiFunction;
+import java.util.Objects;
+import java.util.function.Function;
 
 public class InternalConstraint {
     
     private final int id;
-    private final BiFunction<InputParameterModel, Model, Constraint> function;
+    private final Function<Model, Constraint> function;
     private final boolean markedAsCorrect;
 
-    InternalConstraint(int id, BiFunction<InputParameterModel, Model, Constraint> function, boolean markedAsCorrect) {
+    public InternalConstraint(int id, Function<Model, Constraint> function) {
+        this(id, function, false);
+    }
+
+    public InternalConstraint(int id, Function<Model, Constraint> function, boolean markedAsCorrect) {
         Preconditions.check(id > 0);
         Preconditions.notNull(function);
         
@@ -38,11 +42,31 @@ public class InternalConstraint {
         return markedAsCorrect;
     }
 
-    public Constraint apply(final InputParameterModel inputParameterModel, final Model model) {
-        return function.apply(inputParameterModel, model);
+    public Constraint apply(final Model model) {
+        return function.apply(model);
     }
-    
-    void post(final InputParameterModel inputParameterModel, final Model model) {
-        apply(inputParameterModel, model).post();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        InternalConstraint that = (InternalConstraint) o;
+        return id == that.id &&
+                markedAsCorrect == that.markedAsCorrect &&
+                function.equals(that.function);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, function, markedAsCorrect);
+    }
+
+    @Override
+    public String toString() {
+        return "InternalConstraint{" +
+                "id=" + id +
+                ", function=" + function +
+                ", markedAsCorrect=" + markedAsCorrect +
+                '}';
     }
 }

@@ -7,7 +7,7 @@
     <parent>
         <artifactId>coffee4j-aggregate</artifactId>
         <groupId>de.rwth.swc.coffee4j</groupId>
-        <version>1.0.3</version>
+        <version>1.0.5</version>
     </parent>
 
     <artifactId>coffee4j-engine</artifactId>
@@ -31,6 +31,10 @@
         <dependency>
             <groupId>it.unimi.dsi</groupId>
             <artifactId>fastutil</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-lang3</artifactId>
         </dependency>
 
         <!-- TEST FRAMEWORK DEPENDENCIES -->
@@ -57,6 +61,12 @@
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-simple</artifactId>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-math3</artifactId>
+            <version>3.6.1</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

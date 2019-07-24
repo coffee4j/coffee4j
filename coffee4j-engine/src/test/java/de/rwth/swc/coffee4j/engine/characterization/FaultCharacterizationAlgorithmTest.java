@@ -1,7 +1,6 @@
 package de.rwth.swc.coffee4j.engine.characterization;
 
-import de.rwth.swc.coffee4j.engine.CombinatorialTestModel;
-import de.rwth.swc.coffee4j.engine.InputParameterModel;
+import de.rwth.swc.coffee4j.engine.TestModel;
 import de.rwth.swc.coffee4j.engine.TestResult;
 import de.rwth.swc.coffee4j.engine.constraint.ConstraintChecker;
 import de.rwth.swc.coffee4j.engine.constraint.NoConstraintChecker;
@@ -30,12 +29,12 @@ public interface FaultCharacterizationAlgorithmTest {
     @ParameterizedTest
     @MethodSource("failureInducingCombinations")
     default void findsRequiredCombinations(int[] parameterSizes, int strength, List<int[]> failureInducingCombinations) {
-        final InputParameterModel model = new CombinatorialTestModel(strength, parameterSizes);
+        final TestModel testModel = new TestModel(strength, parameterSizes, Collections.emptyList(), Collections.emptyList());
         final ConstraintChecker checker = new NoConstraintChecker();
         final ParameterCombinationFactory factory = new TWiseParameterCombinationFactory();
-        final FaultCharacterizationAlgorithm faultCharacterizationAlgorithm = provideAlgorithm(new FaultCharacterizationConfiguration(model, checker, new StandardOutputReporter()));
+        final FaultCharacterizationAlgorithm faultCharacterizationAlgorithm = provideAlgorithm(new FaultCharacterizationConfiguration(testModel, checker, new StandardOutputReporter()));
         
-        List<int[]> testInputs = new IpogAlgorithm(IpogConfiguration.ipogConfiguration().model(model).checker(checker).factory(factory).build()).generate();
+        List<int[]> testInputs = new IpogAlgorithm(IpogConfiguration.ipogConfiguration().testModel(testModel).checker(checker).factory(factory).build()).generate();
         while (!testInputs.isEmpty()) {
             testInputs = faultCharacterizationAlgorithm.computeNextTestInputs(mapToResults(testInputs, failureInducingCombinations));
         }

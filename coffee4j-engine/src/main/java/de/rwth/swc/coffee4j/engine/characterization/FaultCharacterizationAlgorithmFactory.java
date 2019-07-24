@@ -14,7 +14,7 @@ public interface FaultCharacterizationAlgorithmFactory {
      * Creates a new algorithm for the given configuration.
      *
      * @param configuration contains all important general information with which additional test inputs can be
-     *                      generated. This includes constraints checkers and general model information. Must not be {@code null}
+     *                      generated. This includes constraints checkers and general testModel information. Must not be {@code null}
      * @return a algorithm conforming to the configuration
      */
     FaultCharacterizationAlgorithm create(FaultCharacterizationConfiguration configuration);

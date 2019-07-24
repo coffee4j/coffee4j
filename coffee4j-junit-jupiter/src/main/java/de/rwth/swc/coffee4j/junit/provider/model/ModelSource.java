@@ -9,7 +9,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * {@code ModelSource} is an annotation used to register {@linkplain ModelProvider model providers} for the
+ * {@code ModelSource} is an annotation used to register {@linkplain ModelProvider testModel providers} for the
  * annotated test method.
  * <p>
  * This may also be used as a meta-annotation in order to create a custom composed annotation that inherits the

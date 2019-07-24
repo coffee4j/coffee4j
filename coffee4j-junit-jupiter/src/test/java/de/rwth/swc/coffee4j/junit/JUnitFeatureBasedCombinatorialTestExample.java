@@ -25,14 +25,14 @@ import static de.rwth.swc.coffee4j.model.Parameter.parameter;
 class JUnitFeatureBasedCombinatorialTestExample {
     
     @CombinatorialTest(name = "{firstName} at index {index}")
-    @ModelFromMethod("model")
+    @ModelFromMethod("testModel")
     void combinatorialTest(@ConvertWith(WrittenNumberConverter.class) int number, @AggregateWith(PersonAggregator.class) Person person) {
         System.out.println("Person: " + person);
         System.out.println("number: " + number);
     }
     
     private static InputParameterModel.Builder model() {
-        return inputParameterModel("test model").strength(3).parameters(parameter("number").values("one", "two", "three"), parameter("firstName").values("Alice", "Bob"), parameter("lastName").values("Smith", "Brown"), parameter("age").values(0, 10, 20, 30, 40));
+        return inputParameterModel("test testModel").strength(3).parameters(parameter("number").values("one", "two", "three"), parameter("firstName").values("Alice", "Bob"), parameter("lastName").values("Smith", "Brown"), parameter("age").values(0, 10, 20, 30, 40));
     }
     
     private static final class Person {

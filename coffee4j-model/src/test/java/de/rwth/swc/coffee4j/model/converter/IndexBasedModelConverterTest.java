@@ -1,6 +1,6 @@
 package de.rwth.swc.coffee4j.model.converter;
 
-import de.rwth.swc.coffee4j.engine.CombinatorialTestModel;
+import de.rwth.swc.coffee4j.engine.TestModel;
 import de.rwth.swc.coffee4j.engine.TupleList;
 import de.rwth.swc.coffee4j.model.Combination;
 import de.rwth.swc.coffee4j.model.InputParameterModel;
@@ -72,7 +72,7 @@ class IndexBasedModelConverterTest {
         }
     }
     
-    private void verifyCombinatorialTestModel(InputParameterModel model, CombinatorialTestModel convertedModel) {
+    private void verifyCombinatorialTestModel(InputParameterModel model, TestModel convertedModel) {
         assertEquals(model.getStrength(), convertedModel.getStrength());
         assertEquals(model.size(), convertedModel.getNumberOfParameters());
         assertEquals(model.size(), convertedModel.getParameterSizes().length);

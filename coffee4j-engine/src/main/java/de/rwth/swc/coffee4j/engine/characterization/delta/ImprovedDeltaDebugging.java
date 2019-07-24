@@ -1,6 +1,6 @@
 package de.rwth.swc.coffee4j.engine.characterization.delta;
 
-import de.rwth.swc.coffee4j.engine.InputParameterModel;
+import de.rwth.swc.coffee4j.engine.TestModel;
 import de.rwth.swc.coffee4j.engine.TestResult;
 import de.rwth.swc.coffee4j.engine.characterization.FaultCharacterizationAlgorithm;
 import de.rwth.swc.coffee4j.engine.characterization.FaultCharacterizationAlgorithmFactory;
@@ -35,7 +35,7 @@ import static de.rwth.swc.coffee4j.engine.util.PredicateUtil.not;
  * failure, while the RI algorithm uses this isolation algorithm to find complete failure-inducing combinations.
  * This implementation goes a bit further by allowing the discovery of failure-inducing combinations for multiple test
  * inputs. All failed test inputs are therefore searched test input by test input, except if failure-inducing combinations
- * found for previous test inputs already explain a failure. Then it is assumed that no other combination is present in
+ * found for previous test inputs already explanation a failure. Then it is assumed that no other combination is present in
  * the test input.
  * <p>
  * Important Information:
@@ -49,7 +49,7 @@ public class ImprovedDeltaDebugging implements FaultCharacterizationAlgorithm {
     
     private State state = State.INITIALIZATION;
     
-    private final InputParameterModel model;
+    private final TestModel testModel;
     
     private final Object2BooleanMap<IntArrayWrapper> coveringArray = new Object2BooleanOpenHashMap<>();
     
@@ -72,7 +72,7 @@ public class ImprovedDeltaDebugging implements FaultCharacterizationAlgorithm {
     public ImprovedDeltaDebugging(FaultCharacterizationConfiguration configuration) {
         Preconditions.notNull(configuration);
         
-        this.model = configuration.getModel();
+        this.testModel = configuration.getTestModel();
     }
     
     /**
@@ -98,7 +98,7 @@ public class ImprovedDeltaDebugging implements FaultCharacterizationAlgorithm {
     }
     
     private void assertAlgorithmInitialized() {
-        if (model == null) {
+        if (testModel == null) {
             throw new IllegalStateException("The algorithm has not been initialized");
         }
     }
@@ -216,7 +216,7 @@ public class ImprovedDeltaDebugging implements FaultCharacterizationAlgorithm {
             if (relatedParameters.contains(parameter)) {
                 nextExpectedTestInput[parameter] = currentFailedTestInput[parameter];
             } else {
-                final int otherValueIndex = (currentFailedTestInput[parameter] + 1) % model.getSizeOfParameter(parameter);
+                final int otherValueIndex = (currentFailedTestInput[parameter] + 1) % testModel.getSizeOfParameter(parameter);
                 nextExpectedTestInput[parameter] = otherValueIndex;
             }
         }
@@ -246,7 +246,7 @@ public class ImprovedDeltaDebugging implements FaultCharacterizationAlgorithm {
         
         for (int parameter = 0; parameter < nextExpectedTestInput.length; parameter++) {
             if (unrelatedParameters.contains(parameter) || subParametersOne.contains(parameter)) {
-                final int otherValueIndex = (currentFailedTestInput[parameter] + 1) % model.getSizeOfParameter(parameter);
+                final int otherValueIndex = (currentFailedTestInput[parameter] + 1) % testModel.getSizeOfParameter(parameter);
                 nextExpectedTestInput[parameter] = otherValueIndex;
             } else {
                 nextExpectedTestInput[parameter] = currentFailedTestInput[parameter];

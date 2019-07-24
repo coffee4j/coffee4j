@@ -1,6 +1,6 @@
 package de.rwth.swc.coffee4j.model.converter;
 
-import de.rwth.swc.coffee4j.engine.CombinatorialTestModel;
+import de.rwth.swc.coffee4j.engine.TestModel;
 import de.rwth.swc.coffee4j.engine.TupleList;
 import de.rwth.swc.coffee4j.model.Combination;
 import de.rwth.swc.coffee4j.model.InputParameterModel;
@@ -9,20 +9,20 @@ import de.rwth.swc.coffee4j.model.Value;
 import de.rwth.swc.coffee4j.model.constraints.Constraint;
 
 /**
- * An interface for classes which can convert an {@link InputParameterModel} to a {@link CombinatorialTestModel}.
+ * An interface for classes which can convert an {@link InputParameterModel} to a {@link TestModel}.
  * Additionally, all sub-resources like parameters, combinations, and constraints can be converted.
  */
 public interface ModelConverter {
     
     /**
-     * @return the original model which is converted by this {@link ModelConverter}
+     * @return the original testModel which is converted by this {@link ModelConverter}
      */
     InputParameterModel getModel();
     
     /**
-     * @return the conversion of the original model ({@link #getModel()})
+     * @return the conversion of the original testModel ({@link #getModel()})
      */
-    CombinatorialTestModel getConvertedModel();
+    TestModel getConvertedModel();
     
     /**
      * Converts a {@link Combination} object to an integer array representation with the corresponding value number.
@@ -30,7 +30,7 @@ public interface ModelConverter {
      * equal to the original one should be returned.
      *
      * @param combination the combination to be converted. Must not be {@code null}
-     * @return the corresponding integer array to that it matches the model conversion
+     * @return the corresponding integer array to that it matches the testModel conversion
      */
     int[] convertCombination(Combination combination);
     
@@ -39,7 +39,7 @@ public interface ModelConverter {
      * parameters and values.
      *
      * @param combination the combination to be converted. Must not be {@code null}
-     * @return the corresponding {@link Combination} so that it matches the model conversion
+     * @return the corresponding {@link Combination} so that it matches the testModel conversion
      */
     Combination convertCombination(int[] combination);
     
@@ -48,18 +48,18 @@ public interface ModelConverter {
      * {@link TupleList} returned by this method is given to {@link #convertConstraint(TupleList)}, the original
      * constraint will be returned.
      *
-     * @param constraint the constraint to convert. Needs to be one in the original model, otherwise success of this
+     * @param constraint the constraint to convert. Needs to be one in the original testModel, otherwise success of this
      *                   method is not guaranteed. Must not be {@code null}
-     * @return the corresponding {@link TupleList} representation so that it matches the model conversion
+     * @return the corresponding {@link TupleList} representation so that it matches the testModel conversion
      */
     TupleList convertConstraint(Constraint constraint);
     
     /**
      * Converts a {@link TupleList} object into a {@link Constraint} representation which is equal.
      *
-     * @param constraint the constraint to convert. Needs to be one in the original model, otherwise success of this
+     * @param constraint the constraint to convert. Needs to be one in the original testModel, otherwise success of this
      *                   method is not guaranteed. Must not be {@code null}
-     * @return the corresponding {@link Constraint} representation so that it matches the model conversion
+     * @return the corresponding {@link Constraint} representation so that it matches the testModel conversion
      */
     Constraint convertConstraint(TupleList constraint);
     
@@ -67,18 +67,18 @@ public interface ModelConverter {
      * Converts a {@link Parameter} object into an equivalent integer representation. If the integer returned by
      * this method is given to {@link #convertParameter(int)}, the original parameter is returned.
      *
-     * @param parameter the parameter to convert. Needs to be in the original model, otherwise success of this method
+     * @param parameter the parameter to convert. Needs to be in the original testModel, otherwise success of this method
      *                  is not guaranteed. Must not be {@code null}
-     * @return the corresponding integer representation so that it matches the model conversion
+     * @return the corresponding integer representation so that it matches the testModel conversion
      */
     int convertParameter(Parameter parameter);
     
     /**
      * Converts an integer representation back to a {@link Parameter} object.
      *
-     * @param parameter the parameter to convert. Needs to be in the original model, otherwise success of this method
+     * @param parameter the parameter to convert. Needs to be in the original testModel, otherwise success of this method
      *                  is not guaranteed. Must not be negative
-     * @return the corresponding {@link Parameter} representation so that it matches the model conversion
+     * @return the corresponding {@link Parameter} representation so that it matches the testModel conversion
      */
     Parameter convertParameter(int parameter);
     
@@ -90,7 +90,7 @@ public interface ModelConverter {
      *
      * @param parameter the parameter in which the value is located
      * @param value     the value to convert
-     * @return the corresponding integer representation so that it matches the model conversion
+     * @return the corresponding integer representation so that it matches the testModel conversion
      */
     int convertValue(Parameter parameter, Value value);
     
@@ -101,7 +101,7 @@ public interface ModelConverter {
      *
      * @param parameter the parameter in which the value is located
      * @param value     the value to convert
-     * @return the corresponding {@link Value} representation so that it matches the model conversion
+     * @return the corresponding {@link Value} representation so that it matches the testModel conversion
      */
     Value convertValue(int parameter, int value);
     

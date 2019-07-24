@@ -3,7 +3,7 @@ package de.rwth.swc.coffee4j.model;
 import java.util.Objects;
 
 /**
- * Represents a value for a input parameter model in combinatorial testing. One could say that this class is not really
+ * Represents a value for a input parameter testModel in combinatorial testing. One could say that this class is not really
  * needed as it just wraps an object, but it gives the additional distinction between this value object being
  * {@code null} and no object being present. The id field is need for quicker comparison in {@link #hashCode()}
  * and {@link #equals(Object)} and is only valid when comparing values inside one {@link Parameter}.

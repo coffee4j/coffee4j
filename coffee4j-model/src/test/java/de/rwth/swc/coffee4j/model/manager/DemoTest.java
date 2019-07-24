@@ -4,14 +4,12 @@ import de.rwth.swc.coffee4j.engine.generator.ipog.Ipog;
 import de.rwth.swc.coffee4j.model.Combination;
 import de.rwth.swc.coffee4j.model.InputParameterModel;
 import de.rwth.swc.coffee4j.model.Parameter;
-import de.rwth.swc.coffee4j.model.diagnosis.ConstraintDiagnosisConfiguration;
 import de.rwth.swc.coffee4j.model.report.PrintStreamExecutionReporter;
 import org.junit.jupiter.api.Test;
 
 import static de.rwth.swc.coffee4j.engine.characterization.ben.Ben.ben;
 import static de.rwth.swc.coffee4j.model.constraints.ConstraintBuilder.constrain;
-import static de.rwth.swc.coffee4j.model.diagnosis.ConstraintDiagnosisConfiguration.disable;
-import static de.rwth.swc.coffee4j.model.diagnosis.ConstraintDiagnosisConfiguration.enableButDoNotSkip;
+import static de.rwth.swc.coffee4j.engine.conflict.ConflictDetectionConfiguration.disable;
 import static de.rwth.swc.coffee4j.model.manager.CombinatorialTestConsumerManagerConfiguration.consumerManagerConfiguration;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 
@@ -24,7 +22,7 @@ class DemoTest {
                         .executionReporter(new PrintStreamExecutionReporter())
                         .generator(new Ipog())
                         .faultCharacterizationAlgorithmFactory(ben())
-                        .setConstraintDiagnosisConfiguration(disable())
+                        .setConflictDetectionConfiguration(disable())
                         .build(),
                 this::testFunction,
                 InputParameterModel

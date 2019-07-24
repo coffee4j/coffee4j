@@ -1,0 +1,6 @@
+image: maven:3-jdk-11
+
+coffee4j_project_build:
+  stage: build
+  script: 
+    - mvn clean install -U

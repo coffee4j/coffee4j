@@ -1,7 +1,6 @@
 package de.rwth.swc.coffee4j.engine.manager;
 
-import de.rwth.swc.coffee4j.engine.CombinatorialTestModel;
-import de.rwth.swc.coffee4j.engine.InputParameterModel;
+import de.rwth.swc.coffee4j.engine.TestModel;
 import de.rwth.swc.coffee4j.engine.TestResult;
 import de.rwth.swc.coffee4j.engine.characterization.FaultCharacterizationAlgorithm;
 import de.rwth.swc.coffee4j.engine.characterization.FaultCharacterizationAlgorithmFactory;
@@ -25,6 +24,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 
+import static de.rwth.swc.coffee4j.engine.conflict.ConflictDetectionConfiguration.disable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -49,12 +49,12 @@ class BasicCombinatorialTestManagerTest {
         assertThrows(NullPointerException.class, () -> new BasicCombinatorialTestManager(simpleConfiguration(), null));
     }
     
-    private CombinatorialTestModel simpleModel() {
-        return new CombinatorialTestModel(1, new int[]{2});
+    private TestModel simpleModel() {
+        return new TestModel(1, new int[]{2}, Collections.emptyList(), Collections.emptyList());
     }
     
     private CombinatorialTestConfiguration simpleConfiguration() {
-        return new CombinatorialTestConfiguration(null, Collections.emptyList(), generationReporter);
+        return new CombinatorialTestConfiguration(null, disable(), Collections.emptyList(), generationReporter);
     }
     
     @Test
@@ -66,8 +66,8 @@ class BasicCombinatorialTestManagerTest {
         final TestInputGroupGenerator generator = Mockito.mock(TestInputGroupGenerator.class);
         when(generator.generate(any(), any())).thenReturn(allGroups);
         
-        final CombinatorialTestConfiguration configuration = new CombinatorialTestConfiguration(null, Collections.singleton(generator), generationReporter);
-        final CombinatorialTestModel model = new CombinatorialTestModel(1, new int[]{2});
+        final CombinatorialTestConfiguration configuration = new CombinatorialTestConfiguration(null, disable(), Collections.singleton(generator), generationReporter);
+        final TestModel model = new TestModel(1, new int[]{2}, Collections.emptyList(), Collections.emptyList());
         final BasicCombinatorialTestManager testInputGenerator = new BasicCombinatorialTestManager(configuration, model);
         
         final List<int[]> generatedTestInputs = testInputGenerator.generateInitialTests();
@@ -85,7 +85,7 @@ class BasicCombinatorialTestManagerTest {
     void faultCharacterizationUsedWhenAlgorithmAvailable() {
         final List<int[]> testInputs = Arrays.asList(new int[]{0}, new int[]{1});
         final List<int[]> characterizationTestInputs = Arrays.asList(new int[]{2});
-        final FaultCharacterizationConfiguration characterizationConfiguration = new FaultCharacterizationConfiguration(Mockito.mock(InputParameterModel.class), Mockito.mock(Reporter.class));
+        final FaultCharacterizationConfiguration characterizationConfiguration = new FaultCharacterizationConfiguration(Mockito.mock(TestModel.class), Mockito.mock(Reporter.class));
         final TestInputGroup group = new TestInputGroup("test", testInputs, characterizationConfiguration);
         final Supplier<TestInputGroup> groupSupplier = () -> group;
         final Set<Supplier<TestInputGroup>> allGroups = Collections.singleton(groupSupplier);
@@ -97,9 +97,9 @@ class BasicCombinatorialTestManagerTest {
         when(factory.create(any())).thenReturn(algorithm);
         when(algorithm.computeNextTestInputs(any())).thenReturn(characterizationTestInputs);
         
-        final CombinatorialTestConfiguration configuration = new CombinatorialTestConfiguration(factory, Collections.singleton(generator), generationReporter);
-        final CombinatorialTestModel model = new CombinatorialTestModel(1, new int[]{3});
-        final BasicCombinatorialTestManager testInputGenerator = new BasicCombinatorialTestManager(configuration, model);
+        final CombinatorialTestConfiguration configuration = new CombinatorialTestConfiguration(factory, disable(), Collections.singleton(generator), generationReporter);
+        final TestModel testModel = new TestModel(1, new int[]{3}, Collections.emptyList(), Collections.emptyList());
+        final BasicCombinatorialTestManager testInputGenerator = new BasicCombinatorialTestManager(configuration, testModel);
         
         final List<int[]> generatedTestInputs = testInputGenerator.generateInitialTests();
         final Exception exception = new IllegalArgumentException();

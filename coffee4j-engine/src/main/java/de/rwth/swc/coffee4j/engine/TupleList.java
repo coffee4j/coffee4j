@@ -9,7 +9,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 /**
  * Class representing an constraint via storing all sub-combinations which are not allowed. Instead of storing complete
@@ -33,7 +32,7 @@ public final class TupleList {
      * Creates a new tuple list out of a given id, the involved parameters, and a collection of tuples which should
      * not be allowed. The tuples should be in the format specified by {@link TupleList}.
      *
-     * @param id                 the id of the list. This should be unique per {@link CombinatorialTestModel}
+     * @param id                 the id of the list. This should be unique per {@link TestModel}
      * @param involvedParameters the indices of all involved parameters
      * @param tuples             all tuples which are not allowed
      */
@@ -58,7 +57,7 @@ public final class TupleList {
     }
     
     /**
-     * @return the id of the list. Unique to its {@link CombinatorialTestModel}
+     * @return the id of the list. Unique to its {@link TestModel}
      */
     public int getId() {
         return id;

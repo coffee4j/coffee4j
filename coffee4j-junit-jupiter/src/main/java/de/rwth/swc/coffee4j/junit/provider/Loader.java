@@ -9,9 +9,9 @@ import org.junit.jupiter.api.extension.ExtensionContext;
 /**
  * This basically defines the same interface as {@link ExtensionContextBasedProvider}. It is used for distinction
  * of providers like {@link ModelProvider} which are used to build a
- * model from a {@link ModelSource} and
+ * testModel from a {@link ModelSource} and
  * {@link ModelLoader}s which attempt to find any such provider to later
- * define a usable model.
+ * define a usable testModel.
  *
  * @param <T> the type of class loaded by this interface
  */

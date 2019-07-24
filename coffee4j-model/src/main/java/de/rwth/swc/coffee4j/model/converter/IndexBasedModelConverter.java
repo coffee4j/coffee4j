@@ -1,6 +1,6 @@
 package de.rwth.swc.coffee4j.model.converter;
 
-import de.rwth.swc.coffee4j.engine.CombinatorialTestModel;
+import de.rwth.swc.coffee4j.engine.TestModel;
 import de.rwth.swc.coffee4j.engine.TupleList;
 import de.rwth.swc.coffee4j.engine.util.CombinationUtil;
 import de.rwth.swc.coffee4j.engine.util.Preconditions;
@@ -35,25 +35,26 @@ public class IndexBasedModelConverter implements ModelConverter {
     private final Map<Constraint, TupleList> constraintToTuplesListMap = new HashMap<>();
     private final Map<TupleList, Constraint> tuplesListToConstraintMap = new HashMap<>();
     
-    private final CombinatorialTestModel convertedModel;
+    private final TestModel convertedModel;
     
     /**
      * Creates and initializes a new converter with a {@link SimpleCartesianProductConstraintConverter} to convert
      * {@link Constraint} to {@link TupleList}.
      *
-     * @param model the model which is converted. Must not be {@code null}
+     * @param model the testModel which is converted. Must not be {@code null}
      */
     public IndexBasedModelConverter(InputParameterModel model) {
         this(model, new SimpleCartesianProductConstraintConverter());
     }
     
     /**
-     * Creates and initializes a new converter with the given model and constraints converter.
+     * Creates and initializes a new converter with the given testModel and constraints converter.
      *
-     * @param model                the model which is converted. Must not be {@code null}
-     * @param constraintsConverter the converter used to convert the model's {@link Constraint} to {@link TupleList}
+     * @param model                the testModel which is converted. Must not be {@code null}
+     * @param constraintsConverter the converter used to convert the testModel's {@link Constraint} to {@link TupleList}
      */
-    public IndexBasedModelConverter(InputParameterModel model, IndexBasedConstraintConverter constraintsConverter) {
+    public IndexBasedModelConverter(InputParameterModel model,
+                                    IndexBasedConstraintConverter constraintsConverter) {
         this.model = Preconditions.notNull(model);
         
         initializeConversionMaps();
@@ -78,7 +79,8 @@ public class IndexBasedModelConverter implements ModelConverter {
         final List<Constraint> allConstraints = new ArrayList<>(model.getExclusionConstraints());
         allConstraints.addAll(model.getErrorConstraints());
         
-        final List<TupleList> correspondingTupleLists = constraintsConverter.convert(allConstraints, model.getParameters());
+        final List<TupleList> correspondingTupleLists = constraintsConverter
+                .convert(allConstraints, model.getParameters());
         
         for (int i = 0; i < allConstraints.size(); i++) {
             final Constraint constraint = allConstraints.get(i);
@@ -89,10 +91,20 @@ public class IndexBasedModelConverter implements ModelConverter {
         }
     }
     
-    private CombinatorialTestModel createConvertedModel() {
-        int[] parameterSizes = IntStream.range(0, model.size()).map(parameterId -> model.getParameters().get(parameterId).size()).toArray();
+    private TestModel createConvertedModel() {
+        int[] parameterSizes = IntStream.range(0, model.size())
+                .map(parameterId -> model.getParameters().get(parameterId).size())
+                .toArray();
         
-        return new CombinatorialTestModel(model.getStrength(), parameterSizes, model.getExclusionConstraints().stream().map(constraintToTuplesListMap::get).collect(Collectors.toList()), model.getErrorConstraints().stream().map(constraintToTuplesListMap::get).collect(Collectors.toList()));
+        return new TestModel(
+                model.getStrength(),
+                parameterSizes,
+                model.getExclusionConstraints().stream()
+                        .map(constraintToTuplesListMap::get)
+                        .collect(Collectors.toList()),
+                model.getErrorConstraints().stream()
+                        .map(constraintToTuplesListMap::get)
+                        .collect(Collectors.toList()));
     }
     
     @Override
@@ -101,7 +113,7 @@ public class IndexBasedModelConverter implements ModelConverter {
     }
     
     @Override
-    public CombinatorialTestModel getConvertedModel() {
+    public TestModel getConvertedModel() {
         return convertedModel;
     }
     
@@ -182,5 +194,4 @@ public class IndexBasedModelConverter implements ModelConverter {
         
         return tuplesListToConstraintMap.get(constraint);
     }
-    
 }

@@ -9,10 +9,10 @@ import de.rwth.swc.coffee4j.model.InputParameterModel;
 public interface ModelConverterFactory {
     
     /**
-     * Creates a new {@link ModelConverter} which converts the given model and its parameters, values, and constraints.
+     * Creates a new {@link ModelConverter} which converts the given testModel and its parameters, values, and constraints.
      *
-     * @param model the model
-     * @return a converter for the model
+     * @param model the testModel
+     * @return a converter for the testModel
      */
     ModelConverter create(InputParameterModel model);
     

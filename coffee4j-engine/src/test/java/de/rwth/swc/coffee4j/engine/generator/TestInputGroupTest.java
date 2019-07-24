@@ -2,7 +2,7 @@ package de.rwth.swc.coffee4j.engine.generator;
 
 import de.rwth.swc.coffee4j.engine.characterization.FaultCharacterizationConfiguration;
 import de.rwth.swc.coffee4j.engine.report.Reporter;
-import de.rwth.swc.coffee4j.engine.CombinatorialTestModel;
+import de.rwth.swc.coffee4j.engine.TestModel;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -37,7 +37,7 @@ class TestInputGroupTest {
     void correctInformationStorage() {
         final int[] firstCombination = new int[]{0, 1, 2};
         final int[] secondCombination = new int[]{3, 2, 1};
-        final FaultCharacterizationConfiguration configuration = new FaultCharacterizationConfiguration(new CombinatorialTestModel(2, new int[]{3, 3, 3}), Mockito.mock(Reporter.class));
+        final FaultCharacterizationConfiguration configuration = new FaultCharacterizationConfiguration(new TestModel(2, new int[]{3, 3, 3}, Collections.emptyList(), Collections.emptyList()), Mockito.mock(Reporter.class));
         final TestInputGroup group = new TestInputGroup("test", Arrays.asList(firstCombination, secondCombination), configuration);
         
         assertEquals(2, group.getTestInputs().size());

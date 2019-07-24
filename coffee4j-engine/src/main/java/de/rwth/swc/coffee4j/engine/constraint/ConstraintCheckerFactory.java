@@ -1,9 +1,7 @@
 package de.rwth.swc.coffee4j.engine.constraint;
 
-import de.rwth.swc.coffee4j.engine.CombinatorialTestModel;
-import de.rwth.swc.coffee4j.engine.InputParameterModel;
+import de.rwth.swc.coffee4j.engine.TestModel;
 import de.rwth.swc.coffee4j.engine.TupleList;
-import de.rwth.swc.coffee4j.engine.constraint.diagnosis.ConflictingErrorConstraintSearcher;
 import de.rwth.swc.coffee4j.engine.util.Preconditions;
 
 import java.util.ArrayList;
@@ -11,18 +9,16 @@ import java.util.List;
 
 public class ConstraintCheckerFactory {
     
-    private final InputParameterModel model;
+    private final TestModel testModel;
     private final List<InternalConstraint> exclusionConstraints;
     private final List<InternalConstraint> errorConstraints;
     
-    public ConstraintCheckerFactory(CombinatorialTestModel model) {
-        Preconditions.notNull(model);
-        
-        InternalConstraintConverter converter = new InternalConstraintConverter();
-        
-        this.model = model;
-        this.exclusionConstraints = converter.convertForbiddenTuples(model);
-        this.errorConstraints = converter.convertErrorTuples(model);
+    public ConstraintCheckerFactory(TestModel testModel) {
+        Preconditions.notNull(testModel);
+
+        this.testModel = testModel;
+        this.exclusionConstraints = testModel.getExclusionConstraints();
+        this.errorConstraints = testModel.getErrorConstraints();
     }
     
     public ConstraintChecker createNoConstraintsChecker() {
@@ -30,19 +26,19 @@ public class ConstraintCheckerFactory {
     }
     
     public ConstraintChecker createHardConstraintsChecker() {
-        return new HardConstraintChecker(model, exclusionConstraints, errorConstraints);
+        return new HardConstraintChecker(testModel, exclusionConstraints, errorConstraints);
     }
     
     public ConstraintChecker createHardConstraintsCheckerWithNegation(TupleList toBeNegated) {
         Preconditions.check(checkValidIdentifier(toBeNegated.getId()));
         
-        return new HardConstraintChecker(model, exclusionConstraints, constraintsWithNegation(toBeNegated));
+        return new HardConstraintChecker(testModel, exclusionConstraints, constraintsWithNegation(toBeNegated));
     }
     
 //    public ConstraintChecker createSoftConstraintsChecker(int threshold) {
-//        return new SoftConstraintChecker(model, exclusionConstraints, errorConstraints, threshold);
+//        return new SoftConstraintChecker(testModel, exclusionConstraints, errorConstraints, threshold);
 //    }
-    
+
 //    public ConstraintChecker createSoftConstraintsCheckerWithNegation(TupleList toBeNegated, int threshold) {
 //        Preconditions.check(checkValidIdentifier(toBeNegated.getId()));
 //
@@ -51,17 +47,7 @@ public class ConstraintCheckerFactory {
 //
 //        List<InternalConstraint> softConstraints = filterErrorConstraint(toBeNegated);
 //
-//        return new SoftConstraintChecker(model, hardConstraints, softConstraints, threshold);
-//    }
-    
-    public ConflictingErrorConstraintSearcher createConflictingErrorConstraintsSearcher(TupleList toBeNegated) {
-        return new ConflictingErrorConstraintSearcher(model, exclusionConstraints, constraintsWithNegation(toBeNegated));
-    }
-    
-//    public ConstraintChecker createAdaptiveConstraintsCheckerWithNegation(TupleList toBeNegated) {
-//        Preconditions.check(checkValidIdentifier(toBeNegated.getId()));
-//
-//        return new AdaptiveConstraintChecker(model, exclusionConstraints, constraintsWithNegation(toBeNegated), toBeNegated);
+//        return new SoftConstraintChecker(testModel, hardConstraints, softConstraints, threshold);
 //    }
     
     private boolean checkValidIdentifier(int identifier) {
@@ -85,13 +71,4 @@ public class ConstraintCheckerFactory {
     private InternalConstraint negateConstraint(InternalConstraint constraint) {
         return new NegatingInternalConstraint(constraint);
     }
-    
-//    @SuppressWarnings("ConstantConditions")
-//    private InternalConstraint findNegationCandidate(TupleList toBeNegated) {
-//        return errorConstraints.stream().filter(constraint -> constraint.getId() == toBeNegated.getId()).findFirst().orElseThrow(() -> new IllegalArgumentException("the tuples list to be negated could not be foumd"));
-//    }
-    
-//    private List<InternalConstraint> filterErrorConstraint(TupleList toBeExcluded) {
-//        return errorConstraints.stream().filter(constraint -> constraint.getId() != toBeExcluded.getId()).collect(Collectors.toList());
-//    }
 }

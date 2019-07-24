@@ -1,8 +1,8 @@
 package de.rwth.swc.coffee4j.engine.generator.ipog;
 
+import de.rwth.swc.coffee4j.engine.TestModel;
 import de.rwth.swc.coffee4j.engine.constraint.ConstraintChecker;
 import de.rwth.swc.coffee4j.engine.constraint.NoConstraintChecker;
-import de.rwth.swc.coffee4j.engine.InputParameterModel;
 import de.rwth.swc.coffee4j.engine.report.Report;
 import de.rwth.swc.coffee4j.engine.report.ReportLevel;
 import de.rwth.swc.coffee4j.engine.report.Reporter;
@@ -19,22 +19,22 @@ import java.util.function.Supplier;
  */
 public class IpogConfiguration {
     
-    private final InputParameterModel model;
+    private final TestModel testModel;
     private final ConstraintChecker checker;
     private final ParameterCombinationFactory factory;
     private final ParameterOrder order;
     private final Reporter reporter;
     
     private IpogConfiguration(Builder builder) {
-        this.model = Preconditions.notNull(builder.model);
+        this.testModel = Preconditions.notNull(builder.testModel);
         this.checker = Preconditions.notNull(builder.checker);
         this.factory = Preconditions.notNull(builder.factory);
         this.order = Preconditions.notNull(builder.order);
         this.reporter = Preconditions.notNull(builder.reporter);
     }
-    
-    InputParameterModel getModel() {
-        return model;
+
+    TestModel getTestModel() {
+        return testModel;
     }
     
     ConstraintChecker getChecker() {
@@ -63,17 +63,17 @@ public class IpogConfiguration {
         }
         
         final IpogConfiguration other = (IpogConfiguration) object;
-        return Objects.equals(model, other.model) && Objects.equals(checker, other.checker) && Objects.equals(factory, other.factory) && Objects.equals(order, other.order) && Objects.equals(reporter, other.reporter);
+        return Objects.equals(testModel, other.testModel) && Objects.equals(checker, other.checker) && Objects.equals(factory, other.factory) && Objects.equals(order, other.order) && Objects.equals(reporter, other.reporter);
     }
     
     @Override
     public int hashCode() {
-        return Objects.hash(model, checker, factory, order, reporter);
+        return Objects.hash(testModel, checker, factory, order, reporter);
     }
     
     @Override
     public String toString() {
-        return "IpogConfiguration{" + "model=" + model + ", checker=" + checker + ", factory=" + factory + ", order=" + order + ", reporter=" + reporter + '}';
+        return "IpogConfiguration{" + "testModel=" + testModel + ", checker=" + checker + ", factory=" + factory + ", order=" + order + ", reporter=" + reporter + '}';
     }
     
     public static Builder ipogConfiguration() {
@@ -97,20 +97,20 @@ public class IpogConfiguration {
             }
         };
         
-        private InputParameterModel model;
+        private TestModel testModel;
         private ConstraintChecker checker = new NoConstraintChecker();
         private ParameterCombinationFactory factory = new TWiseParameterCombinationFactory();
         private ParameterOrder order = new StrengthBasedParameterOrder();
         private Reporter reporter = NO_OP_REPORTER;
         
         /**
-         * @param model used to generate the test suite. As this contains all main information and the algorithm cannot
+         * @param testModel used to generate the test suite. As this contains all main information and the algorithm cannot
          *              work without it, this parameter is required. If it is not set before {@link #build()} is called, a
          *              {@link NullPointerException} will be thrown
          * @return this
          */
-        public Builder model(InputParameterModel model) {
-            this.model = model;
+        public Builder testModel(TestModel testModel) {
+            this.testModel = testModel;
             
             return this;
         }
@@ -162,7 +162,7 @@ public class IpogConfiguration {
         
         /**
          * @return a new complete configuration which can be used to construct an instance of {@link IpogAlgorithm}
-         * @throws NullPointerException if any parameter has been set to {@code null} or if the model has not been set
+         * @throws NullPointerException if any parameter has been set to {@code null} or if the testModel has not been set
          */
         public IpogConfiguration build() {
             return new IpogConfiguration(this);

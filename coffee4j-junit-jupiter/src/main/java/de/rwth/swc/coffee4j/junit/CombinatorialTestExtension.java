@@ -74,10 +74,10 @@ class CombinatorialTestExtension implements TestTemplateInvocationContextProvide
     }
 
     private void diagnoseConstraints(CombinatorialTestConsumerManagerConfiguration configuration, CombinatorialTestConsumerManager manager) {
-        if(configuration.getConstraintDiagnosisConfiguration().isEnabled()) {
+        if(configuration.getConflictDetectionConfiguration().isConflictDetectionEnabled()) {
             final boolean isConflictFree = manager.checkConstraintsForConflicts();
 
-            if(configuration.getConstraintDiagnosisConfiguration().shouldSkip()) {
+            if(configuration.getConflictDetectionConfiguration().shouldAbort()) {
                 Preconditions.condition(isConflictFree, "Error: conflicts among constraints detected");
             }
         }

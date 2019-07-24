@@ -13,9 +13,9 @@ public abstract class ModelBasedArgumentConverter implements ArgumentConverter {
     protected ModelConverter modelConverter;
     
     /**
-     * Initializes the model converter to be used by the implementing class.
+     * Initializes the testModel converter to be used by the implementing class.
      *
-     * @param modelConverter the model converter used for arguments. Must not be {@code null}
+     * @param modelConverter the testModel converter used for arguments. Must not be {@code null}
      */
     public void initialize(ModelConverter modelConverter) {
         this.modelConverter = Preconditions.notNull(modelConverter);

@@ -5,6 +5,7 @@ import de.rwth.swc.coffee4j.engine.util.Preconditions;
 import java.util.Arrays;
 import java.util.List;
 
+import static de.rwth.swc.coffee4j.model.constraints.Constraint.ANONYMOUS_CONSTRAINT;
 import static de.rwth.swc.coffee4j.model.constraints.ConstraintStatus.UNKNOWN;
 
 /**
@@ -23,16 +24,6 @@ public final class ConstraintBuilder {
         Preconditions.check(!list.contains(null));
 
         return list;
-    }
-
-    private static int counter = 1;
-
-    private static void increaseCounter() {
-        counter++;
-    }
-
-    private static String createName() {
-        return "unknown-" + counter;
     }
 
     /**
@@ -144,7 +135,7 @@ public final class ConstraintBuilder {
         private final ConstraintStatus constraintStatus;
 
         private Constraint1Builder(List<String> parameterNames, ConstraintStatus constraintStatus) {
-            this.name = "";
+            this.name = ANONYMOUS_CONSTRAINT;
             this.parameterNames = parameterNames;
             this.constraintStatus = constraintStatus;
         }
@@ -166,12 +157,6 @@ public final class ConstraintBuilder {
         public Constraint by(BooleanFunction1<?> constraint) {
             Preconditions.notNull(constraint);
 
-            if(name.equals("")) {
-                name = createName();
-            }
-
-            increaseCounter();
-
             return new Constraint(name, parameterNames, constraint, constraintStatus);
         }
     }
@@ -186,7 +171,7 @@ public final class ConstraintBuilder {
         private final ConstraintStatus constraintStatus;
 
         private Constraint2Builder(List<String> parameterNames, ConstraintStatus constraintStatus) {
-            this.name = "";
+            this.name = ANONYMOUS_CONSTRAINT;
             this.parameterNames = parameterNames;
             this.constraintStatus = constraintStatus;
         }
@@ -208,12 +193,6 @@ public final class ConstraintBuilder {
         public Constraint by(BooleanFunction2<?, ?> constraint) {
             Preconditions.notNull(constraint);
 
-            if(name.equals("")) {
-                name = createName();
-            }
-
-            increaseCounter();
-
             return new Constraint(name, parameterNames, constraint, constraintStatus);
         }
     }
@@ -228,7 +207,7 @@ public final class ConstraintBuilder {
         private final ConstraintStatus constraintStatus;
 
         private Constraint3Builder(List<String> parameterNames, ConstraintStatus constraintStatus) {
-            this.name = "";
+            this.name = ANONYMOUS_CONSTRAINT;
             this.parameterNames = parameterNames;
             this.constraintStatus = constraintStatus;
         }
@@ -250,12 +229,6 @@ public final class ConstraintBuilder {
         public Constraint by(BooleanFunction3<?, ?, ?> constraint) {
             Preconditions.notNull(constraint);
 
-            if(name.equals("")) {
-                name = createName();
-            }
-
-            increaseCounter();
-
             return new Constraint(name, parameterNames, constraint, constraintStatus);
         }
     }
@@ -270,7 +243,7 @@ public final class ConstraintBuilder {
         private final ConstraintStatus constraintStatus;
 
         private Constraint4Builder(List<String> parameterNames, ConstraintStatus constraintStatus) {
-            this.name = "";
+            this.name = ANONYMOUS_CONSTRAINT;
             this.parameterNames = parameterNames;
             this.constraintStatus = constraintStatus;
         }
@@ -292,12 +265,6 @@ public final class ConstraintBuilder {
         public Constraint by(BooleanFunction4<?, ?, ?, ?> constraint) {
             Preconditions.notNull(constraint);
 
-            if(name.equals("")) {
-                name = createName();
-            }
-
-            increaseCounter();
-
             return new Constraint(name, parameterNames, constraint, constraintStatus);
         }
     }
@@ -312,7 +279,7 @@ public final class ConstraintBuilder {
         private final ConstraintStatus constraintStatus;
 
         private Constraint5Builder(List<String> parameterNames, ConstraintStatus constraintStatus) {
-            this.name = "";
+            this.name = ANONYMOUS_CONSTRAINT;
             this.parameterNames = parameterNames;
             this.constraintStatus = constraintStatus;
         }
@@ -334,12 +301,6 @@ public final class ConstraintBuilder {
         public Constraint by(BooleanFunction5<?, ?, ?, ?, ?> constraint) {
             Preconditions.notNull(constraint);
 
-            if(name.equals("")) {
-                name = createName();
-            }
-
-            increaseCounter();
-
             return new Constraint(name, parameterNames, constraint, constraintStatus);
         }
     }
@@ -354,7 +315,7 @@ public final class ConstraintBuilder {
         private final ConstraintStatus constraintStatus;
 
         private Constraint6Builder(List<String> parameterNames, ConstraintStatus constraintStatus) {
-            this.name = "";
+            this.name = ANONYMOUS_CONSTRAINT;
             this.parameterNames = parameterNames;
             this.constraintStatus = constraintStatus;
         }
@@ -375,12 +336,6 @@ public final class ConstraintBuilder {
          */
         public Constraint by(BooleanFunction6<?, ?, ?, ?, ?, ?> constraint) {
             Preconditions.notNull(constraint);
-
-            if(name.equals("")) {
-                name = createName();
-            }
-
-            increaseCounter();
 
             return new Constraint(name, parameterNames, constraint, constraintStatus);
         }

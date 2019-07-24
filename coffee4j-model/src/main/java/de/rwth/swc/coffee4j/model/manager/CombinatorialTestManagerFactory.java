@@ -1,9 +1,9 @@
 package de.rwth.swc.coffee4j.model.manager;
 
-import de.rwth.swc.coffee4j.engine.InputParameterModel;
-import de.rwth.swc.coffee4j.engine.CombinatorialTestModel;
+import de.rwth.swc.coffee4j.engine.TestModel;
 import de.rwth.swc.coffee4j.engine.manager.CombinatorialTestConfiguration;
 import de.rwth.swc.coffee4j.engine.manager.CombinatorialTestManager;
+import de.rwth.swc.coffee4j.model.InputParameterModel;
 
 import java.util.function.BiFunction;
 
@@ -13,5 +13,5 @@ import java.util.function.BiFunction;
  * be reused for multiple {@link InputParameterModel}s.
  */
 @FunctionalInterface
-public interface CombinatorialTestManagerFactory extends BiFunction<CombinatorialTestConfiguration, CombinatorialTestModel, CombinatorialTestManager> {
+public interface CombinatorialTestManagerFactory extends BiFunction<CombinatorialTestConfiguration, TestModel, CombinatorialTestManager> {
 }

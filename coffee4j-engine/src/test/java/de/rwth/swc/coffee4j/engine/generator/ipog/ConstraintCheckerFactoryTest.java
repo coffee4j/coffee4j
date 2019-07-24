@@ -1,6 +1,6 @@
 package de.rwth.swc.coffee4j.engine.generator.ipog;
 
-import de.rwth.swc.coffee4j.engine.CombinatorialTestModel;
+import de.rwth.swc.coffee4j.engine.TestModel;
 import de.rwth.swc.coffee4j.engine.TupleList;
 import de.rwth.swc.coffee4j.engine.constraint.ConstraintChecker;
 import de.rwth.swc.coffee4j.engine.constraint.ConstraintCheckerFactory;
@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class ConstraintCheckerFactoryTest {
     
-    private static final CombinatorialTestModel IPM = new CombinatorialTestModel(2, new int[]{2, 2, 2, 2}, Collections.emptyList(), Arrays.asList(new TupleList(1, new int[]{0, 1}, Arrays.asList(new int[]{0, 0}, new int[]{1, 1})), new TupleList(2, new int[]{1, 2}, Arrays.asList(new int[]{1, 1}))));
+    private static final TestModel IPM = new TestModel(2, new int[]{2, 2, 2, 2}, Collections.emptyList(), Arrays.asList(new TupleList(1, new int[]{0, 1}, Arrays.asList(new int[]{0, 0}, new int[]{1, 1})), new TupleList(2, new int[]{1, 2}, Arrays.asList(new int[]{1, 1}))));
     
     private static final ConstraintCheckerFactory FACTORY = new ConstraintCheckerFactory(IPM);
     

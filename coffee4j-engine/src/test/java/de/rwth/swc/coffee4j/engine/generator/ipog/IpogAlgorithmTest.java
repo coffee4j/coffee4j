@@ -1,7 +1,6 @@
 package de.rwth.swc.coffee4j.engine.generator.ipog;
 
-import de.rwth.swc.coffee4j.engine.CombinatorialTestModel;
-import de.rwth.swc.coffee4j.engine.InputParameterModel;
+import de.rwth.swc.coffee4j.engine.TestModel;
 import de.rwth.swc.coffee4j.engine.util.CombinationUtil;
 import de.rwth.swc.coffee4j.engine.util.Combinator;
 import de.rwth.swc.coffee4j.engine.util.IntArrayWrapper;
@@ -12,6 +11,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -22,9 +22,9 @@ class IpogAlgorithmTest {
     
     @Test
     void oneParameterTwoValueModel() {
-        final InputParameterModel model = new CombinatorialTestModel(1, new int[]{2});
+        final TestModel model = new TestModel(1, new int[]{2}, Collections.emptyList(), Collections.emptyList());
         
-        final List<int[]> testSuite = new IpogAlgorithm(IpogConfiguration.ipogConfiguration().model(model).build()).generate();
+        final List<int[]> testSuite = new IpogAlgorithm(IpogConfiguration.ipogConfiguration().testModel(model).build()).generate();
         
         assertEquals(2, testSuite.size());
         assertEquals(1, testSuite.get(0).length);
@@ -35,9 +35,9 @@ class IpogAlgorithmTest {
     
     @Test
     void itShouldCoverEachValueOnceForStrengthOneWithMultipleParameters() {
-        final InputParameterModel model = new CombinatorialTestModel(1, new int[]{4, 4, 4, 4});
+        final TestModel model = new TestModel(1, new int[]{4, 4, 4, 4}, Collections.emptyList(), Collections.emptyList());
         
-        final List<int[]> testSuite = new IpogAlgorithm(IpogConfiguration.ipogConfiguration().model(model).build()).generate();
+        final List<int[]> testSuite = new IpogAlgorithm(IpogConfiguration.ipogConfiguration().testModel(model).build()).generate();
         final List<int[]> expectedTestInputs = Arrays.asList(new int[]{0, 0, 0, 0}, new int[]{1, 1, 1, 1}, new int[]{2, 2, 2, 2}, new int[]{3, 3, 3, 3});
         
         Assertions.assertEquals(IntArrayWrapper.wrapToSet(expectedTestInputs), IntArrayWrapper.wrapToSet(testSuite));
@@ -45,9 +45,9 @@ class IpogAlgorithmTest {
     
     @Test
     void itShouldGenerateCartesianProductIfStrengthIsNumberOfParameters() {
-        final InputParameterModel model = new CombinatorialTestModel(7, new int[]{5, 5, 5, 5, 5, 5, 5});
+        final TestModel model = new TestModel(7, new int[]{5, 5, 5, 5, 5, 5, 5}, Collections.emptyList(), Collections.emptyList());
         
-        final List<int[]> testSuite = new IpogAlgorithm(IpogConfiguration.ipogConfiguration().model(model).build()).generate();
+        final List<int[]> testSuite = new IpogAlgorithm(IpogConfiguration.ipogConfiguration().testModel(model).build()).generate();
         
         final Int2IntMap parameterMap = new Int2IntOpenHashMap(new int[]{0, 1, 2, 3, 4, 5, 6}, new int[]{5, 5, 5, 5, 5, 5, 5});
         assertEquals(IntArrayWrapper.wrapToSet(Combinator.computeCartesianProduct(parameterMap, 7)), IntArrayWrapper.wrapToSet(testSuite));
@@ -55,9 +55,9 @@ class IpogAlgorithmTest {
     
     @Test
     void itShouldGenerateAllNeededTestInputsIfSmallerStrength() {
-        final InputParameterModel model = new CombinatorialTestModel(2, new int[]{3, 3, 3, 3});
+        final TestModel model = new TestModel(2, new int[]{3, 3, 3, 3}, Collections.emptyList(), Collections.emptyList());
         
-        final List<int[]> testSuite = new IpogAlgorithm(IpogConfiguration.ipogConfiguration().model(model).build()).generate();
+        final List<int[]> testSuite = new IpogAlgorithm(IpogConfiguration.ipogConfiguration().testModel(model).build()).generate();
         
         verifyAllCombinationsPresent(testSuite, model.getParameterSizes(), 2);
     }
@@ -95,11 +95,10 @@ class IpogAlgorithmTest {
     
     @Test
     void itShouldCoverAllCombinationsIfParametersHaveDifferentSizes() {
-        final InputParameterModel model = new CombinatorialTestModel(2, new int[]{2, 5, 3, 2, 4});
+        final TestModel model = new TestModel(2, new int[]{2, 5, 3, 2, 4}, Collections.emptyList(), Collections.emptyList());
         
-        final List<int[]> testSuite = new IpogAlgorithm(IpogConfiguration.ipogConfiguration().model(model).build()).generate();
+        final List<int[]> testSuite = new IpogAlgorithm(IpogConfiguration.ipogConfiguration().testModel(model).build()).generate();
         
         verifyAllCombinationsPresent(testSuite, model.getParameterSizes(), 2);
     }
-    
 }

@@ -1,6 +1,6 @@
 package de.rwth.swc.coffee4j.engine.generator.ipog;
 
-import de.rwth.swc.coffee4j.engine.InputParameterModel;
+import de.rwth.swc.coffee4j.engine.TestModel;
 import de.rwth.swc.coffee4j.engine.util.ArrayUtil;
 import de.rwth.swc.coffee4j.engine.util.Combinator;
 import de.rwth.swc.coffee4j.engine.util.Preconditions;
@@ -44,13 +44,13 @@ public class IpogAlgorithm {
     }
     
     public List<int[]> generate() {
-        Int2IntMap parameters = convertToFactors(configuration.getModel());
+        Int2IntMap parameters = convertToFactors(configuration.getTestModel());
         
-        final int[] initialParameters = configuration.getOrder().getInitialParameters(parameters, configuration.getModel().getStrength());
+        final int[] initialParameters = configuration.getOrder().getInitialParameters(parameters, configuration.getTestModel().getStrength());
         final List<int[]> testSuite = buildInitialTestSuite(parameters, initialParameters);
-        final int[] remainingParameters = configuration.getOrder().getRemainingParameters(parameters, configuration.getModel().getStrength());
+        final int[] remainingParameters = configuration.getOrder().getRemainingParameters(parameters, configuration.getTestModel().getStrength());
 
-        if(configuration.getModel().getStrength() > 0) {
+        if(configuration.getTestModel().getStrength() > 0) {
             extendInitialTestSuite(parameters, initialParameters, testSuite, remainingParameters);
         }
 
@@ -63,7 +63,7 @@ public class IpogAlgorithm {
         final IntList coveredParameters = new IntArrayList(initialParameters);
 
         for (int i : remainingParameters) {
-            List<IntSet> parameterCombinations = configuration.getFactory().create(coveredParameters.toIntArray(), configuration.getModel().getStrength());
+            List<IntSet> parameterCombinations = configuration.getFactory().create(coveredParameters.toIntArray(), configuration.getTestModel().getStrength());
             CoverageMap coverageMap = horizontalExtension(i, testSuite, parameters, parameterCombinations);
 
             if (coverageMap.hasUncoveredCombinations()) {
@@ -80,10 +80,10 @@ public class IpogAlgorithm {
         return testSuite.stream().filter(configuration.getChecker()::isValid).collect(Collectors.toList());
     }
     
-    private Int2IntMap convertToFactors(InputParameterModel model) {
-        Int2IntMap parameters = new Int2IntOpenHashMap(model.getNumberOfParameters());
-        for (int i = 0; i < model.getNumberOfParameters(); i++) {
-            parameters.put(i, model.getSizeOfParameter(i));
+    private Int2IntMap convertToFactors(TestModel testModel) {
+        Int2IntMap parameters = new Int2IntOpenHashMap(testModel.getNumberOfParameters());
+        for (int i = 0; i < testModel.getNumberOfParameters(); i++) {
+            parameters.put(i, testModel.getSizeOfParameter(i));
         }
         return parameters;
     }

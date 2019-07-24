@@ -40,7 +40,7 @@ public @interface ConfigurationFromMethod {
      * with the same name as the test method. As a {@link CombinatorialTest} has at least
      * one parameter, java will allow methods with the same name, but no parameters
      * -the name of a method: The method needs to be in the same class as the test method
-     * -a fully qualified name in the format of classname#methodname from which the model is then loaded
+     * -a fully qualified name in the format of classname#methodname from which the testModel is then loaded
      *
      * @return the name of the method in one of the three schemas explained above
      */
