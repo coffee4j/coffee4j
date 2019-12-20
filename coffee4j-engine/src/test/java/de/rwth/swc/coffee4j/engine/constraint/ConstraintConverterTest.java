@@ -6,20 +6,19 @@ import org.chocosolver.solver.Model;
 import org.chocosolver.solver.variables.IntVar;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class NegatingInternalConstraintTest {
+class ConstraintConverterTest {
 
     @Test
-    void testSatisfiable() {
-        List<TupleList> forbiddenTupleLists = Collections.singletonList(new TupleList(1, new int[]{0, 1}, Arrays.asList(new int[]{0, 0})));
+    void testUnsatisfiable() {
+        List<TupleList> forbiddenTupleLists = Collections.singletonList(new TupleList(1, new int[]{0, 1}, Collections.singletonList(new int[]{0, 0})));
         TestModel ipm = new TestModel(1, new int[]{2, 2, 2}, forbiddenTupleLists, Collections.emptyList());
-        InternalConstraint internalConstraint = new NegatingInternalConstraint(new InternalConstraintConverter().convertAll(ipm.getForbiddenTupleLists()).get(0));
+        Constraint internalConstraint = new ConstraintConverter().convertAll(ipm.getForbiddenTupleLists()).get(0);
 
         Model model = new Model();
         IntVar var0 = model.intVar("0", 0, 1);
@@ -27,16 +26,17 @@ class NegatingInternalConstraintTest {
         internalConstraint.apply(model).post();
 
         model.arithm(var0, "=", 0).post();
-        model.arithm(var1, "=", 0);
+        model.arithm(var1, "=", 0).post();
 
-        assertTrue(model.getSolver().solve());
+        assertFalse(model.getSolver().solve());
     }
 
     @Test
-    void testUnsatisfiable() {
-        List<TupleList> forbiddenTupleLists = Collections.singletonList(new TupleList(1, new int[]{0, 1}, Arrays.asList(new int[]{0, 0})));
+    void testSatisfiable() {
+        List<TupleList> forbiddenTupleLists = Collections.singletonList(new TupleList(1, new int[]{0, 1}, Collections.singletonList(new int[]{0, 0})));
         TestModel ipm = new TestModel(1, new int[]{2, 2, 2}, forbiddenTupleLists, Collections.emptyList());
-        InternalConstraint internalConstraint = new NegatingInternalConstraint(new InternalConstraintConverter().convertAll(ipm.getForbiddenTupleLists()).get(0));
+        Constraint internalConstraint = new ConstraintConverter()
+                .convertAll(ipm.getForbiddenTupleLists()).get(0);
 
         Model model = new Model();
         IntVar var0 = model.intVar("0", 0, 1);
@@ -45,8 +45,8 @@ class NegatingInternalConstraintTest {
         internalConstraint.apply(model).post();
 
         model.arithm(var0, "=", 1).post();
-        model.arithm(var1, "=", 1);
+        model.arithm(var1, "=", 1).post();
 
-        assertFalse(model.getSolver().solve());
+        assertTrue(model.getSolver().solve());
     }
 }

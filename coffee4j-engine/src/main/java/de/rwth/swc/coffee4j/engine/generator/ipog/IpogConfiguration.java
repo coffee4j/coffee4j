@@ -73,7 +73,7 @@ public class IpogConfiguration {
     
     @Override
     public String toString() {
-        return "IpogConfiguration{" + "testModel=" + testModel + ", checker=" + checker + ", factory=" + factory + ", order=" + order + ", reporter=" + reporter + '}';
+        return "IpogConfiguration{" + "testModel=" + testModel + ", solver=" + checker + ", factory=" + factory + ", order=" + order + ", reporter=" + reporter + '}';
     }
     
     public static Builder ipogConfiguration() {
@@ -169,5 +169,4 @@ public class IpogConfiguration {
         }
         
     }
-    
 }

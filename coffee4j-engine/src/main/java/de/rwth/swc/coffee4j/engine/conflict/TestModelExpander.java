@@ -3,6 +3,10 @@ package de.rwth.swc.coffee4j.engine.conflict;
 import de.rwth.swc.coffee4j.engine.TestModel;
 import de.rwth.swc.coffee4j.engine.TupleList;
 import de.rwth.swc.coffee4j.engine.util.Preconditions;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntArraySet;
+import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.ints.IntLists;
 
 import java.util.Collections;
 import java.util.List;
@@ -34,9 +38,7 @@ class TestModelExpander {
     }
 
     int computeOriginalId(TupleList tupleList) {
-        Preconditions.notNull(tupleList);
-
-        return tupleList.getId() / factor;
+        return computeOriginalId(tupleList.getId());
     }
 
     int computeOriginalId(int id) {

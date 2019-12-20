@@ -32,7 +32,7 @@ public final class Combinator {
     private static final String SIZE_NOT_NEGATIVE = "The size of combinations cannot be negative";
     
     private Combinator() {
-    } //private constructor for utility class
+    }
     
     /**
      * Computes the full cartesian product of the given parameters.
@@ -55,7 +55,8 @@ public final class Combinator {
         Preconditions.notNull(parameters, PARAMETERS_NOT_NULL);
         Preconditions.check(!parameters.isEmpty(), AT_LEAST_ONE_PARAMETER);
         Preconditions.check(combinationSize >= parameters.size(), TOO_MANY_PARAMETERS);
-        Preconditions.check(combinationSize > parameters.keySet().stream().mapToInt(parameter -> parameter).max().orElse(0), TOO_HIGH_PARAMETERS);
+        Preconditions.check(combinationSize > parameters.keySet().stream()
+                .mapToInt(parameter -> parameter).max().orElse(0), TOO_HIGH_PARAMETERS);
         
         List<int[]> combinations = new ArrayList<>();
         int[] currentIndex = new int[parameters.size()];
@@ -325,5 +326,4 @@ public final class Combinator {
         
         return result;
     }
-    
 }

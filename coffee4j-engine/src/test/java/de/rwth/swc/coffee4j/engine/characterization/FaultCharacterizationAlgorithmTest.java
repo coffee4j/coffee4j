@@ -30,11 +30,11 @@ public interface FaultCharacterizationAlgorithmTest {
     @MethodSource("failureInducingCombinations")
     default void findsRequiredCombinations(int[] parameterSizes, int strength, List<int[]> failureInducingCombinations) {
         final TestModel testModel = new TestModel(strength, parameterSizes, Collections.emptyList(), Collections.emptyList());
-        final ConstraintChecker checker = new NoConstraintChecker();
+        final ConstraintChecker solver = new NoConstraintChecker();
         final ParameterCombinationFactory factory = new TWiseParameterCombinationFactory();
-        final FaultCharacterizationAlgorithm faultCharacterizationAlgorithm = provideAlgorithm(new FaultCharacterizationConfiguration(testModel, checker, new StandardOutputReporter()));
+        final FaultCharacterizationAlgorithm faultCharacterizationAlgorithm = provideAlgorithm(new FaultCharacterizationConfiguration(testModel, solver, new StandardOutputReporter()));
         
-        List<int[]> testInputs = new IpogAlgorithm(IpogConfiguration.ipogConfiguration().testModel(testModel).checker(checker).factory(factory).build()).generate();
+        List<int[]> testInputs = new IpogAlgorithm(IpogConfiguration.ipogConfiguration().testModel(testModel).checker(solver).factory(factory).build()).generate();
         while (!testInputs.isEmpty()) {
             testInputs = faultCharacterizationAlgorithm.computeNextTestInputs(mapToResults(testInputs, failureInducingCombinations));
         }

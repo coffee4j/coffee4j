@@ -1,8 +1,8 @@
 package de.rwth.swc.coffee4j.engine.characterization;
 
 import de.rwth.swc.coffee4j.engine.TestModel;
-import de.rwth.swc.coffee4j.engine.constraint.ConstraintChecker;
 import de.rwth.swc.coffee4j.engine.TestResult;
+import de.rwth.swc.coffee4j.engine.constraint.ConstraintChecker;
 import de.rwth.swc.coffee4j.engine.report.Reporter;
 import de.rwth.swc.coffee4j.engine.util.IntArrayWrapper;
 import de.rwth.swc.coffee4j.engine.util.Preconditions;
@@ -144,5 +144,4 @@ public abstract class SuspiciousCombinationAlgorithm implements FaultCharacteriz
      * @return test inputs for which the result is needed
      */
     protected abstract List<IntArrayWrapper> generateNextTestInputs(Map<int[], TestResult> newTestResults);
-    
 }

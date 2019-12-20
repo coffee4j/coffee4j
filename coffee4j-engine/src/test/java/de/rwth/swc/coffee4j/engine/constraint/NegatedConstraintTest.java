@@ -13,13 +13,13 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-class InternalConstraintConverterTest {
+class NegatedConstraintTest {
 
     @Test
-    void testUnsatisfiable() {
+    void testSatisfiable() {
         List<TupleList> forbiddenTupleLists = Collections.singletonList(new TupleList(1, new int[]{0, 1}, Arrays.asList(new int[]{0, 0})));
         TestModel ipm = new TestModel(1, new int[]{2, 2, 2}, forbiddenTupleLists, Collections.emptyList());
-        InternalConstraint internalConstraint = new InternalConstraintConverter().convertAll(ipm.getForbiddenTupleLists()).get(0);
+        Constraint internalConstraint = new NegatedConstraint(new ConstraintConverter().convertAll(ipm.getForbiddenTupleLists()).get(0));
 
         Model model = new Model();
         IntVar var0 = model.intVar("0", 0, 1);
@@ -27,16 +27,16 @@ class InternalConstraintConverterTest {
         internalConstraint.apply(model).post();
 
         model.arithm(var0, "=", 0).post();
-        model.arithm(var1, "=", 0).post();
+        model.arithm(var1, "=", 0);
 
-        assertFalse(model.getSolver().solve());
+        assertTrue(model.getSolver().solve());
     }
 
     @Test
-    void testSatisfiable() {
+    void testUnsatisfiable() {
         List<TupleList> forbiddenTupleLists = Collections.singletonList(new TupleList(1, new int[]{0, 1}, Arrays.asList(new int[]{0, 0})));
         TestModel ipm = new TestModel(1, new int[]{2, 2, 2}, forbiddenTupleLists, Collections.emptyList());
-        InternalConstraint internalConstraint = new InternalConstraintConverter().convertAll(ipm.getForbiddenTupleLists()).get(0);
+        Constraint internalConstraint = new NegatedConstraint(new ConstraintConverter().convertAll(ipm.getForbiddenTupleLists()).get(0));
 
         Model model = new Model();
         IntVar var0 = model.intVar("0", 0, 1);
@@ -45,8 +45,8 @@ class InternalConstraintConverterTest {
         internalConstraint.apply(model).post();
 
         model.arithm(var0, "=", 1).post();
-        model.arithm(var1, "=", 1).post();
+        model.arithm(var1, "=", 1);
 
-        assertTrue(model.getSolver().solve());
+        assertFalse(model.getSolver().solve());
     }
 }

@@ -1,6 +1,9 @@
 package de.rwth.swc.coffee4j.junit;
 
+import de.rwth.swc.coffee4j.engine.constraint.HardConstraintCheckerFactory;
+import de.rwth.swc.coffee4j.engine.generator.ipog.Ipog;
 import de.rwth.swc.coffee4j.junit.CombinatorialTest;
+import de.rwth.swc.coffee4j.junit.provider.configuration.generator.Generator;
 import de.rwth.swc.coffee4j.junit.provider.model.ModelFromMethod;
 import de.rwth.swc.coffee4j.model.InputParameterModel;
 import org.junit.jupiter.api.extension.ParameterContext;
@@ -25,7 +28,7 @@ import static de.rwth.swc.coffee4j.model.Parameter.parameter;
 class JUnitFeatureBasedCombinatorialTestExample {
     
     @CombinatorialTest(name = "{firstName} at index {index}")
-    @ModelFromMethod("testModel")
+    @ModelFromMethod("model")
     void combinatorialTest(@ConvertWith(WrittenNumberConverter.class) int number, @AggregateWith(PersonAggregator.class) Person person) {
         System.out.println("Person: " + person);
         System.out.println("number: " + number);

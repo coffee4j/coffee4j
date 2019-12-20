@@ -130,7 +130,34 @@ public final class Combination {
     public String toString() {
         return "Combination{" + parameterValueMap.entrySet().stream().map(entry -> entry.getKey().getName() + "=" + entry.getValue().toString()).collect(Collectors.joining(", ")) + '}';
     }
-    
+
+    /**
+     * Checks if {@code this} combination contains all parameter-value pairs of {@code otherCombination}.
+     *
+     * @param otherCombination  another combination
+     * @return                  {@code true} if all parameter-value pairs of {@code otherCombination} are contained by {@code this}.
+     *                          Otherwise, {@code false}.
+     */
+    public boolean contains(Combination otherCombination) {
+        Preconditions.notNull(otherCombination);
+
+        for(Map.Entry<Parameter, Value> otherEntry : otherCombination.parameterValueMap.entrySet()) {
+            final Value value = this.parameterValueMap.get(otherEntry.getKey());
+
+            if(value == null) {
+                return false;
+            }
+
+            final Value otherValue = otherEntry.getValue();
+
+            if(!value.equals(otherValue)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     public static Builder combination() {
         return new Builder();
     }
@@ -168,5 +195,4 @@ public final class Combination {
         }
         
     }
-    
 }

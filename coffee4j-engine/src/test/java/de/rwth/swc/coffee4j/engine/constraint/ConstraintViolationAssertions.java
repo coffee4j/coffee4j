@@ -16,10 +16,11 @@ public class ConstraintViolationAssertions {
     }
     
     public static void assertExactNumberOfErrorConstraintViolations(TestModel ipm, int[] tuple, int expectedNumberOfViolations) {
-        InternalConstraintConverter converter = new InternalConstraintConverter();
-        List<InternalConstraint> errorConstraints = converter.convertAll(ipm.getErrorTupleLists());
+        ConstraintConverter converter = new ConstraintConverter();
+        List<Constraint> errorConstraints = converter.convertAll(ipm.getErrorTupleLists());
         
-        long actualNumberOfViolations = errorConstraints.stream().filter(errorConstraint -> isConstraintViolation(ipm, tuple, errorConstraint)).count();
+        long actualNumberOfViolations = errorConstraints.stream()
+                .filter(errorConstraint -> isConstraintViolation(ipm, tuple, errorConstraint)).count();
         
         if (actualNumberOfViolations != expectedNumberOfViolations) {
             fail("ASSERTION-ERROR: " + Arrays.toString(tuple) + " violates " + actualNumberOfViolations + " constraints");
@@ -27,10 +28,11 @@ public class ConstraintViolationAssertions {
     }
     
     public static void assertAtMostNumberOfErrorConstraintViolations(TestModel ipm, int[] tuple, int expectedNumberOfViolations) {
-        InternalConstraintConverter converter = new InternalConstraintConverter();
-        List<InternalConstraint> errorConstraints = converter.convertAll(ipm.getErrorTupleLists());
+        ConstraintConverter converter = new ConstraintConverter();
+        List<Constraint> errorConstraints = converter.convertAll(ipm.getErrorTupleLists());
         
-        long actualNumberOfViolations = errorConstraints.stream().filter(errorConstraint -> isConstraintViolation(ipm, tuple, errorConstraint)).count();
+        long actualNumberOfViolations = errorConstraints.stream()
+                .filter(errorConstraint -> isConstraintViolation(ipm, tuple, errorConstraint)).count();
         
         if (actualNumberOfViolations > expectedNumberOfViolations) {
             fail("ASSERTION-ERROR: " + Arrays.toString(tuple) + " violates " + actualNumberOfViolations + " constraints");
@@ -38,17 +40,17 @@ public class ConstraintViolationAssertions {
     }
     
     public static void assertNoExclusionConstraintViolations(TestModel ipm, int[] tuple) {
-        InternalConstraintConverter converter = new InternalConstraintConverter();
-        List<InternalConstraint> exclusionConstraints = converter.convertAll(ipm.getForbiddenTupleLists());
+        ConstraintConverter converter = new ConstraintConverter();
+        List<Constraint> exclusionConstraints = converter.convertAll(ipm.getForbiddenTupleLists());
         
-        for (InternalConstraint constraint : exclusionConstraints) {
+        for (Constraint constraint : exclusionConstraints) {
             if (isConstraintViolation(ipm, tuple, constraint)) {
-                fail("ASSERTION-ERROR: " + Arrays.toString(tuple) + " violates constraint of " + constraint.getId());
+                fail("ASSERTION-ERROR: " + Arrays.toString(tuple) + " violates constraint of " + constraint.getTupleList().getId());
             }
         }
     }
     
-    private static boolean isConstraintViolation(TestModel ipm, int[] tuple, InternalConstraint constraint) {
+    private static boolean isConstraintViolation(TestModel ipm, int[] tuple, Constraint constraint) {
         Preconditions.check(ipm.getNumberOfParameters() == tuple.length);
         
         final Model model = new Model();

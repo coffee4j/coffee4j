@@ -7,16 +7,16 @@ import java.util.Collection;
 import java.util.List;
 
 class HardConstraintChecker extends ModelBasedConstraintChecker {
-    
+
     HardConstraintChecker(final TestModel testModel,
-                          List<InternalConstraint> exclusionConstraints,
-                          List<InternalConstraint> errorConstraints) {
+                          List<Constraint> exclusionConstraints,
+                          List<Constraint> errorConstraints) {
         super(createModel(testModel, exclusionConstraints, errorConstraints));
     }
     
     private static Model createModel(TestModel testModel,
-                                     List<InternalConstraint> exclusionConstraints,
-                                     List<InternalConstraint> errorConstraints) {
+                                     List<Constraint> exclusionConstraints,
+                                     List<Constraint> errorConstraints) {
         final Model model = new Model();
         createVariables(testModel, model);
         createConstraints(exclusionConstraints, errorConstraints, model);
@@ -33,14 +33,14 @@ class HardConstraintChecker extends ModelBasedConstraintChecker {
         }
     }
     
-    private static void createConstraints(Collection<InternalConstraint> exclusionConstraints,
-                                          Collection<InternalConstraint> errorConstraints,
+    private static void createConstraints(Collection<Constraint> exclusionConstraints,
+                                          Collection<Constraint> errorConstraints,
                                           Model model) {
-        for (InternalConstraint constraint : exclusionConstraints) {
+        for (Constraint constraint : exclusionConstraints) {
             constraint.apply(model).post();
         }
         
-        for (InternalConstraint errorConstraint : errorConstraints) {
+        for (Constraint errorConstraint : errorConstraints) {
             errorConstraint.apply(model).post();
         }
     }

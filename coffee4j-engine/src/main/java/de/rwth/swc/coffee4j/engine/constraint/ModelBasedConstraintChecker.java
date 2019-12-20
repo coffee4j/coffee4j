@@ -4,16 +4,17 @@ import de.rwth.swc.coffee4j.engine.util.Preconditions;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.constraints.Constraint;
 import org.chocosolver.solver.variables.IntVar;
-import org.chocosolver.solver.variables.Variable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public abstract class ModelBasedConstraintChecker implements ConstraintChecker {
-    
+import static de.rwth.swc.coffee4j.engine.util.ChocoUtil.findVariable;
+
+class ModelBasedConstraintChecker implements ConstraintChecker {
+
     private final Model model;
-    
+
     ModelBasedConstraintChecker(Model model) {
         this.model = Preconditions.notNull(model);
     }
@@ -22,7 +23,7 @@ public abstract class ModelBasedConstraintChecker implements ConstraintChecker {
     public boolean isValid(final int[] combination) {
         final List<Constraint> constraintsList = createAssignmentConstraints(combination, model);
         
-        return ChocoSolverUtil.runChocoSolver(model, constraintsList);
+        return runChocoSolver(model, constraintsList);
     }
     
     private List<Constraint> createAssignmentConstraints(final int[] combination, final Model model) {
@@ -37,20 +38,19 @@ public abstract class ModelBasedConstraintChecker implements ConstraintChecker {
         return constraints;
     }
 
-    private static void addAssignmentConstraint(int parameter, int value, Model model, List<Constraint> constraints) {
-        if (value != -1) {
-            final Optional<Variable> candidate = ChocoSolverUtil.findVariable(model, parameter);
-            
-            if (candidate.isPresent() && candidate.get() instanceof IntVar) {
-                final IntVar variable = (IntVar) candidate.get();
-                
-                final Constraint constraint = model.arithm(variable, "=", value);
-                constraints.add(constraint);
-            } else {
-                // If you reach this branch, there's a programming error somewhere else"
-                throw new IllegalStateException("INTERNAL-ERROR: " + value + " belongs to unknown parameter " + parameter);
-            }
+    private void addAssignmentConstraint(int parameter, int value, Model model, List<Constraint> constraints) {
+        if (value == -1) {
+            return;
         }
+
+        final Optional<IntVar> candidate = findVariable(model, parameter)
+                .filter(v -> v instanceof IntVar)
+                .map(v -> (IntVar) v);
+
+        final IntVar variable = candidate.orElseThrow();
+
+        final Constraint constraint = model.arithm(variable, "=", value);
+        constraints.add(constraint);
     }
     
     @Override
@@ -63,7 +63,7 @@ public abstract class ModelBasedConstraintChecker implements ConstraintChecker {
             addAssignmentConstraint(parameterValues[i], parameterValues[i + 1], model, constraintsList);
         }
         
-        return ChocoSolverUtil.runChocoSolver(model, constraintsList);
+        return runChocoSolver(model, constraintsList);
     }
     
     @Override
@@ -75,6 +75,19 @@ public abstract class ModelBasedConstraintChecker implements ConstraintChecker {
             addAssignmentConstraint(parameters[i], values[i], model, constraintsList);
         }
         
-        return ChocoSolverUtil.runChocoSolver(model, constraintsList);
+        return runChocoSolver(model, constraintsList);
+    }
+
+    private boolean runChocoSolver(Model model, List<Constraint> temporaryConstraints) {
+        final Constraint[] constraints = temporaryConstraints.toArray(new Constraint[0]);
+
+        model.post(constraints);
+
+        final boolean result = model.getSolver().solve();
+
+        model.unpost(constraints);
+        model.getSolver().reset();
+
+        return result;
     }
 }

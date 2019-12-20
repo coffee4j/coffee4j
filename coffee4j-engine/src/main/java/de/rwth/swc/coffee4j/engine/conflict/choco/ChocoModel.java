@@ -1,11 +1,10 @@
 package de.rwth.swc.coffee4j.engine.conflict.choco;
 
-import de.rwth.swc.coffee4j.engine.constraint.InternalConstraint;
+import de.rwth.swc.coffee4j.engine.constraint.Constraint;
 import de.rwth.swc.coffee4j.engine.util.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import org.chocosolver.solver.Model;
-import org.chocosolver.solver.constraints.Constraint;
 import org.chocosolver.solver.variables.IntVar;
 import org.chocosolver.solver.variables.Variable;
 
@@ -25,11 +24,10 @@ public class ChocoModel {
     private ChocoConstraint originalNegatedConstraint;
     private ChocoConstraint oppositeNegatedConstraint;
 
-    public ChocoModel(int[] parameterSizes,
-                      List<InternalConstraint> internalConstraints) {
+    public ChocoModel(int[] parameterSizes, List<Constraint> constraints) {
         Preconditions.notNull(parameterSizes);
-        Preconditions.notNull(internalConstraints);
-        checkDuplicateIds(internalConstraints);
+        Preconditions.notNull(constraints);
+        checkDuplicateIds(constraints);
 
         this.model = new Model();
         this.enabledConstraints = new ArrayList<>();
@@ -40,18 +38,21 @@ public class ChocoModel {
 
         createVariables(parameterSizes);
 
-        for(InternalConstraint internalConstraint : internalConstraints) {
-            final ChocoConstraint constraint = createAndPostInternalConstraint(internalConstraint);
+        for(Constraint constraint : constraints) {
+            final ChocoConstraint chocoConstraint = createAndPostConstraint(constraint);
 
-            this.enabledConstraints.add(constraint);
+            this.enabledConstraints.add(chocoConstraint);
         }
     }
 
-    private void checkDuplicateIds(List<InternalConstraint> internalConstraints) {
-        IntSet uniques = new IntOpenHashSet(internalConstraints.size());
+    private void checkDuplicateIds(List<Constraint> constraints) {
+        IntSet uniques = new IntOpenHashSet(constraints.size());
 
-        for (InternalConstraint internalConstraint : internalConstraints) {
-            Preconditions.check(uniques.add(internalConstraint.getId()), "duplicate id " + internalConstraint.getId());
+        for (Constraint constraint : constraints) {
+            Preconditions.check(
+                    uniques.add(constraint.getTupleList().getId()),
+                    "duplicate id " + constraint.getTupleList().getId()
+            );
         }
     }
 
@@ -70,25 +71,30 @@ public class ChocoModel {
 
         clearAssignmentConstraint();
 
-        final Constraint[] tmp = model.getCstrs();
-
-        final Constraint[] arithms = new Constraint[parameters.length];
+        final org.chocosolver.solver.constraints.Constraint[] tmp = model.getCstrs();
+        final org.chocosolver.solver.constraints.Constraint[] arithms
+                = new org.chocosolver.solver.constraints.Constraint[parameters.length];
 
         for(int i = 0; i < parameters.length; i++) {
             final int parameter = parameters[i];
             final int value = values[i];
 
             final Optional<Variable> candidate = findVariable(parameter);
-            final IntVar variable = (IntVar) candidate.get();
+            final IntVar variable = (IntVar) candidate.orElseThrow();
 
             arithms[i] = model.arithm(variable, "=", value);
         }
 
-        final Constraint constraint = model.and(arithms);
+        final org.chocosolver.solver.constraints.Constraint constraint = model.and(arithms);
         model.post(constraint);
 
-        final Constraint[] allConstraints = exclude(model.getCstrs(), tmp);
-        assignmentConstraint = new ChocoConstraint(findNextUnusedId(), constraint, allConstraints, ChocoConstraintStatus.POSTED);
+        final org.chocosolver.solver.constraints.Constraint[] allConstraints
+                = exclude(model.getCstrs(), tmp);
+        assignmentConstraint = new ChocoConstraint(
+                findNextUnusedId(),
+                constraint,
+                allConstraints,
+                ChocoConstraintStatus.POSTED);
 
         enabledConstraints.add(assignmentConstraint);
 
@@ -121,12 +127,13 @@ public class ChocoModel {
         model.unpost(originalNegatedConstraint.getAllConstraints());
         enabledConstraints.remove(originalNegatedConstraint);
 
-        final Constraint[] tmp = model.getCstrs();
+        final org.chocosolver.solver.constraints.Constraint[] tmp = model.getCstrs();
 
-        final Constraint rootConstraint = originalNegatedConstraint.getRootConstraint().getOpposite();
+        final org.chocosolver.solver.constraints.Constraint rootConstraint
+                = originalNegatedConstraint.getRootConstraint().getOpposite();
         model.post(rootConstraint);
 
-        final Constraint[] allConstraints = exclude(model.getCstrs(), tmp);
+        final org.chocosolver.solver.constraints.Constraint[] allConstraints = exclude(model.getCstrs(), tmp);
         oppositeNegatedConstraint = new ChocoConstraint(originalNegatedConstraint.getId(), rootConstraint, allConstraints, ChocoConstraintStatus.POSTED);
 
         enabledConstraints.add(oppositeNegatedConstraint);
@@ -244,35 +251,42 @@ public class ChocoModel {
         }
     }
 
-    private ChocoConstraint createAndPostInternalConstraint(InternalConstraint internalConstraint) {
-        final Constraint[] tmp = model.getCstrs();
-        final Constraint constraint = internalConstraint.apply(model);
+    private ChocoConstraint createAndPostConstraint(Constraint constraint) {
+        final org.chocosolver.solver.constraints.Constraint[] tmp = model.getCstrs();
+        final org.chocosolver.solver.constraints.Constraint appliedConstraint = constraint.apply(model);
 
-        model.post(constraint);
+        model.post(appliedConstraint);
 
-        final Constraint[] allConstraints = exclude(model.getCstrs(), tmp);
+        final org.chocosolver.solver.constraints.Constraint[] allConstraints = exclude(model.getCstrs(), tmp);
 
-        return new ChocoConstraint(internalConstraint.getId(), constraint, allConstraints, ChocoConstraintStatus.POSTED);
+        return new ChocoConstraint(
+                constraint.getTupleList().getId(),
+                appliedConstraint,
+                allConstraints,
+                ChocoConstraintStatus.POSTED);
     }
 
-    private Constraint[] exclude(Constraint[] allConstraints, Constraint[] excludedConstraints) {
-        List<Constraint> constraints = new ArrayList<>();
+    private org.chocosolver.solver.constraints.Constraint[] exclude(
+            org.chocosolver.solver.constraints.Constraint[] allConstraints,
+            org.chocosolver.solver.constraints.Constraint[] excludedConstraints) {
+        List<org.chocosolver.solver.constraints.Constraint> constraints = new ArrayList<>();
 
-        for (Constraint constraint : allConstraints) {
+        for (org.chocosolver.solver.constraints.Constraint constraint : allConstraints) {
             if (!contains(constraint, excludedConstraints)) {
                 constraints.add(constraint);
             }
         }
 
-        return constraints.toArray(new Constraint[0]);
+        return constraints.toArray(new org.chocosolver.solver.constraints.Constraint[0]);
     }
 
-    private boolean contains(Constraint constraint, Constraint[] excludedConstraints) {
+    private boolean contains(org.chocosolver.solver.constraints.Constraint constraint,
+                             org.chocosolver.solver.constraints.Constraint[] excludedConstraints) {
         if(excludedConstraints.length == 0) {
             return false;
         }
 
-        for (Constraint excludedConstraint : excludedConstraints) {
+        for (org.chocosolver.solver.constraints.Constraint excludedConstraint : excludedConstraints) {
             if (excludedConstraint.equals(constraint)) {
                 return true;
             }

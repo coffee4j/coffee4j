@@ -11,13 +11,13 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * Class representing an constraint via storing all sub-combinations which are not allowed. Instead of storing complete
+ * Class representing a constraint via storing all sub-combinations which are not allowed. Instead of storing complete
  * sub-combinations (with field having {@link CombinationUtil#NO_VALUE}), only
  * the values of parameters actually constrained are saved. This means that if the test input [0, 1, 2, 3, 4]
  * should not be allowed by this constraint and the constraint operates on the first and third parameter,
  * only [0, 2] will be stored.
  */
-public final class TupleList {
+public class TupleList {
     
     private final int id;
     private final int[] involvedParameters;

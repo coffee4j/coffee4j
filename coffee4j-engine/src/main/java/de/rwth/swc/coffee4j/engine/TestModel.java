@@ -1,7 +1,7 @@
 package de.rwth.swc.coffee4j.engine;
 
-import de.rwth.swc.coffee4j.engine.constraint.InternalConstraint;
-import de.rwth.swc.coffee4j.engine.constraint.LazyConstraintList;
+import de.rwth.swc.coffee4j.engine.constraint.Constraint;
+import de.rwth.swc.coffee4j.engine.constraint.ConstraintList;
 import de.rwth.swc.coffee4j.engine.util.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
@@ -25,8 +25,8 @@ public class TestModel {
     private final int[] parameterSizes;
     private final List<TupleList> forbiddenTupleLists;
     private final List<TupleList> errorTupleLists;
-    private final LazyConstraintList lazyExclusionConstraints;
-    private final LazyConstraintList lazyErrorconstraints;
+    private final ConstraintList lazyExclusionConstraints;
+    private final ConstraintList lazyErrorconstraints;
 
     /**
      * @param strength            the desired testing strength. Must be equal to or greater than one and at most the number of parameters
@@ -59,8 +59,8 @@ public class TestModel {
         this.forbiddenTupleLists = new ArrayList<>(forbiddenTupleLists);
         this.errorTupleLists = new ArrayList<>(errorTupleLists);
 
-        this.lazyExclusionConstraints = new LazyConstraintList(forbiddenTupleLists);
-        this.lazyErrorconstraints = new LazyConstraintList(errorTupleLists);
+        this.lazyExclusionConstraints = new ConstraintList(forbiddenTupleLists);
+        this.lazyErrorconstraints = new ConstraintList(errorTupleLists);
     }
     
     private static void checkTuplesListIds(Collection<TupleList> forbiddenTupleLists,
@@ -120,11 +120,11 @@ public class TestModel {
         return Collections.unmodifiableList(errorTupleLists);
     }
 
-    public List<InternalConstraint> getExclusionConstraints() {
+    public List<Constraint> getExclusionConstraints() {
         return lazyExclusionConstraints.getConstraints();
     }
 
-    public List<InternalConstraint> getErrorConstraints() {
+    public List<Constraint> getErrorConstraints() {
         return lazyErrorconstraints.getConstraints();
     }
 

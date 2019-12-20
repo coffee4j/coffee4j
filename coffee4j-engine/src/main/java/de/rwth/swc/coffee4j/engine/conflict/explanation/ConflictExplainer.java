@@ -7,7 +7,5 @@ import java.util.Optional;
 
 public interface ConflictExplainer {
 
-    Optional<InternalExplanation> getMinimalConflict(ChocoModel model,
-                                                     int[] background,
-                                                     int[] relaxable);
+    Optional<InternalExplanation> getMinimalConflict(ChocoModel model, int[] background, int[] relaxable);
 }

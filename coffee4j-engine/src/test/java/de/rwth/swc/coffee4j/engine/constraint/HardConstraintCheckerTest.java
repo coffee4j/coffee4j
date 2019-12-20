@@ -21,10 +21,11 @@ class HardConstraintCheckerTest {
 
         final TestModel model = new TestModel(2, new int[]{2, 2, 2}, forbiddenTupleLists, Collections.emptyList());
 
-        final ConstraintChecker checker = new ConstraintCheckerFactory(model).createHardConstraintsChecker();
+        final ConstraintChecker solver = new HardConstraintChecker(model,
+                model.getExclusionConstraints(), model.getErrorConstraints());
 
-        assertTrue(checker.isValid(new int[]{1, 0, 1}));
-        assertFalse(checker.isValid(new int[]{0, 0, 1}));
+        assertTrue(solver.isValid(new int[]{1, 0, 1}));
+        assertFalse(solver.isValid(new int[]{0, 0, 1}));
     }
 
     @Test
@@ -34,9 +35,10 @@ class HardConstraintCheckerTest {
 
         final TestModel model = new TestModel(2, new int[]{2, 2, 2}, forbiddenTupleLists, Collections.emptyList());
 
-        final ConstraintChecker checker = new ConstraintCheckerFactory(model).createHardConstraintsChecker();
+        final ConstraintChecker solver = new HardConstraintChecker(model,
+                model.getExclusionConstraints(), model.getErrorConstraints());
 
-        assertTrue(checker.isExtensionValid(new int[]{1, 0}, 2, 0));
-        assertFalse(checker.isExtensionValid(new int[]{0, 0}, 2, 0));
+        assertTrue(solver.isExtensionValid(new int[]{1, 0}, 2, 0));
+        assertFalse(solver.isExtensionValid(new int[]{0, 0}, 2, 0));
     }
 }

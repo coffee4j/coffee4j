@@ -1,10 +1,12 @@
 package de.rwth.swc.coffee4j.engine.conflict.diagnosis;
 
 import de.rwth.swc.coffee4j.engine.TestModel;
-import de.rwth.swc.coffee4j.engine.conflict.*;
+import de.rwth.swc.coffee4j.engine.TupleList;
 import de.rwth.swc.coffee4j.engine.conflict.choco.ChocoModel;
 import de.rwth.swc.coffee4j.engine.conflict.explanation.QuickConflictExplainer;
-import de.rwth.swc.coffee4j.engine.constraint.InternalConstraint;
+import de.rwth.swc.coffee4j.engine.conflict.InternalConflictSet;
+import de.rwth.swc.coffee4j.engine.conflict.InternalExplanation;
+import de.rwth.swc.coffee4j.engine.constraint.Constraint;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.variables.IntVar;
 import org.junit.jupiter.api.Nested;
@@ -15,8 +17,10 @@ import java.util.*;
 
 import static de.rwth.swc.coffee4j.engine.AssertUtils.assertInstanceOf;
 import static de.rwth.swc.coffee4j.engine.conflict.choco.ChocoModelTest.createTestModel;
-import static de.rwth.swc.coffee4j.engine.constraint.ChocoSolverUtil.findVariable;
+import static de.rwth.swc.coffee4j.engine.util.ChocoUtil.findVariable;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertThrows;
 
 class ConflictDiagnosticianTest {
@@ -35,7 +39,7 @@ class ConflictDiagnosticianTest {
         assertTrue(explanation.isPresent());
 
         final ConflictDiagnostician diagnostician = new ExhaustiveConflictDiagnostician();
-        final int[][] diagnoses = diagnostician.getMinimalDiagnoses((InternalConflictSet) explanation.get());
+        final int[][] diagnoses = diagnostician.getMinimalDiagnoses((InternalConflictSet) explanation.orElseThrow());
 
         assertEquals(3, diagnoses.length);
         assertTrue(Arrays.stream(diagnoses)
@@ -60,7 +64,7 @@ class ConflictDiagnosticianTest {
         assertTrue(explanation.isPresent());
 
         final ConflictDiagnostician diagnostician = new FastConflictDiagnostician();
-        final int[][] diagnoses = diagnostician.getMinimalDiagnoses((InternalConflictSet) explanation.get());
+        final int[][] diagnoses = diagnostician.getMinimalDiagnoses((InternalConflictSet) explanation.orElseThrow());
 
         assertEquals(1, diagnoses.length);
         assertArrayEquals(new int[]{1}, diagnoses[0]);
@@ -80,7 +84,7 @@ class ConflictDiagnosticianTest {
         assertTrue(explanation.isPresent());
 
         final ConflictDiagnostician diagnostician = new ExhaustiveConflictDiagnostician();
-        final int[][] diagnoses = diagnostician.getMinimalDiagnoses((InternalConflictSet) explanation.get());
+        final int[][] diagnoses = diagnostician.getMinimalDiagnoses((InternalConflictSet) explanation.orElseThrow());
 
         assertEquals(1, diagnoses.length);
         assertArrayEquals(new int[]{2}, diagnoses[0]);
@@ -98,10 +102,10 @@ class ConflictDiagnosticianTest {
                 .getMinimalConflict(chocoModel, background, relaxable);
 
         assertTrue(explanation.isPresent());
-        assertInstanceOf(InternalConflictSet.class, explanation.get());
+        assertInstanceOf(InternalConflictSet.class, explanation.orElseThrow());
 
         final ConflictDiagnostician diagnostician = new FastConflictDiagnostician();
-        final int[][] diagnoses = diagnostician.getMinimalDiagnoses((InternalConflictSet) explanation.get());
+        final int[][] diagnoses = diagnostician.getMinimalDiagnoses((InternalConflictSet) explanation.orElseThrow());
 
         assertEquals(1, diagnoses.length);
         assertArrayEquals(diagnoses[0], new int[]{2});
@@ -140,7 +144,7 @@ class ConflictDiagnosticianTest {
             assertTrue(explanation.isPresent());
 
             final ConflictDiagnostician diagnostician = new ExhaustiveConflictDiagnostician();
-            final int[][] diagnoses = diagnostician.getMinimalDiagnoses((InternalConflictSet) explanation.get());
+            final int[][] diagnoses = diagnostician.getMinimalDiagnoses((InternalConflictSet) explanation.orElseThrow());
 
             assertEquals(1, diagnoses.length);
             assertArrayEquals(new int[] {2}, diagnoses[0]);
@@ -161,7 +165,7 @@ class ConflictDiagnosticianTest {
             assertTrue(explanation.isPresent());
 
             final ConflictDiagnostician diagnostician = new ExhaustiveConflictDiagnostician();
-            final int[][] diagnoses = diagnostician.getMinimalDiagnoses((InternalConflictSet) explanation.get());
+            final int[][] diagnoses = diagnostician.getMinimalDiagnoses((InternalConflictSet) explanation.orElseThrow());
 
             assertEquals(3, diagnoses.length);
             assertTrue(Arrays.stream(diagnoses)
@@ -172,52 +176,59 @@ class ConflictDiagnosticianTest {
                     .anyMatch(diagnosis -> Arrays.equals(diagnosis, new int[]{52})));
         }
 
+        private TupleList tupleList(int id) {
+            final TupleList tupleList = mock(TupleList.class);
+            when(tupleList.getId()).thenReturn(id);
+            
+            return tupleList;
+        }
+        
         private ChocoModel createMoreDetailedTestModel() {
-            final List<InternalConstraint> internalConstraints = new ArrayList<>();
+            final List<Constraint> constraints = new ArrayList<>();
 
-            internalConstraints.add(
-                    new InternalConstraint(1, (Model model)
-                            -> model.arithm((IntVar) findVariable(model, 0).get(), "=", 2).getOpposite())
+            constraints.add(
+                    new Constraint(tupleList(1), (Model model)
+                            -> model.arithm((IntVar) findVariable(model, 0).orElseThrow(), "=", 2).getOpposite())
             );
-            internalConstraints.add(
-                    new InternalConstraint(2, (Model model)
-                            -> model.arithm((IntVar) findVariable(model, 1).get(), "=", 2).getOpposite())
+            constraints.add(
+                    new Constraint(tupleList(2), (Model model)
+                            -> model.arithm((IntVar) findVariable(model, 1).orElseThrow(), "=", 2).getOpposite())
             );
-            internalConstraints.add(
-                    new InternalConstraint(3, (Model model)
-                            -> model.arithm((IntVar) findVariable(model, 2).get(), "=", 2).getOpposite())
+            constraints.add(
+                    new Constraint(tupleList(3), (Model model)
+                            -> model.arithm((IntVar) findVariable(model, 2).orElseThrow(), "=", 2).getOpposite())
             );
-            internalConstraints.add(
-                    new InternalConstraint(41, (Model model)
+            constraints.add(
+                    new Constraint(tupleList(41), (Model model)
                             -> model.and(
-                            model.arithm((IntVar) findVariable(model, 0).get(), "=", 0),
-                            model.arithm((IntVar) findVariable(model, 1).get(), "=", 1)
+                            model.arithm((IntVar) findVariable(model, 0).orElseThrow(), "=", 0),
+                            model.arithm((IntVar) findVariable(model, 1).orElseThrow(), "=", 1)
                     ).getOpposite())
             );
-            internalConstraints.add(
-                    new InternalConstraint(42, (Model model)
+            constraints.add(
+                    new Constraint(tupleList(42), (Model model)
                             -> model.and(
-                            model.arithm((IntVar) findVariable(model, 0).get(), "=", 0),
-                            model.arithm((IntVar) findVariable(model, 1).get(), "=", 2)
+                            model.arithm((IntVar) findVariable(model, 0).orElseThrow(), "=", 0),
+                            model.arithm((IntVar) findVariable(model, 1).orElseThrow(), "=", 2)
                     ).getOpposite())
             );
-            internalConstraints.add(
-                    new InternalConstraint(51, (Model model)
+            constraints.add(
+                    new Constraint(tupleList(51), (Model model)
                             -> model.and(
-                            model.arithm((IntVar) findVariable(model, 0).get(), "=", 1),
-                            model.arithm((IntVar) findVariable(model, 1).get(), "=", 0)
+                            model.arithm((IntVar) findVariable(model, 0).orElseThrow(), "=", 1),
+                            model.arithm((IntVar) findVariable(model, 1).orElseThrow(), "=", 0)
                     ).getOpposite())
             );
-            internalConstraints.add(
-                    new InternalConstraint(52, (Model model)
+            constraints.add(
+                    new Constraint(tupleList(52), (Model model)
                             -> model.and(
-                            model.arithm((IntVar) findVariable(model, 0).get(), "=", 1),
-                            model.arithm((IntVar) findVariable(model, 1).get(), "=", 2)
+                            model.arithm((IntVar) findVariable(model, 0).orElseThrow(), "=", 1),
+                            model.arithm((IntVar) findVariable(model, 1).orElseThrow(), "=", 2)
                     ).getOpposite())
             );
 
             final TestModel testModel = new TestModel(2, new int[] { 3, 3, 3 }, Collections.emptyList(), Collections.emptyList());
-            return new ChocoModel(testModel.getParameterSizes(), internalConstraints);
+            return new ChocoModel(testModel.getParameterSizes(), constraints);
         }
     }
 

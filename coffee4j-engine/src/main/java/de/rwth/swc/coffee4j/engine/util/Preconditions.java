@@ -5,9 +5,6 @@ import java.util.function.Supplier;
 
 /**
  * Preconditions which can be used to validate the argument passed to methods.
- * This functionality is already implemented with guava, but importing the
- * complete guava library for just the preconditions seems like a bit of an
- * overkill.
  */
 public final class Preconditions {
     
@@ -184,5 +181,4 @@ public final class Preconditions {
             throw new IllegalArgumentException(messageSupplier.get());
         }
     }
-    
 }

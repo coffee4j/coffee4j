@@ -29,9 +29,9 @@ import static de.rwth.swc.coffee4j.engine.util.CombinationUtil.containsAllParame
  * variable strength testing via {@link ParameterCombinationFactory}.
  */
 public class IpogAlgorithm {
-    
+
     private final IpogConfiguration configuration;
-    
+
     /**
      * Creates a new algorithm for the given configuration. After this, the {@link IpogAlgorithm#generate()} method can be used
      * to generate the test suite satisfying the configuration.
@@ -42,44 +42,56 @@ public class IpogAlgorithm {
     public IpogAlgorithm(IpogConfiguration configuration) {
         this.configuration = Preconditions.notNull(configuration);
     }
-    
+
     public List<int[]> generate() {
-        Int2IntMap parameters = convertToFactors(configuration.getTestModel());
-        
-        final int[] initialParameters = configuration.getOrder().getInitialParameters(parameters, configuration.getTestModel().getStrength());
+        final Int2IntMap parameters = convertToFactors(configuration.getTestModel());
+        final int[] initialParameters = configuration.getOrder()
+                .getInitialParameters(parameters, configuration.getTestModel().getStrength());
+
         final List<int[]> testSuite = buildInitialTestSuite(parameters, initialParameters);
-        final int[] remainingParameters = configuration.getOrder().getRemainingParameters(parameters, configuration.getTestModel().getStrength());
+
+        final int[] remainingParameters = configuration.getOrder()
+                .getRemainingParameters(parameters, configuration.getTestModel().getStrength());
 
         if(configuration.getTestModel().getStrength() > 0) {
             extendInitialTestSuite(parameters, initialParameters, testSuite, remainingParameters);
         }
 
         fillEmptyValues(testSuite, parameters);
-        
+
         return testSuite;
     }
 
-    private void extendInitialTestSuite(Int2IntMap parameters, int[] initialParameters, List<int[]> testSuite, int[] remainingParameters) {
+    private void extendInitialTestSuite(Int2IntMap parameters,
+                                        int[] initialParameters,
+                                        List<int[]> testSuite,
+                                        int[] remainingParameters) {
         final IntList coveredParameters = new IntArrayList(initialParameters);
 
-        for (int i : remainingParameters) {
-            List<IntSet> parameterCombinations = configuration.getFactory().create(coveredParameters.toIntArray(), configuration.getTestModel().getStrength());
-            CoverageMap coverageMap = horizontalExtension(i, testSuite, parameters, parameterCombinations);
+        for (int nextParameter : remainingParameters) {
+            final List<IntSet> parameterCombinations = configuration.getFactory().create(
+                    coveredParameters.toIntArray(),
+                    configuration.getTestModel().getStrength());
+            final CoverageMap coverageMap = horizontalExtension(nextParameter, testSuite, parameters, parameterCombinations);
 
-            if (coverageMap.hasUncoveredCombinations()) {
-                verticalExtension(i, parameters, testSuite, coverageMap);
+            if (coverageMap.mayHaveUncoveredCombinations()) {
+                verticalExtension(nextParameter, parameters, testSuite, coverageMap);
             }
 
-            coveredParameters.add(i);
+            coveredParameters.add(nextParameter);
         }
     }
 
-    private List<int[]> buildInitialTestSuite(Int2IntMap allParameters, int[] initialParameters) {
-        List<int[]> testSuite = Combinator.computeCartesianProduct(subMap(allParameters, initialParameters), allParameters.size());
-        
-        return testSuite.stream().filter(configuration.getChecker()::isValid).collect(Collectors.toList());
+    protected List<int[]> buildInitialTestSuite(Int2IntMap allParameters,
+                                                int[] initialParameters) {
+        final List<int[]> testSuite = Combinator.computeCartesianProduct(
+                subMap(allParameters, initialParameters), allParameters.size());
+
+        return testSuite.stream()
+                .filter(configuration.getChecker()::isValid)
+                .collect(Collectors.toList());
     }
-    
+
     private Int2IntMap convertToFactors(TestModel testModel) {
         Int2IntMap parameters = new Int2IntOpenHashMap(testModel.getNumberOfParameters());
         for (int i = 0; i < testModel.getNumberOfParameters(); i++) {
@@ -87,52 +99,58 @@ public class IpogAlgorithm {
         }
         return parameters;
     }
-    
+
     private Int2IntMap subMap(Int2IntMap original, int[] keys) {
         Int2IntMap subMap = new Int2IntOpenHashMap();
-        
+
         for (int i = 0; i < original.size(); i++) {
-            
+
             if (ArrayUtil.contains(keys, i)) {
                 subMap.put(i, original.get(i));
             }
         }
-        
+
         return subMap;
     }
-    
-    private CoverageMap horizontalExtension(int nextParameter, List<int[]> testSuite, Int2IntMap allParameters, List<IntSet> parameterCombinations) {
-        CoverageMap coverageMap = constructCoverageMap(nextParameter, allParameters, parameterCombinations);
-        
+
+    private CoverageMap horizontalExtension(int nextParameter,
+                                            List<int[]> testSuite,
+                                            Int2IntMap allParameters,
+                                            List<IntSet> parameterCombinations) {
+        final CoverageMap coverageMap = constructCoverageMap(nextParameter, allParameters, parameterCombinations);
+
         for (int[] testInput : testSuite) {
             addValueWithHighestCoverageGain(coverageMap, testInput, nextParameter);
             coverageMap.markAsCovered(testInput);
-            if (!coverageMap.hasUncoveredCombinations()) {
+
+            if (!coverageMap.mayHaveUncoveredCombinations()) {
                 break;
             }
         }
-        
+
         return coverageMap;
     }
-    
-    private CoverageMap constructCoverageMap(int nextParameter, Int2IntMap allParameters, List<IntSet> parameterCombinations) {
-        return new CoverageMap(parameterCombinations, nextParameter, allParameters, configuration.getChecker());
+
+    protected CoverageMap constructCoverageMap(int nextParameter,
+                                               Int2IntMap allParameters,
+                                               List<IntSet> parameterCombinations) {
+        return new EfficientCoverageMap(parameterCombinations, nextParameter, allParameters, configuration.getChecker());
     }
-    
-    private void addValueWithHighestCoverageGain(CoverageMap coverageMap, int[] partialTestInput, int parameterIndex) {
+
+    private void addValueWithHighestCoverageGain(CoverageMap coverageMap,
+                                                 int[] partialTestInput,
+                                                 int parameterIndex) {
+        if(skipAlreadyParameterValues(partialTestInput, parameterIndex)) {
+            return;
+        }
+
         int[] gains = coverageMap.computeGainsOfFixedParameter(partialTestInput);
-        
+
         for (int i = 0; i < gains.length; i++) {
             int valueWithHighestGain = getValueWithHighestGain(gains);
-            
-            int highestGain = gains[valueWithHighestGain];
-            if (highestGain == -1) {
-                // If you reach this branch, there's a programming error somewhere else"
-                throw new IllegalStateException("ERROR: test input " + Arrays.toString(partialTestInput) + " cannot be updated for parameter " + parameterIndex);
-            }
-            
+
             partialTestInput[parameterIndex] = valueWithHighestGain;
-            
+
             if (configuration.getChecker().isValid(partialTestInput)) {
                 return;
             } else {
@@ -140,11 +158,16 @@ public class IpogAlgorithm {
                 gains[valueWithHighestGain] = -1;
             }
         }
-        
-        // If you reach this branch, there's a programming error somewhere else"
-        throw new IllegalStateException("ERROR: test input " + Arrays.toString(partialTestInput) + " cannot be updated for parameter " + parameterIndex);
+
+        throw new IllegalStateException("ERROR: test input "
+                + Arrays.toString(partialTestInput)
+                + " cannot be updated for parameter " + parameterIndex);
     }
-    
+
+    private boolean skipAlreadyParameterValues(int[] partialTestInput, int parameterIndex) {
+        return partialTestInput[parameterIndex] != NO_VALUE;
+    }
+
     private int getValueWithHighestGain(int[] gains) {
         int valueWithHighestGain = 0;
         for (int value = 0; value < gains.length; value++) {
@@ -154,30 +177,37 @@ public class IpogAlgorithm {
         }
         return valueWithHighestGain;
     }
-    
-    private void verticalExtension(int index, Int2IntMap parameters, List<int[]> testSuite, CoverageMap coverageMap) {
-        CombinationPartitioner combinationPartitioner = new CombinationPartitioner(getIncompleteCombinations(index, testSuite), index, parameters.get(index));
-        Optional<int[]> uncoveredCombination;
-        
-        while ((uncoveredCombination = coverageMap.getUncoveredCombination()).isPresent()) {
-            int[] combination = uncoveredCombination.get();
-            
-            Optional<int[]> candidate = addCombinationToTestInput(combination, combinationPartitioner, testSuite);
-            
-            if (candidate.isPresent()) {
-                int[] extension = candidate.get();
-                
-                coverageMap.markAsCovered(extension);
-                
-                if (containsAllParameters(extension, index)) {
-                    combinationPartitioner.removeCombination(extension);
+
+    private void verticalExtension(int index,
+                                   Int2IntMap parameters,
+                                   List<int[]> testSuite,
+                                   CoverageMap coverageMap) {
+        final CombinationPartitioner combinationPartitioner = new CombinationPartitioner(
+                getIncompleteCombinations(index, testSuite), index, parameters.get(index));
+
+        while (coverageMap.mayHaveUncoveredCombinations()) {
+            final Optional<int[]> uncoveredCombination = coverageMap.getUncoveredCombination();
+
+            if(uncoveredCombination.isPresent()) {
+                int[] combination = uncoveredCombination.get();
+
+                Optional<int[]> candidate = addCombinationToTestInput(combination, combinationPartitioner, testSuite);
+
+                if (candidate.isPresent()) {
+                    int[] extension = candidate.get();
+
+                    coverageMap.markAsCovered(extension);
+
+                    if (containsAllParameters(extension, index)) {
+                        combinationPartitioner.removeCombination(extension);
+                    }
+                } else {
+                    coverageMap.markAsCovered(combination);
                 }
-            } else {
-                coverageMap.markAsCovered(combination);
             }
         }
     }
-    
+
     private List<int[]> getIncompleteCombinations(int index, List<int[]> testSuite) {
         List<int[]> incompleteCombinations = new LinkedList<>();
         for (int[] testInput : testSuite) {
@@ -187,24 +217,27 @@ public class IpogAlgorithm {
         }
         return incompleteCombinations;
     }
-    
-    private Optional<int[]> addCombinationToTestInput(int[] combination, CombinationPartitioner combinationPartitioner, List<int[]> testSuite) {
+
+    private Optional<int[]> addCombinationToTestInput(int[] combination,
+                                                      CombinationPartitioner combinationPartitioner,
+                                                      List<int[]> testSuite) {
         if (!configuration.getChecker().isValid(combination)) {
             return Optional.empty();
         }
-        
-        Optional<int[]> testInput = combinationPartitioner.extendSuitableCombination(combination, configuration.getChecker());
-        
+
+        final Optional<int[]> testInput = combinationPartitioner
+                .extendSuitableCombination(combination, configuration.getChecker());
+
         if (testInput.isPresent()) {
             return testInput;
         } else {
             testSuite.add(combination);
             combinationPartitioner.addCombination(combination);
-            
+
             return Optional.of(combination);
         }
     }
-    
+
     private void fillEmptyValues(List<int[]> testSuite, Int2IntMap parameters) {
         for (int[] testInput : testSuite) {
             for (int parameter = 0; parameter < parameters.size(); parameter++) {
@@ -214,7 +247,7 @@ public class IpogAlgorithm {
             }
         }
     }
-    
+
     private void fillEmptyValue(int[] testInput, int parameter, int parameterSize) {
         for (int value = 0; value < parameterSize; value++) {
             if (configuration.getChecker().isExtensionValid(testInput, parameter, value)) {
@@ -222,7 +255,7 @@ public class IpogAlgorithm {
                 return;
             }
         }
-        
+
         // If you reach this branch, there's a programming error somewhere else"
         throw new IllegalStateException("ERROR: could not replace random value for parameter " + parameter + " in test input: " + Arrays.toString(testInput));
     }

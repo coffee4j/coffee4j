@@ -1,5 +1,6 @@
 package de.rwth.swc.coffee4j.junit.provider.configuration.generator;
 
+import de.rwth.swc.coffee4j.engine.constraint.HardConstraintCheckerFactory;
 import de.rwth.swc.coffee4j.engine.generator.TestInputGroupGenerator;
 import de.rwth.swc.coffee4j.engine.generator.ipog.Ipog;
 import de.rwth.swc.coffee4j.junit.provider.Loader;
@@ -25,13 +26,23 @@ import static org.junit.platform.commons.util.AnnotationUtils.findRepeatableAnno
  */
 public class GeneratorLoader implements Loader<List<TestInputGroupGenerator>> {
     
-    private static final TestInputGroupGenerator DEFAULT_GENERATOR = new Ipog();
+    private static final TestInputGroupGenerator DEFAULT_GENERATOR
+            = new Ipog(new HardConstraintCheckerFactory());
     
     @Override
     public List<TestInputGroupGenerator> load(ExtensionContext extensionContext) {
         final Method testMethod = extensionContext.getRequiredTestMethod();
         
-        List<TestInputGroupGenerator> generators = findRepeatableAnnotations(testMethod, GeneratorSource.class).stream().map(GeneratorSource::value).map(ReflectionUtils::newInstance).map(provider -> AnnotationConsumerInitializer.initialize(testMethod, provider)).map(provider -> provider.provide(extensionContext)).filter(Objects::nonNull).flatMap(Collection::stream).filter(Objects::nonNull).collect(Collectors.toList());
+        final List<TestInputGroupGenerator> generators
+                = findRepeatableAnnotations(testMethod, GeneratorSource.class)
+                .stream()
+                .map(GeneratorSource::value)
+                .map(ReflectionUtils::newInstance)
+                .map(provider -> AnnotationConsumerInitializer.initialize(testMethod, provider))
+                .map(provider -> provider.provide(extensionContext))
+                .filter(Objects::nonNull)
+                .flatMap(Collection::stream).filter(Objects::nonNull)
+                .collect(Collectors.toList());
         
         return generators.isEmpty() ? Collections.singletonList(DEFAULT_GENERATOR) : generators;
     }

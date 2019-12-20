@@ -63,11 +63,11 @@ class CombinationUtilTest {
     
     @ParameterizedTest
     @MethodSource
-    void canBeAddedTests(int[] combination, int[] toBeAdded, boolean constraintCheckerResult, boolean expectedResult) {
-        final ConstraintChecker checker = Mockito.mock(ConstraintChecker.class);
-        when(checker.isExtensionValid(any(), any())).thenReturn(constraintCheckerResult);
+    void canBeAddedTests(int[] combination, int[] toBeAdded, boolean constraintSolverResult, boolean expectedResult) {
+        final ConstraintChecker solver = Mockito.mock(ConstraintChecker.class);
+        when(solver.isExtensionValid(any(), any())).thenReturn(constraintSolverResult);
         
-        Assertions.assertEquals(expectedResult, CombinationUtil.canBeAdded(combination, toBeAdded, checker));
+        Assertions.assertEquals(expectedResult, CombinationUtil.canBeAdded(combination, toBeAdded, solver));
     }
     
     private static Stream<Arguments> canBeAddedTests() {

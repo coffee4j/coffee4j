@@ -5,11 +5,11 @@ import de.rwth.swc.coffee4j.engine.util.Preconditions;
 import java.util.Arrays;
 import java.util.Objects;
 
-class InternalDiagnosisSets implements InternalExplanation {
+public class InternalDiagnosisSets implements InternalExplanation {
     private final InternalConflictSet rootConflictSet;
     private final int[][] diagnosisSets;
 
-    InternalDiagnosisSets(InternalConflictSet rootConflictSet, int[][] diagnosisSets) {
+    public InternalDiagnosisSets(InternalConflictSet rootConflictSet, int[][] diagnosisSets) {
         Preconditions.notNull(rootConflictSet);
         Preconditions.notNull(diagnosisSets);
 
@@ -17,11 +17,11 @@ class InternalDiagnosisSets implements InternalExplanation {
         this.diagnosisSets = diagnosisSets;
     }
 
-    InternalConflictSet getRootConflictSet() {
+    public InternalConflictSet getRootConflictSet() {
         return rootConflictSet;
     }
 
-    int[][] getDiagnosisSets() {
+    public int[][] getDiagnosisSets() {
         return diagnosisSets;
     }
 

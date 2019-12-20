@@ -1,9 +1,9 @@
 package de.rwth.swc.coffee4j.engine.generator.ipogneg;
 
 import de.rwth.swc.coffee4j.engine.characterization.FaultCharacterizationConfiguration;
-import de.rwth.swc.coffee4j.engine.constraint.ConstraintChecker;
 import de.rwth.swc.coffee4j.engine.TestModel;
 import de.rwth.swc.coffee4j.engine.TupleList;
+import de.rwth.swc.coffee4j.engine.constraint.ConstraintChecker;
 import de.rwth.swc.coffee4j.engine.constraint.ConstraintCheckerFactory;
 import de.rwth.swc.coffee4j.engine.generator.TestInputGroup;
 import de.rwth.swc.coffee4j.engine.generator.TestInputGroupGenerator;
@@ -20,17 +20,20 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class IpogNeg implements TestInputGroupGenerator {
-    
+
+    private final ConstraintCheckerFactory factory;
+
+    public IpogNeg(ConstraintCheckerFactory factory) {
+        this.factory = factory;
+    }
+
     @Override
-    public Collection<Supplier<TestInputGroup>> generate(TestModel model,
-                                                         Reporter reporter) {
+    public Collection<Supplier<TestInputGroup>> generate(TestModel model, Reporter reporter) {
         Preconditions.notNull(model);
         Preconditions.notNull(reporter);
-        
-        final ConstraintCheckerFactory checkerFactory = new ConstraintCheckerFactory(model);
 
         return model.getErrorTupleLists().stream()
-                .map(errorTuples -> createGroupSupplier(errorTuples, model, checkerFactory, reporter))
+                .map(errorTuples -> createGroupSupplier(errorTuples, model, factory, reporter))
                 .collect(Collectors.toList());
     }
     
@@ -39,7 +42,7 @@ public class IpogNeg implements TestInputGroupGenerator {
                                                          ConstraintCheckerFactory factory,
                                                          Reporter reporter) {
         return () -> {
-            final ConstraintChecker checker = factory.createHardConstraintsCheckerWithNegation(errorTuples);
+            final ConstraintChecker checker = factory.createConstraintCheckerWithNegation(model, errorTuples);
 
             return createTestInputGroup(checker, errorTuples, model, reporter);
         };
@@ -52,8 +55,17 @@ public class IpogNeg implements TestInputGroupGenerator {
         final ParameterCombinationFactory factory = new NegativeTWiseParameterCombinationFactory(errorTuples);
         final ParameterOrder order = new NegativityAwareParameterOrder(errorTuples);
 
-        final List<int[]> testInputs = new IpogAlgorithm(IpogConfiguration.ipogConfiguration().testModel(testModel).checker(checker).factory(factory).order(order).reporter(reporter).build()).generate();
-        final FaultCharacterizationConfiguration faultCharacterizationConfiguration = new FaultCharacterizationConfiguration(testModel, checker, reporter);
+        final List<int[]> testInputs = new IpogAlgorithm(
+                IpogConfiguration.ipogConfiguration()
+                        .testModel(testModel)
+                        .checker(checker)
+                        .factory(factory)
+                        .order(order)
+                        .reporter(reporter)
+                        .build()).generate();
+
+        final FaultCharacterizationConfiguration faultCharacterizationConfiguration
+                = new FaultCharacterizationConfiguration(testModel, checker, reporter);
 
         return new TestInputGroup(errorTuples, testInputs, faultCharacterizationConfiguration);
     }

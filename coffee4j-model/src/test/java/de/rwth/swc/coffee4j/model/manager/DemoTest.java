@@ -1,5 +1,6 @@
 package de.rwth.swc.coffee4j.model.manager;
 
+import de.rwth.swc.coffee4j.engine.constraint.HardConstraintCheckerFactory;
 import de.rwth.swc.coffee4j.engine.generator.ipog.Ipog;
 import de.rwth.swc.coffee4j.model.Combination;
 import de.rwth.swc.coffee4j.model.InputParameterModel;
@@ -20,7 +21,7 @@ class DemoTest {
         final CombinatorialTestExecutionManager executor = new CombinatorialTestExecutionManager(
                 consumerManagerConfiguration()
                         .executionReporter(new PrintStreamExecutionReporter())
-                        .generator(new Ipog())
+                        .generator(new Ipog(new HardConstraintCheckerFactory()))
                         .faultCharacterizationAlgorithmFactory(ben())
                         .setConflictDetectionConfiguration(disable())
                         .build(),
@@ -34,7 +35,9 @@ class DemoTest {
                                 Parameter.parameter("param3").values(0, 1, 2),
                                 Parameter.parameter("param4").values(0, 1, 2))
                         .errorConstraint(
-                                constrain("param1", "param3").by((Integer firstValue, Integer thirdValue) -> firstValue == 0 && thirdValue != 1))
+                                constrain("param1", "param3")
+                                        .by((Integer firstValue, Integer thirdValue)
+                                                -> firstValue == 0 && thirdValue != 1))
                         .build());
         executor.execute();
     }
@@ -42,6 +45,7 @@ class DemoTest {
     private void testFunction(Combination testInput) {
         final int firstValue = (Integer) testInput.getValue("param1").get();
         final String secondValue = (String) testInput.getValue("param2").get();
+
         assertFalse(firstValue == 1 && secondValue.equals("1"));
     }
 }

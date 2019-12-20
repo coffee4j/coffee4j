@@ -94,7 +94,7 @@ public final class CombinationUtil {
      * @param toBeAdded         another combination which should be added to the first one. Must not be {@code null} and must be
      *                          of the same size as the first combination
      * @param constraintChecker checks whether the result combination would be valid. Must not be {@code null}. If this
-     *                          is not important, give a
+     *                          is not important, pass a
      *                          {@link NoConstraintChecker}
      * @return whether the combination to be added can be added according to the rules explained above
      */
@@ -227,5 +227,4 @@ public final class CombinationUtil {
         
         return numberOfSetParameters;
     }
-    
 }

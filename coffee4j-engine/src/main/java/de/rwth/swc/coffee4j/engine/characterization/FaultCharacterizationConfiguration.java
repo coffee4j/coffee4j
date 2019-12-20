@@ -66,7 +66,9 @@ public class FaultCharacterizationConfiguration {
         }
         
         FaultCharacterizationConfiguration other = (FaultCharacterizationConfiguration) object;
-        return Objects.equals(testModel, other.testModel) && Objects.equals(checker, other.checker) && Objects.equals(reporter, other.reporter);
+        return Objects.equals(testModel, other.testModel)
+                && Objects.equals(checker, other.checker)
+                && Objects.equals(reporter, other.reporter);
     }
     
     @Override
@@ -78,5 +80,4 @@ public class FaultCharacterizationConfiguration {
     public String toString() {
         return "FaultCharacterizationConfiguration{" + "testModel=" + testModel + ", checker=" + checker + ", reporter=" + reporter + '}';
     }
-    
 }

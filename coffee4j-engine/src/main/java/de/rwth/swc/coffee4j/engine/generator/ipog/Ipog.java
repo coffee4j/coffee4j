@@ -2,8 +2,8 @@ package de.rwth.swc.coffee4j.engine.generator.ipog;
 
 import de.rwth.swc.coffee4j.engine.TestModel;
 import de.rwth.swc.coffee4j.engine.characterization.FaultCharacterizationConfiguration;
-import de.rwth.swc.coffee4j.engine.report.Reporter;
 import de.rwth.swc.coffee4j.engine.constraint.ConstraintCheckerFactory;
+import de.rwth.swc.coffee4j.engine.report.Reporter;
 import de.rwth.swc.coffee4j.engine.generator.TestInputGroup;
 import de.rwth.swc.coffee4j.engine.generator.TestInputGroupGenerator;
 
@@ -20,7 +20,13 @@ import java.util.function.Supplier;
 public class Ipog implements TestInputGroupGenerator {
     
     private static final String DISPLAY_NAME = "Positive IpogAlgorithm Tests";
-    
+
+    private final ConstraintCheckerFactory factory;
+
+    public Ipog(ConstraintCheckerFactory factory) {
+        this.factory = factory;
+    }
+
     /**
      * Constructs a combinatorial test suite for positive testing.
      * This means that each combination of the given strength is guaranteed
@@ -38,9 +44,14 @@ public class Ipog implements TestInputGroupGenerator {
         }
 
         return Collections.singleton(() -> {
-            final ConstraintCheckerFactory factory = new ConstraintCheckerFactory(model);
-            final List<int[]> testInputs = new IpogAlgorithm(IpogConfiguration.ipogConfiguration().testModel(model).checker(factory.createHardConstraintsChecker()).build()).generate();
-            final FaultCharacterizationConfiguration faultCharacterizationConfiguration = new FaultCharacterizationConfiguration(model, reporter);
+            final List<int[]> testInputs = new IpogAlgorithm(
+                    IpogConfiguration.ipogConfiguration()
+                            .testModel(model)
+                            .checker(factory.createConstraintChecker(model))
+                            .build()).generate();
+            final FaultCharacterizationConfiguration faultCharacterizationConfiguration
+                    = new FaultCharacterizationConfiguration(model, reporter);
+
             return new TestInputGroup(DISPLAY_NAME, testInputs, faultCharacterizationConfiguration);
         });
     }

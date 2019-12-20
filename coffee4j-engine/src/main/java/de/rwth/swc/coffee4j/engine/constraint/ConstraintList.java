@@ -7,20 +7,20 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-public class LazyConstraintList {
+public class ConstraintList {
     private final Collection<TupleList> tupleLists;
-    private List<InternalConstraint> constraints;
+    private List<Constraint> constraints;
 
-    public LazyConstraintList(Collection<TupleList> tupleLists) {
+    public ConstraintList(Collection<TupleList> tupleLists) {
         Preconditions.notNull(tupleLists);
 
         this.tupleLists = tupleLists;
         this.constraints = null;
     }
 
-    public List<InternalConstraint> getConstraints() {
+    public List<Constraint> getConstraints() {
         if(constraints == null) {
-            constraints = new InternalConstraintConverter().convertAll(tupleLists);
+            constraints = new ConstraintConverter().convertAll(tupleLists);
         }
 
         return constraints;
@@ -30,7 +30,7 @@ public class LazyConstraintList {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        LazyConstraintList that = (LazyConstraintList) o;
+        ConstraintList that = (ConstraintList) o;
         return tupleLists.equals(that.tupleLists) &&
                 Objects.equals(constraints, that.constraints);
     }
@@ -42,7 +42,7 @@ public class LazyConstraintList {
 
     @Override
     public String toString() {
-        return "LazyConstraintList{" +
+        return "ConstraintList{" +
                 '}';
     }
 }

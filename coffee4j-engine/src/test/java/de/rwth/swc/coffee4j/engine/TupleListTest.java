@@ -37,5 +37,4 @@ class TupleListTest {
         assertArrayEquals(involvedParameters, tupleList.getInvolvedParameters());
         assertEquals(tuples, tupleList.getTuples());
     }
-    
 }

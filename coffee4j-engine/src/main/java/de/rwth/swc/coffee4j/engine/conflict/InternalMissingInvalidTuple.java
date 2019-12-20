@@ -5,16 +5,16 @@ import de.rwth.swc.coffee4j.engine.util.Preconditions;
 import java.util.Arrays;
 import java.util.Objects;
 
-class InternalMissingInvalidTuple {
+public class InternalMissingInvalidTuple {
     private final int negatedErrorConstraintId;
     private final int[] involvedParameters;
     private final int[] missingValues;
     private final InternalExplanation explanation;
 
-    InternalMissingInvalidTuple(int negatedErrorConstraintId,
-                                int[] involvedParameters,
-                                int[] missingValues,
-                                InternalExplanation explanation) {
+    public InternalMissingInvalidTuple(int negatedErrorConstraintId,
+                                       int[] involvedParameters,
+                                       int[] missingValues,
+                                       InternalExplanation explanation) {
         Preconditions.check(negatedErrorConstraintId > 0);
         Preconditions.notNull(involvedParameters);
         Preconditions.notNull(missingValues);
@@ -26,19 +26,19 @@ class InternalMissingInvalidTuple {
         this.explanation = explanation;
     }
 
-    int getNegatedErrorConstraintId() {
+    public int getNegatedErrorConstraintId() {
         return negatedErrorConstraintId;
     }
 
-    int[] getInvolvedParameters() {
+    public int[] getInvolvedParameters() {
         return involvedParameters;
     }
 
-    int[] getMissingValues() {
+    public int[] getMissingValues() {
         return missingValues;
     }
 
-    InternalExplanation getExplanation() {
+    public InternalExplanation getExplanation() {
         return explanation;
     }
 

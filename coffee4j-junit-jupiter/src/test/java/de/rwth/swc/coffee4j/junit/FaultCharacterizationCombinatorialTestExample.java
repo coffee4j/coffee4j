@@ -22,7 +22,7 @@ class FaultCharacterizationCombinatorialTestExample {
     
     @CombinatorialTest
     @EnableFaultCharacterization(Ben.class)
-    @ModelFromMethod("testModel")
+    @ModelFromMethod("model")
     @Reporter(PrintStreamExecutionReporter.class)
     void combinatorialTest(int param1, String param2, int param3, boolean param4, int param5, float param6) {
         System.out.println(param1 + "\t" + param2 + "\t" + param3 + "\t" + param4 + "\t" + param5 + "\t" + param6);
@@ -30,7 +30,20 @@ class FaultCharacterizationCombinatorialTestExample {
     }
     
     private static InputParameterModel.Builder model() {
-        return inputParameterModel("test testModel").strength(3).parameters(parameter("param1").values(1, 2, 3), parameter("param2").values("one  ", "two  ", "three"), parameter("param3").values(1, 2, 3), parameter("param4").values(true, false), parameter("param5").values(1, 2, 3), parameter("param6").values(1.1f, 2.2f, 3.3f)).exclusionConstraint(constrain("param1", "param2", "param4").by((Integer firstValue, String secondValue, Boolean fourthValue) -> !(firstValue == 1 && "one  ".equals(secondValue) && fourthValue)));
+        return inputParameterModel("test testModel")
+                .strength(3)
+                .parameters(
+                        parameter("param1").values(1, 2, 3),
+                        parameter("param2").values("one  ", "two  ", "three"),
+                        parameter("param3").values(1, 2, 3),
+                        parameter("param4").values(true, false),
+                        parameter("param5").values(1, 2, 3),
+                        parameter("param6").values(1.1f, 2.2f, 3.3f)
+                ).exclusionConstraint(
+                        constrain("param1", "param2", "param4")
+                                .by((Integer firstValue, String secondValue, Boolean fourthValue)
+                                        -> !(firstValue == 1 && "one  ".equals(secondValue) && fourthValue))
+                );
     }
     
 }

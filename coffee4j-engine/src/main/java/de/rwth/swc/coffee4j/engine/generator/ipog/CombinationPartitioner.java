@@ -135,22 +135,24 @@ class CombinationPartitioner {
     Optional<int[]> extendSuitableCombination(int[] combination, ConstraintChecker constraintChecker) {
         Preconditions.notNull(combination, COMBINATION_NOT_NULL);
         Preconditions.check(combination.length > partitioningParameter, PARAMETER_NOT_IN_COMBINATION);
-        
-        List<IntArrayWrapper> possibleCombinations = new LinkedList<>(partitioner.get(combination[partitioningParameter]));
+
+        final List<IntArrayWrapper> possibleCombinations = new LinkedList<>(
+                partitioner.get(combination[partitioningParameter]));
         possibleCombinations.addAll(partitioner.get(NO_VALUE));
-        
+
         for (IntArrayWrapper possibleCombination : possibleCombinations) {
             if (tryToAdd(possibleCombination.getArray(), combination, constraintChecker)) {
                 return Optional.of(possibleCombination.getArray());
             }
         }
-        
+
         return Optional.empty();
     }
-    
+
     private boolean tryToAdd(int[] baseCombination, int[] combinationToBeAdded, ConstraintChecker constraintChecker) {
         if (canBeAdded(baseCombination, combinationToBeAdded, constraintChecker)) {
             add(baseCombination, combinationToBeAdded);
+
             return true;
         } else {
             return false;

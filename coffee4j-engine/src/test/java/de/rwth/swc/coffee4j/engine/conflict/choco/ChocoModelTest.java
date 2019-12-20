@@ -2,9 +2,9 @@ package de.rwth.swc.coffee4j.engine.conflict.choco;
 
 import de.rwth.swc.coffee4j.engine.TestModel;
 import de.rwth.swc.coffee4j.engine.TupleList;
-import de.rwth.swc.coffee4j.engine.constraint.InternalConstraint;
-import de.rwth.swc.coffee4j.engine.constraint.InternalConstraintConverter;
-import de.rwth.swc.coffee4j.engine.constraint.NegatingInternalConstraint;
+import de.rwth.swc.coffee4j.engine.constraint.Constraint;
+import de.rwth.swc.coffee4j.engine.constraint.ConstraintConverter;
+import de.rwth.swc.coffee4j.engine.constraint.NegatedConstraint;
 import org.chocosolver.solver.Model;
 import org.chocosolver.solver.variables.IntVar;
 import org.junit.jupiter.api.Nested;
@@ -16,8 +16,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static de.rwth.swc.coffee4j.engine.constraint.ChocoSolverUtil.findVariable;
+import static de.rwth.swc.coffee4j.engine.util.ChocoUtil.findVariable;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 public class ChocoModelTest {
 
@@ -68,15 +70,13 @@ public class ChocoModelTest {
     void testEnableAndDisableConstraint2() {
         final ChocoModel chocoModel = createTestModel(-1);
 
-        //chocoModel.setAssignmentConstraint(new int[] { 0, 1, 2 }, new int[] { 0, 0, 0 });
-        //assertTrue(chocoModel.isSatisfiable());
-        //chocoModel.reset();
+        chocoModel.setAssignmentConstraint(new int[] { 0, 1, 2 }, new int[] { 0, 0, 0 });
+        assertTrue(chocoModel.isSatisfiable());
+        chocoModel.reset();
 
         chocoModel.setAssignmentConstraint(new int[] { 0, 1, 2 }, new int[] { 0, 0, 2 });
         assertFalse(chocoModel.isSatisfiable());
         chocoModel.reset();
-
-
 
         chocoModel.setAssignmentConstraint(new int[] { 0, 1, 2 }, new int[] { 0, 0, 2 });
         chocoModel.disableConstraint(3);
@@ -160,8 +160,8 @@ public class ChocoModelTest {
 
         final TestModel combinatorialTestModel = new TestModel(2, new int[]{3, 3, 3}, Collections.emptyList(), errorTupleLists);
 
-        final InternalConstraintConverter converter = new InternalConstraintConverter();
-        final List<InternalConstraint> constraints = new ArrayList<>();
+        final ConstraintConverter converter = new ConstraintConverter();
+        final List<Constraint> constraints = new ArrayList<>();
         constraints.addAll(converter.convertAll(combinatorialTestModel.getForbiddenTupleLists()));
         constraints.addAll(converter.convertAll(combinatorialTestModel.getErrorTupleLists()));
 
@@ -207,48 +207,53 @@ public class ChocoModelTest {
         chocoModel.resetNegationOfConstraint();
     }
 
+    private static TupleList tupleList(int id) {
+        final TupleList tupleList = mock(TupleList.class);
+        when(tupleList.getId()).thenReturn(id);
+        
+        return tupleList;
+    }
+    
     public static ChocoModel createTestModel(int idToBeNegated) {
-        List<InternalConstraint> internalConstraints = new ArrayList<>();
+        List<Constraint> constraints = new ArrayList<>();
 
-        add(idToBeNegated, internalConstraints,
-                new InternalConstraint(1, (Model model)
-                                -> model.arithm((IntVar) findVariable(model, 0).get(), "=", 2).getOpposite())
+        add(idToBeNegated, constraints,
+                new Constraint(tupleList(1), (Model model)
+                                -> model.arithm((IntVar) findVariable(model, 0).orElseThrow(), "=", 2).getOpposite())
         );
-        add(idToBeNegated, internalConstraints,
-                new InternalConstraint(2, (Model model)
-                        -> model.arithm((IntVar) findVariable(model, 1).get(), "=", 2).getOpposite())
+        add(idToBeNegated, constraints,
+                new Constraint(tupleList(2), (Model model)
+                        -> model.arithm((IntVar) findVariable(model, 1).orElseThrow(), "=", 2).getOpposite())
         );
-        add(idToBeNegated, internalConstraints,
-                new InternalConstraint(3, (Model model)
-                        -> model.arithm((IntVar) findVariable(model, 2).get(), "=", 2).getOpposite())
+        add(idToBeNegated, constraints,
+                new Constraint(tupleList(3), (Model model)
+                        -> model.arithm((IntVar) findVariable(model, 2).orElseThrow(), "=", 2).getOpposite())
         );
-        add(idToBeNegated, internalConstraints,
-                new InternalConstraint(4, (Model model)
+        add(idToBeNegated, constraints,
+                new Constraint(tupleList(4), (Model model)
                         -> model.or(
-                                model.and(model.arithm((IntVar) findVariable(model, 0).get(), "=", 0), model.arithm((IntVar) findVariable(model, 1).get(), "=", 1)),
-                                model.and(model.arithm((IntVar) findVariable(model, 0).get(), "=", 0), model.arithm((IntVar) findVariable(model, 1).get(), "=", 2))
+                                model.and(model.arithm((IntVar) findVariable(model, 0).orElseThrow(), "=", 0), model.arithm((IntVar) findVariable(model, 1).orElseThrow(), "=", 1)),
+                                model.and(model.arithm((IntVar) findVariable(model, 0).orElseThrow(), "=", 0), model.arithm((IntVar) findVariable(model, 1).orElseThrow(), "=", 2))
                         ).getOpposite())
         );
-        add(idToBeNegated, internalConstraints,
-                new InternalConstraint(5, (Model model) ->
+        add(idToBeNegated, constraints,
+                new Constraint(tupleList(5), (Model model) ->
                         model.or(
-                                model.and(model.arithm((IntVar) findVariable(model, 0).get(), "=", 1), model.arithm((IntVar) findVariable(model, 1).get(), "=", 0)),
-                                model.and(model.arithm((IntVar) findVariable(model, 0).get(), "=", 1), model.arithm((IntVar) findVariable(model, 1).get(), "=", 2))
+                                model.and(model.arithm((IntVar) findVariable(model, 0).orElseThrow(), "=", 1), model.arithm((IntVar) findVariable(model, 1).orElseThrow(), "=", 0)),
+                                model.and(model.arithm((IntVar) findVariable(model, 0).orElseThrow(), "=", 1), model.arithm((IntVar) findVariable(model, 1).orElseThrow(), "=", 2))
                         ).getOpposite())
         );
 
         final TestModel testModel = new TestModel(2, new int[] { 3, 3, 3 }, Collections.emptyList(), Collections.emptyList());
 
-        return new ChocoModel(testModel.getParameterSizes(), internalConstraints);
+        return new ChocoModel(testModel.getParameterSizes(), constraints);
     }
 
-    private static void add(int idToBeNegated,
-                            List<InternalConstraint> internalConstraints,
-                            InternalConstraint internalConstraint) {
-        if(internalConstraint.getId() == idToBeNegated) {
-            internalConstraint = new NegatingInternalConstraint(internalConstraint);
+    private static void add(int idToBeNegated, List<Constraint> constraints, Constraint constraint) {
+        if(constraint.getTupleList().getId() == idToBeNegated) {
+            constraint = new NegatedConstraint(constraint);
         }
 
-        internalConstraints.add(internalConstraint);
+        constraints.add(constraint);
     }
 }

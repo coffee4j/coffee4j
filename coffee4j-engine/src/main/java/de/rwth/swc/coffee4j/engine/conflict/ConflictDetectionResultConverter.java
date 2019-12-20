@@ -42,7 +42,7 @@ class ConflictDetectionResultConverter {
         } else if(explanation instanceof InternalDiagnosisSets) {
             return convertDiagnosisSets((InternalDiagnosisSets) explanation);
         } else {
-            throw new IllegalStateException("unhandled XExplanation subtype");
+            throw new IllegalStateException("unhandled ConflictExplanation subtype");
         }
     }
 

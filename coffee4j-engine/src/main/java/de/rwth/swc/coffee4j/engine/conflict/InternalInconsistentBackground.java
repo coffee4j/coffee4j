@@ -17,11 +17,11 @@ public class InternalInconsistentBackground implements InternalExplanation {
         this.relaxable = relaxable;
     }
 
-    int[] getBackground() {
+    public int[] getBackground() {
         return background;
     }
 
-    int[] getRelaxable() {
+    public int[] getRelaxable() {
         return relaxable;
     }
 

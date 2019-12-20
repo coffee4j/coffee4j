@@ -5,8 +5,7 @@ import de.rwth.swc.coffee4j.engine.TupleList;
 import de.rwth.swc.coffee4j.engine.conflict.choco.ChocoModel;
 import de.rwth.swc.coffee4j.engine.conflict.diagnosis.ConflictDiagnostician;
 import de.rwth.swc.coffee4j.engine.conflict.explanation.*;
-import de.rwth.swc.coffee4j.engine.constraint.InternalConstraint;
-import de.rwth.swc.coffee4j.engine.constraint.InternalConstraintConverter;
+import de.rwth.swc.coffee4j.engine.constraint.Constraint;
 import de.rwth.swc.coffee4j.engine.util.Preconditions;
 import it.unimi.dsi.fastutil.ints.IntArraySet;
 import it.unimi.dsi.fastutil.ints.IntSet;
@@ -24,7 +23,7 @@ public class ConflictDetectionManager {
     private final TestModelExpander expander;
 
     private final TestModel testModel;
-    private final Map<Boolean, List<InternalConstraint>> partitionedConstraints;
+    private final Map<Boolean, List<Constraint>> partitionedConstraints;
 
     private final ChocoModel chocoModel;
 
@@ -40,11 +39,12 @@ public class ConflictDetectionManager {
 
         this.testModel = expander.createExpandedTestModel();
 
-        final List<InternalConstraint> constraints = new ArrayList<>();
+        final List<Constraint> constraints = new ArrayList<>();
         constraints.addAll(this.testModel.getExclusionConstraints());
         constraints.addAll(this.testModel.getErrorConstraints());
 
-        this.partitionedConstraints = constraints.stream().collect(groupingBy(InternalConstraint::isMarkedAsCorrect));
+        this.partitionedConstraints = constraints.stream()
+                .collect(groupingBy(constraint -> constraint.getTupleList().isMarkedAsCorrect()));
 
         if(!partitionedConstraints.containsKey(true)) {
             partitionedConstraints.put(true, Collections.emptyList());
@@ -76,16 +76,17 @@ public class ConflictDetectionManager {
             final IntSet background = new IntArraySet();
             background.add(toBeNegated.getId());
             background.addAll(partitionedConstraints.get(true).stream()
-                    .map(InternalConstraint::getId)
+                    .map(constraint -> constraint.getTupleList().getId())
                     .collect(Collectors.toList()));
 
             final IntSet relaxable = new IntArraySet();
             relaxable.addAll(partitionedConstraints.get(false).stream()
-                    .filter(constraint -> constraint.getId() != toBeNegated.getId())
-                    .map(InternalConstraint::getId)
+                    .filter(constraint -> constraint.getTupleList().getId() != toBeNegated.getId())
+                    .map(constraint -> constraint.getTupleList().getId())
                     .collect(Collectors.toList()));
 
-            final Optional<InternalExplanation> optional = checkForInvalidTuple(toBeNegated, tuple, background, relaxable);
+            final Optional<InternalExplanation> optional
+                    = checkForInvalidTuple(toBeNegated, tuple, background, relaxable);
             optional.ifPresent(explanation ->
                     missingInvalidTuples.add(new InternalMissingInvalidTuple(
                             toBeNegated.getId(),
@@ -99,7 +100,10 @@ public class ConflictDetectionManager {
         return missingInvalidTuples;
     }
 
-    private Optional<InternalExplanation> checkForInvalidTuple(TupleList tupleList, int[] tuple, IntSet background, IntSet relaxable) {
+    private Optional<InternalExplanation> checkForInvalidTuple(TupleList tupleList,
+                                                               int[] tuple,
+                                                               IntSet background,
+                                                               IntSet relaxable) {
         chocoModel.reset();
 
         final int assignmentId = chocoModel.setAssignmentConstraint(tupleList.getInvolvedParameters(), tuple);
@@ -126,7 +130,8 @@ public class ConflictDetectionManager {
         }
     }
 
-    private InternalExplanation removeAssignmentConstraintFromBackground(int assignmentId, InternalInconsistentBackground explanation) {
+    private InternalExplanation removeAssignmentConstraintFromBackground(int assignmentId,
+                                                                         InternalInconsistentBackground explanation) {
         final int[] cleanedBackground = Arrays.stream(explanation.getBackground())
                 .filter(c -> c != assignmentId)
                 .toArray();
