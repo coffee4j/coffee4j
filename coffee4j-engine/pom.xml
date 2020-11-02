@@ -4,10 +4,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+
     <parent>
         <artifactId>coffee4j-aggregate</artifactId>
         <groupId>de.rwth.swc.coffee4j</groupId>
-        <version>1.0.6</version>
+        <version>1.0.7</version>
     </parent>
 
     <artifactId>coffee4j-engine</artifactId>
@@ -17,27 +18,29 @@
     <url>https://coffee4j.github.io</url>
 
     <dependencies>
-        <!-- LOGGING DEPENDENCIES -->
+        <!-- INTRA PROJECT DEPENDENCIES -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
+            <groupId>de.rwth.swc.coffee4j</groupId>
+            <artifactId>coffee4j-algorithmic</artifactId>
+        </dependency>
+
+        <!-- JUNIT DEPENDENCIES -->
+        <dependency>
+            <groupId>org.junit.platform</groupId>
+            <artifactId>junit-platform-commons</artifactId>
         </dependency>
 
         <!-- OTHER DEPENDENCIES -->
         <dependency>
-            <groupId>org.choco-solver</groupId>
-            <artifactId>choco-solver</artifactId>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
         </dependency>
         <dependency>
             <groupId>it.unimi.dsi</groupId>
             <artifactId>fastutil</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
-        </dependency>
 
-        <!-- TEST FRAMEWORK DEPENDENCIES -->
+        <!-- TESTING DEPENDENCIES -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -45,11 +48,17 @@
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-params</artifactId>
+            <artifactId>junit-jupiter-engine</artifactId>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-engine</artifactId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -58,15 +67,15 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-inline</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-math3</artifactId>
-            <version>3.6.1</version>
-            <scope>compile</scope>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>${slf4j.version}</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 </project>
