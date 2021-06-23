@@ -66,7 +66,7 @@ import static de.rwth.swc.coffee4j.engine.util.PredicateUtil.not;
 public class Ben extends SuspiciousCombinationAlgorithm {
     
     private static final int DEFAULT_NUMBER_OF_COMBINATIONS_PER_STEP = 10;
-    private static final int DEFAULT_MAX_GENERATION_ATTEMPTS = 50;
+    private static final int DEFAULT_MAX_GENERATION_ATTEMPTS = 120;
     
     private final int numberOfCombinationsPerStep;
     private final int maxGenerationAttempts;
@@ -286,16 +286,19 @@ public class Ben extends SuspiciousCombinationAlgorithm {
         final IntArrayWrapper newTestInput = wrap(newTestInputArray);
         final Random random = new Random();
         
-        for (int i = 0; i < maxGenerationAttempts && testResults.containsKey(newTestInput) && getChecker().isValid(newTestInputArray); i++) {
+        for (int i = 0; i < maxGenerationAttempts; i++) {
             final int changingParameter = environmentParameters.getInt(random.nextInt(environmentParameters.size()));
             final IntList valueRanking = parameterValueRanking[changingParameter];
             final int currentValue = newTestInputArray[changingParameter];
             final int nextValueIndex = (valueRanking.indexOf(currentValue) + 1) % valueRanking.size();
             final int nextValue = valueRanking.getInt(nextValueIndex);
             newTestInputArray[changingParameter] = nextValue;
+            if (!testResults.containsKey(newTestInput) && getChecker().isValid(newTestInputArray)) {
+                break;
+            }
         }
         
-        return testResults.containsKey(newTestInput) ? null : newTestInput;
+        return testResults.containsKey(newTestInput) || !getChecker().isValid(newTestInputArray) ? null : newTestInput;
     }
     
     private IntList[] computeParameterValueRanking(Object2DoubleMap<Component> componentSuspiciousnessMap) {
