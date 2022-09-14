@@ -30,7 +30,7 @@ import static org.junit.platform.commons.util.AnnotationUtils.isAnnotated;
  * This extension is more or less a copy of {@link org.junit.jupiter.params.ParameterizedTestExtension} in the
  * junit-jupiter-params project.
  */
-class CombinatorialTestExtension implements TestTemplateInvocationContextProvider {
+public class CombinatorialTestExtension implements TestTemplateInvocationContextProvider {
     
     @Override
     public boolean supportsTestTemplate(ExtensionContext extensionContext) {
@@ -46,7 +46,7 @@ class CombinatorialTestExtension implements TestTemplateInvocationContextProvide
         return CombinatorialTestMethodContext.checkAggregatorOrder(testMethod);
     }
     
-    static Store getStore(ExtensionContext extensionContext) {
+    public static Store getStore(ExtensionContext extensionContext) {
         return extensionContext.getStore(Namespace.create(CombinatorialTestExtension.class, extensionContext.getRequiredTestMethod()));
     }
     
