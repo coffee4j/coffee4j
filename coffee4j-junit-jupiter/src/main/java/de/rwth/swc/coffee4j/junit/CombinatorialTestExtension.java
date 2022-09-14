@@ -47,7 +47,7 @@ public class CombinatorialTestExtension implements TestTemplateInvocationContext
     }
     
     public static Store getStore(ExtensionContext extensionContext) {
-        return extensionContext.getStore(Namespace.create(CombinatorialTestExtension.class, extensionContext.getRequiredTestMethod()));
+        return extensionContext.getStore(Namespace.create(CombinatorialTestExtension.class, extensionContext.getRequiredTestMethod(), extensionContext.getRequiredTestClass()));
     }
     
     @Override
