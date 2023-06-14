@@ -62,7 +62,7 @@
         <dependency-plugin.version>3.1.2</dependency-plugin.version>
         <failsafe-plugin.version>2.22.2</failsafe-plugin.version>
         <fastutil.version>8.3.1</fastutil.version>
-        <guava.version>29.0-jre</guava.version>
+        <guava.version>32.0.0-jre</guava.version>
         <gpg-plugin.version>1.6</gpg-plugin.version>
         <hamcrest.version>2.2</hamcrest.version>
         <jacoco-plugin.version>0.8.4</jacoco-plugin.version>
