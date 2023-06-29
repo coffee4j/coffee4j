@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>de.rwth.swc.coffee4j</groupId>
-    <artifactId>coffee4j-aggregate</artifactId>
+    <groupId>de.rub.nds.tls</groupId>
+    <artifactId>coffee4j-anvil-aggregate</artifactId>
     <packaging>pom</packaging>
     <version>1.0.6</version>
 
@@ -37,9 +37,9 @@
     </licenses>
 
     <scm>
-	     <connection>scm:git:git://github.com/coffee4j/coffee4j.git</connection>
-       <developerConnection>scm:git:ssh://github.com:coffee4j/coffee4j.git</developerConnection>
-       <url>http://github.com/coffee4j/coffee4j/tree/master</url>
+	     <connection>scm:git:git://github.com/tls-attacker/coffee4j.git</connection>
+       <developerConnection>scm:git:ssh://github.com:tls-attacker/coffee4j.git</developerConnection>
+       <url>http://github.com/tls-attacker/coffee4j/tree/anvil-core</url>
     </scm>
 
     <distributionManagement>
@@ -77,18 +77,18 @@
         <dependencies>
             <!-- INTRA PROJECT  DEPENDENCIES -->
             <dependency>
-                <groupId>de.rwth.swc.coffee4j</groupId>
-                <artifactId>coffee4j-model</artifactId>
+                <groupId>de.rub.nds.tls</groupId>
+                <artifactId>coffee4j-anvil-model</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>de.rwth.swc.coffee4j</groupId>
-                <artifactId>coffee4j-engine</artifactId>
+                <groupId>de.rub.nds.tls</groupId>
+                <artifactId>coffee4j-anvil-engine</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
-                <groupId>de.rwth.swc.coffee4j</groupId>
-                <artifactId>coffee4j-junit-jupiter</artifactId>
+                <groupId>de.rub.nds.tls</groupId>
+                <artifactId>coffee4j-anvil-junit-jupiter</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
