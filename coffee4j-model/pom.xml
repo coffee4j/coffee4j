@@ -28,6 +28,12 @@
             <groupId>it.unimi.dsi</groupId>
             <artifactId>fastutil</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-bom</artifactId>
+            <version>2.20.0</version>
+            <type>pom</type>
+        </dependency>
 
         <!-- TEST DEPENDENCIES -->
         <dependency>
