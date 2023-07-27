@@ -59,7 +59,7 @@ public final class InputParameterModel {
         Preconditions.notNull(exclusionConstraints, "List of exclusionConstraints must not be null.");
         Preconditions.notNull(errorConstraints, "List of errorConstraints must not be null.");
         Preconditions.check(strength >= 0, "Strength must be >= 0.");
-        Preconditions.check(strength <= parameters.size(), "Number of parameters must at least match test strength. Check if SimpleTest can be used.");
+        Preconditions.check(strength <= parameters.size(), "Number of parameters must at least match test strength.");
         Preconditions.check(!parameters.contains(null), "List of parameters passed contains 'null'");
         Preconditions.check(!exclusionConstraints.contains(null), "List of exclusionConstraints contains 'null'");
         Preconditions.check(!errorConstraints.contains(null), "List of errorConstraints contains 'null'");

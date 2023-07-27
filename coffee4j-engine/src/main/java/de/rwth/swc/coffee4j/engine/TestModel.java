@@ -78,7 +78,7 @@ public class TestModel {
     
     private static void checkParameterSizes(int[] parameterSizes) {
         for (int parameterSize : parameterSizes) {
-            Preconditions.check(parameterSize > 1);
+            Preconditions.check(parameterSize > 0);
         }
     }
     

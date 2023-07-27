@@ -28,7 +28,7 @@ class TestModelTest {
                 arguments(3, new int[]{2}, Collections.emptyList(), Collections.emptyList(), IllegalArgumentException.class),
                 arguments(1, new int[]{2, 2}, null, Collections.emptyList(), NullPointerException.class),
                 arguments(1, new int[]{2, 2}, Collections.emptyList(), null, NullPointerException.class),
-                arguments(1, new int[]{1, 2}, Collections.emptyList(), Collections.emptyList(), IllegalArgumentException.class),
+                arguments(1, new int[]{0, 2}, Collections.emptyList(), Collections.emptyList(), IllegalArgumentException.class),
                 arguments(1, new int[]{2, -2}, Collections.emptyList(), Collections.emptyList(), IllegalArgumentException.class),
                 arguments(1, new int[]{2, 2}, Collections.singletonList(new TupleList(1, new int[]{-1, 1}, Collections.singletonList(new int[]{0, 0}))), Collections.emptyList(), IllegalArgumentException.class),
                 arguments(1, new int[]{2, 2}, Collections.singletonList(new TupleList(1, new int[]{1, 5}, Collections.singletonList(new int[]{0, 0}))), Collections.emptyList(), IllegalArgumentException.class),
