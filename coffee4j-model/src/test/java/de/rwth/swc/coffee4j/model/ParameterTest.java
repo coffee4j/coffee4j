@@ -20,7 +20,7 @@ class ParameterTest {
     @Test
     void atLeastOneValueRequired() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new Parameter("a", Collections.emptyList()));
-        final Parameter oneValueParameter = new Parameter("a", List.of(Value.value(0, 1)));
+        final Parameter oneValueParameter = new Parameter("a", Arrays.asList(Value.value(0, 1)));
         assertEquals(1, oneValueParameter.size());
     }
     
