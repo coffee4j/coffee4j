@@ -7,7 +7,7 @@
     <parent>
         <artifactId>coffee4j-anvil-aggregate</artifactId>
         <groupId>de.rub.nds.tls</groupId>
-        <version>1.0.6</version>
+        <version>1.0.6-SNAPSHOT</version>
     </parent>
 
     <artifactId>coffee4j-anvil-junit-jupiter</artifactId>

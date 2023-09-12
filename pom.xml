@@ -7,7 +7,7 @@
     <groupId>de.rub.nds.tls</groupId>
     <artifactId>coffee4j-anvil-aggregate</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.6</version>
+    <version>1.0.6-SNAPSHOT</version>
 
     <modules>
         <module>coffee4j-model</module>
