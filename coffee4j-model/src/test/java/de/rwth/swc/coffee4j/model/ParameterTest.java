@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -17,11 +18,10 @@ class ParameterTest {
     }
     
     @Test
-    void atLeastTwoValuesRequired() {
+    void atLeastOneValueRequired() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new Parameter("a", Collections.emptyList()));
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new Parameter("a", Collections.singletonList(Value.value(0, 1))));
-        final Parameter twoValueParameter = new Parameter("a", Arrays.asList(Value.value(0, 1), Value.value(1, 2)));
-        assertEquals(2, twoValueParameter.size());
+        final Parameter oneValueParameter = new Parameter("a", Arrays.asList(Value.value(0, 1)));
+        assertEquals(1, oneValueParameter.size());
     }
     
     @Test

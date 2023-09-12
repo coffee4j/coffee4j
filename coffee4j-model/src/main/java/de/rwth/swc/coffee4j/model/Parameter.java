@@ -24,12 +24,12 @@ public final class Parameter {
      *
      * @param name   the parameters name. Should be unique inside its input parameter testModel. Must not be {@code null}
      * @param values the values of the parameter. Must not be, nor contain {@code null}, and there need to be at least
-     *               two value. Additionally, each value id may only appear once
+     *               one value. Additionally, each value id may only appear once
      */
     public Parameter(String name, Collection<Value> values) {
         Preconditions.notNull(name);
         Preconditions.notNull(values);
-        Preconditions.check(values.size() >= 2);
+        Preconditions.check(values.size() >= 1);
         Preconditions.doesNotContainNull(values);
         Preconditions.check(doesNotContainSameValueIdTwice(values));
         

@@ -70,7 +70,7 @@ public class SimpleCartesianProductConstraintConverter implements IndexBasedCons
     
     private void assertContainsOnlyValidParameters(List<Constraint> constraints, Collection<String> parameterNames) {
         for (Constraint constraint : constraints) {
-            Preconditions.check(parameterNames.containsAll(constraint.getParameterNames()));
+            Preconditions.check(parameterNames.containsAll(constraint.getParameterNames()), "Failed to find names listed in contraint. Found " + constraint.getParameterNames().toString() + " but only know " + parameterNames);
         }
     }
     
