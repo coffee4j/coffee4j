@@ -163,7 +163,7 @@ public class CombinatorialTestMethodContext {
         @Override
         public Object resolve(ParameterContext parameterContext, Combination testInput, InputParameterModel model) {
             
-            final ArgumentsAccessor accessor = new DefaultArgumentsAccessor(IntStream.range(0, model.size()).mapToObj(index -> model.getParameters().get(index)).map(testInput::getRawValue).toArray());
+            final ArgumentsAccessor accessor = new DefaultArgumentsAccessor(parameterContext, 1, IntStream.range(0, model.size()).mapToObj(index -> model.getParameters().get(index)).map(testInput::getRawValue).toArray());
             try {
                 return argumentsAggregator.aggregateArguments(accessor, parameterContext);
             } catch (Exception e) {
