@@ -5,7 +5,7 @@
     <groupId>de.rub.nds.tls</groupId>
     <artifactId>coffee4j-anvil-aggregate</artifactId>
     <packaging>pom</packaging>
-    <version>1.1.1-SNAPSHOT</version>
+    <version>1.1.1</version>
 
     <modules>
         <module>coffee4j-model</module>
@@ -37,7 +37,7 @@
     <scm>
 	     <connection>scm:git:https://github.com/tls-attacker/coffee4j.git</connection>
        <developerConnection>scm:git:ssh://git@github.com/tls-attacker/coffee4j.git</developerConnection>
-       <tag>HEAD</tag>
+       <tag>coffee4j-anvil-aggregate-1.1.1</tag>
        <url>http://github.com/tls-attacker/coffee4j</url>
     </scm>
 
