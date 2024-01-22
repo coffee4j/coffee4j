@@ -60,7 +60,7 @@
         <junit-jupiter.version>5.10.0</junit-jupiter.version>
         <junit-platform.version>1.10.0</junit-platform.version>
         <mockito.version>2.18.0</mockito.version>
-        <choco-solver.version>4.10.0</choco-solver.version>
+        <choco-solver.version>4.10.14</choco-solver.version>
         <fastutil.version>8.2.3</fastutil.version>
         <commons-lang3.version>3.9</commons-lang3.version>
         <surefire-plugin.version>2.22.1</surefire-plugin.version>

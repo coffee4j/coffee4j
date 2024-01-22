@@ -4,7 +4,7 @@ import de.rwth.swc.coffee4j.engine.conflict.diagnosis.ExhaustiveConflictDiagnost
 import de.rwth.swc.coffee4j.engine.conflict.explanation.QuickConflictExplainer;
 import org.junit.jupiter.api.Test;
 
-import static org.testng.Assert.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class ConflictDetectionConfigurationTest {
 

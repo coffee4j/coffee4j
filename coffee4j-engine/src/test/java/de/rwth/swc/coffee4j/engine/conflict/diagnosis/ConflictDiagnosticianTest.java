@@ -11,7 +11,6 @@ import org.chocosolver.solver.Model;
 import org.chocosolver.solver.variables.IntVar;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-import org.testng.Assert;
 
 import java.util.*;
 
@@ -21,7 +20,6 @@ import static de.rwth.swc.coffee4j.engine.util.ChocoUtil.findVariable;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertThrows;
 
 class ConflictDiagnosticianTest {
 
@@ -241,7 +239,7 @@ class ConflictDiagnosticianTest {
 
             final List<int[]> expansions = new ExhaustiveConflictDiagnostician().expandPaths(currentPath, nextLabels);
 
-            Assert.assertTrue(expansions.size() == 3);
+            assertTrue(expansions.size() == 3);
         }
 
         @Test
@@ -251,7 +249,7 @@ class ConflictDiagnosticianTest {
 
             final List<int[]> expansions = new ExhaustiveConflictDiagnostician().expandPaths(currentPath, nextLabels);
 
-            Assert.assertTrue(expansions.size() == 2);
+            assertTrue(expansions.size() == 2);
         }
 
         @Test

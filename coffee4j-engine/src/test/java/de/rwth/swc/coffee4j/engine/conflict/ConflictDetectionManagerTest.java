@@ -13,7 +13,6 @@ import java.util.List;
 
 import static de.rwth.swc.coffee4j.engine.AssertUtils.assertInstanceOf;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.testng.Assert.assertTrue;
 
 class ConflictDetectionManagerTest {
 
