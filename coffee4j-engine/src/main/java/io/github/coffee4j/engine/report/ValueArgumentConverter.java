@@ -1,0 +1,25 @@
+package io.github.coffee4j.engine.report;
+
+import io.github.coffee4j.algorithmic.report.ArgumentConverter;
+import io.github.coffee4j.algorithmic.report.ValueArgument;
+import io.github.coffee4j.engine.configuration.model.Value;
+
+/**
+ * A {@link ArgumentConverter} cor converting {@link ValueArgument}s
+ * into {@link Value} instances for reporting.
+ */
+public class ValueArgumentConverter extends ModelBasedArgumentConverter {
+    
+    @Override
+    public boolean canConvert(Object argument) {
+        return argument instanceof ValueArgument;
+    }
+    
+    @Override
+    public Object convert(Object argument) {
+        final ValueArgument valueArgument = (ValueArgument) argument;
+        
+        return modelConverter.convertValue(valueArgument.parameter(), valueArgument.value());
+    }
+    
+}

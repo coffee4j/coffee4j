@@ -6,8 +6,8 @@
 
     <parent>
         <artifactId>coffee4j-aggregate</artifactId>
-        <groupId>de.rwth.swc.coffee4j</groupId>
-        <version>1.0.8</version>
+        <groupId>io.github.coffee4j</groupId>
+        <version>2.0.0</version>
     </parent>
 
     <artifactId>coffee4j-algorithmic</artifactId>

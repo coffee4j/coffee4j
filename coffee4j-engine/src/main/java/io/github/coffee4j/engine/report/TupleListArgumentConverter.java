@@ -1,0 +1,25 @@
+package io.github.coffee4j.engine.report;
+
+import io.github.coffee4j.algorithmic.report.ArgumentConverter;
+import io.github.coffee4j.algorithmic.model.TupleList;
+import io.github.coffee4j.engine.configuration.model.constraints.methodbased.MethodBasedConstraint;
+
+/**
+ * A {@link ArgumentConverter} cor converting {@link TupleList}s
+ * into {@link MethodBasedConstraint} instances for reporting.
+ */
+public class TupleListArgumentConverter extends ModelBasedArgumentConverter {
+    
+    @Override
+    public boolean canConvert(Object argument) {
+        return argument instanceof TupleList;
+    }
+    
+    @Override
+    public Object convert(Object argument) {
+        final TupleList tuplesList = (TupleList) argument;
+        
+        return modelConverter.convertConstraint(tuplesList);
+    }
+    
+}
